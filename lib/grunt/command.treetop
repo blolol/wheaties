@@ -1,0 +1,60 @@
+grammar Command
+  rule command
+    prefix
+    name:name
+    arguments:(argument*)
+  end
+  
+  rule argument
+    space
+    content:(method / interpolated / word / literal)
+  end
+  
+  rule method
+    "["
+    space
+    name:name
+    arguments:(argument*)
+    "]"
+  end
+  
+  rule interpolated
+    '"' content:(method / literal / !'"' . {
+      def eval
+        text_value
+      end
+    })+ '"' {
+      def eval
+        content.eval
+      end
+    }
+  end
+  
+  rule literal
+    "{" content:(!"}" .)* "}" {
+      def eval
+        content
+      end
+    }
+  end
+  
+  rule word
+    (!space !"{" !"}" !"[" !"]" .)+ {
+      def eval
+        text_value
+      end
+    }
+  end
+  
+  rule name
+    [a-zA-Z0-9_]+
+  end
+  
+  rule prefix
+    "."
+  end
+  
+  rule space
+    " "+
+  end
+end
