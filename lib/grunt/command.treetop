@@ -1,8 +1,8 @@
 grammar Command
   rule command
     prefix
-    name:name
-    arguments:(argument*)
+    command_name:name
+    command_arguments:(argument*) <Evaluable>
   end
   
   rule argument
@@ -16,18 +16,22 @@ grammar Command
   
   rule method
     "["
-    space
-    name:name
-    arguments:(argument*)
-    "]"
+    command_name:name
+    command_arguments:(argument*)
+    "]" <Evaluable>
   end
   
   rule interpolated
-    '"' content:(method / literal / !'"' . {
+    '"' string_arguments:(interpolated_argument*) '"' <InterpolatedString>
+  end
+
+  rule interpolated_argument
+    space*
+    content:(method / !'"' . {
       def eval
         text_value
       end
-    })+ '"' {
+    }) {
       def eval
         content.eval
       end
@@ -37,13 +41,13 @@ grammar Command
   rule literal
     "{" content:(!"}" .)* "}" {
       def eval
-        content
+        content.text_value
       end
     }
   end
   
   rule word
-    (!space !"{" !"}" !"[" !"]" .)+ {
+    (!space !"{" !"}" !"[" !"]" !'"' .)+ {
       def eval
         text_value
       end
