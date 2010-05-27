@@ -1,68 +1,63 @@
 grammar Command
-  rule command
-    prefix
-    command_name:name
-    command_arguments:(argument*) <Evaluable>
-  end
-  
-  rule argument
-    space
-    content:(method / interpolated / word / literal) {
-      def eval
-        content.eval
-      end
-    }
-  end
-  
-  rule method
-    "["
-    command_name:name
-    command_arguments:(argument*)
-    "]" <Evaluable>
-  end
-  
-  rule interpolated
-    '"' string_arguments:(interpolated_argument*) '"' <InterpolatedString>
-  end
+	rule command
+		prefix
+		command_name:name
+		command_arguments:(argument*) <Evaluable>
+	end
+	
+	rule argument
+		space
+		content:(method / interpolated / word / literal) {
+			def eval
+				content.eval
+			end
+		}
+	end
+	
+	rule method
+		'['
+		command_name:name
+		command_arguments:(argument*)
+		']' <Evaluable>
+	end
+	
+	rule interpolated
+		'"' string_arguments:((method / interpolated_text)*) '"' <InterpolatedString>
+	end
 
-  rule interpolated_argument
-    space*
-    content:(method / !'"' . {
-      def eval
-        text_value
-      end
-    }) {
-      def eval
-        content.eval
-      end
-    }
-  end
-  
-  rule literal
-    "{" content:(!"}" .)* "}" {
-      def eval
-        content.text_value
-      end
-    }
-  end
-  
-  rule word
-    (!space !"{" !"}" !"[" !"]" !'"' .)+ {
-      def eval
-        text_value
-      end
-    }
-  end
-  
-  rule name
-    [a-zA-Z0-9_]+
-  end
-  
-  rule prefix
-    "."
-  end
-  
-  rule space
-    " "+
-  end
+	rule interpolated_text
+		(!'"' !'[' !']' .)+ {
+			def eval
+				text_value
+			end
+		}
+	end
+	
+	rule literal
+		'{' content:(!'}' .)* '}' {
+			def eval
+				content.text_value
+			end
+		}
+	end
+	
+	rule word
+		(!space !'{' !'}' !'[' !']' !'"' .)+ {
+			def eval
+				text_value
+			end
+		}
+	end
+	
+	rule name
+		[a-zA-Z0-9_]+
+	end
+	
+	rule prefix
+		'.'
+	end
+	
+	rule space
+		' '+
+	end
 end
