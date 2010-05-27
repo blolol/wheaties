@@ -7,7 +7,11 @@ grammar Command
   
   rule argument
     space
-    content:(method / interpolated / word / literal)
+    content:(method / interpolated / word / literal) {
+      def eval
+        content.eval
+      end
+    }
   end
   
   rule method
