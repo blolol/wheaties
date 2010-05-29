@@ -5,6 +5,7 @@ module Grunt
     def start
       load_defaults
       load_parser
+      load_database
     end
     
     def load_defaults
@@ -13,7 +14,14 @@ module Grunt
     end
     
     def load_parser
-      Treetop.load("command")
+      Treetop.load(File.join(File.dirname(__FILE__), "command"))
+    end
+    
+    def load_database
+      host = Grunt.config["database"]["host"]
+      database = Grunt.config["database"]["database"]
+      MongoMapper.connection = Mongo::Connection.new(host)
+      MongoMapper.database = database
     end
   end
   
