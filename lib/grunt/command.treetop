@@ -1,6 +1,5 @@
 grammar Command
 	rule command
-		prefix
 		command_name:name
 		command_arguments:(argument*) <Evaluable>
 	end
@@ -51,10 +50,6 @@ grammar Command
 	
 	rule name
 		[a-zA-Z0-9_]+
-	end
-	
-	rule prefix
-		'.'
 	end
 	
 	rule space

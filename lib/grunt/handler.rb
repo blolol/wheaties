@@ -1,10 +1,14 @@
 module Grunt
   class Handler < Wheaties::Handler
+    include Grunt::Concerns::Commands
     include Grunt::Responses::Messages
     
     protected
       def handle_command
-        parser = CommandParser.new.parse(response.text)
+        command = is_command?(response.text)
+        return unless command
+        
+        parser = CommandParser.new.parse(command)
         return unless parser
         
         begin

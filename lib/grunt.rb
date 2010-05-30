@@ -15,6 +15,7 @@ end
 
 require "grunt/boot"
 require "grunt/command_node_classes"
+require "grunt/concerns/commands"
 require "grunt/errors"
 require "grunt/evaluator"
 require "grunt/models/command"
