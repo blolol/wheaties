@@ -4,6 +4,7 @@ begin
   require "mongo_mapper"
   require "polyglot"
   require "treetop"
+  require "system_timer"
 rescue LoadError => e
   if require "rubygems"
     retry

@@ -14,10 +14,15 @@ module Grunt
             :args_string => response.text[/^.+?\s+(.*)$/, 1]
           }
           
-          result = parser.eval(locals)
-          privmsg(result, response.channel) if result
+          timeout = (Grunt.config["timeout"] || 10).to_i
+          SystemTimer.timeout_after(timeout) do
+            result = parser.eval(locals)
+            privmsg(result, response.channel) if result
+          end
         rescue NoCommandError => e
-          privmsg("\"#{e.name}\" is not a command!", response.channel)
+          notice("\"#{e.name}\" is not a command!", response.sender.nick)
+        rescue Timeout::Error => e
+          notice("\"#{parser.name}\" timed out after #{timeout} seconds!", response.sender.nick)
         end
       end
   end
