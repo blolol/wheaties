@@ -1,5 +1,6 @@
 module Grunt
   class Evaluator
+    include Wheaties::Concerns::Logging
     include Wheaties::Concerns::Messaging
     
     attr_reader :name, :locals
@@ -28,10 +29,6 @@ module Grunt
     end
     
     protected
-      def log(level, *args)
-        Wheaties::Connection.instance.log(level, *args)
-      end
-      
       def eval_ruby(command)
         eval(command.body)
       end
