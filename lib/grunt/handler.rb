@@ -27,6 +27,8 @@ module Grunt
           notice("\"#{e.name}\" is not a command!", response.sender.nick)
         rescue Timeout::Error => e
           notice("\"#{parser.name}\" timed out after #{timeout} seconds!", response.sender.nick)
+        rescue => e
+          notice(e.message, response.sender.nick)
         end
       end
   end
