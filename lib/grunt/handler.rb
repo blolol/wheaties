@@ -11,7 +11,7 @@ module Grunt
           locals = {
             :sender => response.sender.dup,
             :channel => response.channel,
-            :stack_level => 0
+            :stack_depth => 1
           }
           
           timeout = (Grunt.config["timeout"] || 10).to_i
@@ -20,13 +20,15 @@ module Grunt
             privmsg(result, response.channel) if result
           end
         rescue NoCommandError => e
-          notice("#{e.name} is not a command!", response.sender.nick)
+          notice(%{"#{e.command}" is not a command!}, response.sender.nick)
         rescue ArgumentParseError => e
-          notice("You made a mistake somewhere in your arguments for #{command[:name]}!", response.sender.nick)
-        rescue Timeout::Error => e
-          notice("#{command[:name]} timed out after #{timeout} seconds!", response.sender.nick)
+          notice(%{You made a mistake somewhere in your arguments for "#{e.command}"!}, response.sender.nick)
+        rescue StackDepthError => e
+          notice(%{"#{e.command}" called too many methods!}, response.sender.nick)
+        rescue Timeout::Error
+          notice(%{"#{e.command}" timed out after #{timeout} seconds!}, response.sender.nick)
         rescue => e
-          notice("Error in #{command[:name]}: #{e.message}", response.sender.nick)
+          notice(%{Error in "#{command[:name]}": #{e.message}}, response.sender.nick)
           log(:debug, e.message)
           log(:debug, e.backtrace.join("\n"))
         end

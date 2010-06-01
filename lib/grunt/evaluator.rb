@@ -27,12 +27,12 @@ module Grunt
     end
     
     def eval!
-      locals[:stack_level] += 1
-      raise "too much recursion" if locals[:stack_level] >= 10
+      locals[:stack_depth] += 1
+      raise StackDepthError, name if locals[:stack_depth] >= 10
       
       locals[:args] = if @args.is_a?(String) && !@args.empty?
                         parser = ArgumentsParser.new.parse(@args)
-                        raise ArgumentParseError unless parser
+                        raise ArgumentParseError, name unless parser
                         parser.eval!(locals)
                       elsif @args.is_a?(Array)
                         @args
