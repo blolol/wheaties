@@ -47,14 +47,6 @@ module Grunt
       actual == expected
     end
     
-    custom_matcher :eval_to_instance_of do |receiver, matcher, args|
-      expected = args[0]
-      actual = receiver.eval!.class
-      matcher.positive_failure_message = "Expected #{actual.name} to be an instance of #{expected.name}, but it wasn't"
-      matcher.negative_failure_message = "Expected #{actual.name} not to be an instance of #{expected.name}, but it was"
-      actual == expected
-    end
-    
     context "An ArgumentsParser instance" do
       setup do
         @parser = ArgumentsParser.new
@@ -110,14 +102,12 @@ module Grunt
         result = parse "(foo bar)"
         result.should have(1).args
         result.args[0].should have(2).args
-        result.args[0].should eval_to_instance_of(Array)
         result.args[0].should eval_to(["foo", "bar"])
         
         result = parse "foo (bar {cat in hat})"
         result.should have(2).args
         result.args[0].should eval_to("foo")
         result.args[1].should have(2).args
-        result.args[1].should eval_to_instance_of(Array)
         result.args[1].should eval_to(["bar", "cat in hat"])
         
         result = parse '(foo "bar baz hat" [say cat] "cat [in hat]")'
