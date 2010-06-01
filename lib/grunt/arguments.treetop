@@ -5,7 +5,13 @@ grammar Arguments
 	
 	rule argument
 		space*
-		content:(method / interpolated / word / literal) <ArgumentNode>
+		content:(array / method / interpolated / word / literal) <ArgumentNode>
+	end
+	
+	rule array
+		'('
+		arguments:(argument*)
+		')' <ArrayNode>
 	end
 	
 	rule method
@@ -28,7 +34,7 @@ grammar Arguments
 	end
 	
 	rule word
-		(!space !'{' !'}' !'[' !']' !'"' .)+ <WordStringNode>
+		(!space !'(' !')' !'{' !'}' !'[' !']' !'"' .)+ <WordStringNode>
 	end
 	
 	rule name

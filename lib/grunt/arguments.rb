@@ -12,8 +12,24 @@ module Arguments
   end
   
   class ArgumentNode < Treetop::Runtime::SyntaxNode
+    def method_missing(method_name, *args)
+      content.send(method_name, *args) if content.respond_to?(method_name)
+    end
+    
     def eval!(locals = {})
       content.eval!(locals)
+    end
+  end
+  
+  class ArrayNode < Treetop::Runtime::SyntaxNode
+    def args
+      arguments.elements
+    end
+    
+    def eval!(locals = {})
+      args.map do |arg|
+        arg.eval!(locals)
+      end
     end
   end
   
