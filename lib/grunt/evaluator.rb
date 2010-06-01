@@ -1,24 +1,13 @@
 module Grunt
   class Evaluator
-    class << self
-      def expose(*methods)
-        @exposed_methods ||= []
-        @exposed_methods += methods
-      end
-      
-      def exposed?(method_name)
-        @exposed_methods ||= []
-        @exposed_methods.include?(method_name.to_sym)
-      end
-    end
-    
     include Wheaties::Concerns::Formatting
     include Wheaties::Concerns::Logging
     include Wheaties::Concerns::Messaging
     
     attr_reader :name, :locals
-    expose :color, :c, :uncolor, :uc, :colors, :plain, :pl, :bold, :b,
-           :italic, :i, :reverse, :underline, :u, *Wheaties::Concerns::Formatting::COLORS.keys
+    
+    EXPOSED_METHODS = [ :color, :c, :uncolor, :uc, :colors, :plain, :pl, :bold,
+      :b, :italic, :i, :underline, :u, *Wheaties::Concerns::Formatting::COLORS.keys ]
     
     def initialize(name, args = nil, locals = {})
       @name = name
@@ -53,7 +42,7 @@ module Grunt
         locals[:args].args_string = @args
       end
       
-      if Evaluator.exposed?(name) && respond_to?(name)
+      if EXPOSED_METHODS.include?(name.to_sym) && respond_to?(name)
         send(name, *locals[:args])
       elsif command = Models::Command.first(:name => /^#{name}$/i)
         eval_method = "eval_#{command.type}"
