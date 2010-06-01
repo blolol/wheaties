@@ -1,34 +1,34 @@
 grammar Arguments
 	rule arguments
-		argument* <Arguments>
+		argument* <ArgumentsNode>
 	end
 	
 	rule argument
 		space*
-		content:(method / interpolated / word / literal) <Argument>
+		content:(method / interpolated / word / literal) <ArgumentNode>
 	end
 	
 	rule method
 		'['
 		method_name:name
 		arguments:(argument*)
-		']' <Method>
+		']' <MethodNode>
 	end
 	
 	rule interpolated
-		'"' string_arguments:((method / interpolated_text)*) '"' <InterpolatedString>
+		'"' string_arguments:((method / interpolated_text)*) '"' <InterpolatedStringNode>
 	end
 	
 	rule interpolated_text
-		(!'"' !'[' !']' .)+ <InterpolatedText>
+		(!'"' !'[' !']' .)+ <InterpolatedTextNode>
 	end
 	
 	rule literal
-		'{' content:(!'}' .)* '}' <LiteralString>
+		'{' content:(!'}' .)* '}' <LiteralStringNode>
 	end
 	
 	rule word
-		(!space !'{' !'}' !'[' !']' !'"' .)+ <WordString>
+		(!space !'{' !'}' !'[' !']' !'"' .)+ <WordStringNode>
 	end
 	
 	rule name

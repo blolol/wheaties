@@ -1,5 +1,5 @@
 module Arguments
-  class Arguments < Treetop::Runtime::SyntaxNode
+  class ArgumentsNode < Treetop::Runtime::SyntaxNode
     def args
       elements
     end
@@ -11,13 +11,13 @@ module Arguments
     end
   end
   
-  class Argument < Treetop::Runtime::SyntaxNode
+  class ArgumentNode < Treetop::Runtime::SyntaxNode
     def eval!(locals = {})
       content.eval!(locals)
     end
   end
   
-  class Method < Treetop::Runtime::SyntaxNode
+  class MethodNode < Treetop::Runtime::SyntaxNode
     def name
       method_name.text_value
     end
@@ -32,7 +32,7 @@ module Arguments
     end
   end
   
-  class InterpolatedString < Treetop::Runtime::SyntaxNode
+  class InterpolatedStringNode < Treetop::Runtime::SyntaxNode
     def arguments
       string_arguments.elements
     end
@@ -44,19 +44,19 @@ module Arguments
     end
   end
   
-  class InterpolatedText < Treetop::Runtime::SyntaxNode
+  class InterpolatedTextNode < Treetop::Runtime::SyntaxNode
     def eval!(locals = {})
       text_value
     end
   end
   
-  class LiteralString < Treetop::Runtime::SyntaxNode
+  class LiteralStringNode < Treetop::Runtime::SyntaxNode
     def eval!(locals = {})
       content.text_value
     end
   end
   
-  class WordString < Treetop::Runtime::SyntaxNode
+  class WordStringNode < Treetop::Runtime::SyntaxNode
     def eval!(locals = {})
       text_value
     end

@@ -14,7 +14,7 @@ end
 Treetop.load(File.join(File.dirname(__FILE__), "..", "..", "lib", "grunt", "arguments"))
 
 module Arguments
-  class Method
+  class MethodNode
     def eval!(locals = {})
       args.map { |arg| arg.eval! }.join(" ")
     end
@@ -26,7 +26,7 @@ module Grunt
     def parse(input)
       result = @parser.parse(input)
       puts @parser.terminal_failures.join("\n") unless result
-      result.should be_instance_of(Arguments::Arguments)
+      result.should be_instance_of(Arguments::ArgumentsNode)
       result
     end
     
