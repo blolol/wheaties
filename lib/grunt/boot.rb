@@ -14,7 +14,7 @@ module Grunt
     end
     
     def load_parser
-      Treetop.load(File.join(File.dirname(__FILE__), "command"))
+      Treetop.load(File.join(File.dirname(__FILE__), "arguments"))
     end
     
     def load_database

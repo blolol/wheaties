@@ -1,5 +1,6 @@
 module Grunt
   class Error < ::StandardError; end
+  class ArgumentParseError < Error; end
   
   class NoCommandError < Error
     attr_reader :name

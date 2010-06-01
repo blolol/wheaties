@@ -14,7 +14,7 @@ rescue LoadError => e
 end
 
 require "grunt/boot"
-require "grunt/command_node_classes"
+require "grunt/arguments.rb"
 require "grunt/concerns/commands"
 require "grunt/errors"
 require "grunt/evaluator"
