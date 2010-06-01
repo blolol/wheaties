@@ -26,7 +26,7 @@ module Grunt
         rescue StackDepthError => e
           notice(%{"#{e.command}" called too many methods!}, response.sender.nick)
         rescue Timeout::Error
-          notice(%{"#{e.command}" timed out after #{timeout} seconds!}, response.sender.nick)
+          notice(%{"#{command[:name]}" timed out after #{timeout} seconds!}, response.sender.nick)
         rescue => e
           notice(%{Error in "#{command[:name]}": #{e.message}}, response.sender.nick)
           log(:debug, e.message)
