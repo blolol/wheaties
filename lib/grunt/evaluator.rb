@@ -71,7 +71,7 @@ module Grunt
       # to completely blank lines in order to preserve them.
       def eval_text(command)
         command.body.gsub(/^\s*(\\\s*)?(#.*)$/) do |match|
-          $1.nil? ? "\0" : match[/^\\\s*(.*)$/, 1]
+          $1.nil? ? "\0" : match[/^\\(.*)$/, 1]
         end.gsub(/(\n)?\000\n/) do |match|
           $1.nil? ? "" : "\n"
         end.gsub("\n\n", "\n \n")
