@@ -15,7 +15,7 @@ module Grunt
           }
           
           timeout = (Grunt.config["timeout"] || 10).to_i
-          SystemTimer.timeout_after(timeout) do
+          GruntTimeout.timeout(timeout) do
             result = Evaluator.new(command[:name], command[:args], locals).eval!
             privmsg(result, response.channel) if result
           end

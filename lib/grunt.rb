@@ -4,13 +4,20 @@ begin
   require "mongo_mapper"
   require "polyglot"
   require "treetop"
-  require "system_timer"
 rescue LoadError => e
   if require "rubygems"
     retry
   else
     raise e
   end
+end
+
+begin
+  require "system_timer"
+  GruntTimeout = SystemTimer
+rescue LoadError
+  require "timeout"
+  GruntTimeout = Timeout
 end
 
 require "grunt/boot"
