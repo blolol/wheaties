@@ -8,6 +8,8 @@ module Grunt
       key :name, String
       key :body, String
       key :type, String
+      key :usage, String
+      key :help, Array
     end
   end
 end
