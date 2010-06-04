@@ -33,5 +33,42 @@ module Grunt
           log(:debug, e.backtrace.join("\n"))
         end
       end
+      
+      def handle_assignment(assignment)
+        return unless assignment.is_a?(Hash)
+        
+        command = Models::Command.first_or_new(:name => /^#{assignment[:name]}$/i)
+        
+        if command.new?
+          command.name = assignment[:name]
+          command.type = "text"
+          command.body = ""
+          command.created_by = response.sender.nick
+        else
+          if command.type == "text"
+            command.updated_by = response.sender.nick
+          else
+            notice(%{"#{command.name}" is a #{command.type.capitalize} command and may not be modified.}, response.sender.nick)
+            return
+          end
+        end
+        
+        command.body << "#{command.body.empty? ? "" : "\n"}#{normalize(assignment[:text])}"
+        
+        begin
+          command.save!
+          notice(%{Saved "#{command.name}"!}, response.sender.nick)
+        rescue MongoMapper::DocumentNotValid
+          command.errors.each do |field, error|
+            notice("Command #{field} #{error}!", response.sender.nick)
+          end
+        end
+      end
+      
+      def normalize(body)
+        body.gsub!(/^\s*(\\)?(<.*?>)/i) do |match|
+          $~[1].nil? ? "" : match
+        end
+      end
   end
 end

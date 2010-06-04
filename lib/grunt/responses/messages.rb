@@ -6,13 +6,13 @@ module Grunt
            (response.pm? && command = is_pm_command?(response.text))
           handle_command(command)
         elsif command = is_assignment?(response.text)
-          log(:debug, %{Dynamically assign text to "#{command[:name]}"})
+          handle_assignment(command)
         end
       end
       
       protected
         def is_assignment?(message)
-          if message =~ /^\s*#{Wheaties::Connection.nick}\s*:\s*([a-zA-Z0-9_]+)\s+is\s+(.*)$/i
+          if message =~ /^\s*#{Wheaties::Connection.nick}\s*:\s*(.*?)\s+is\s+(.*)$/i
             { :name => $~[1], :text => $~[2] }
           end
         end
