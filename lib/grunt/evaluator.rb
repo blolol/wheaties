@@ -79,7 +79,7 @@ module Grunt
           $~[1].nil? ? "" : "\n"
         end
         body.gsub!("\n\n", "\n \n")
-        body.gsub!(/^\s*(\\)?(<.*?>)/) do |match|
+        body.gsub(/^\s*(\\)?(<.*?>)/) do |match|
           $~[1].nil? ? "" : $~[2]
         end
       end
