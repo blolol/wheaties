@@ -22,6 +22,7 @@ module Grunt
         begin
           locals = {
             :event => response.method_name,
+            :response => response,
             :sender => response.sender,
             :channel => response.channel,
             :stack_depth => 1
@@ -47,8 +48,12 @@ module Grunt
       end
       
       def handle_event(event)
+        locals = { :is_event => true }
+        command_hash = { :args => "", :locals => locals }
+        
         Models::Command.all(:events => event).each do |command|
-          handle_command({ :name => command.name, :args => "" })
+          command_hash[:name] = command.name
+          handle_command(command_hash)
         end
       end
       

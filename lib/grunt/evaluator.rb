@@ -1,5 +1,6 @@
 module Grunt
   class Evaluator
+    include Grunt::Concerns::Commands
     include Wheaties::Concerns::Formatting
     include Wheaties::Concerns::Logging
     include Wheaties::Concerns::Messaging
@@ -82,6 +83,22 @@ module Grunt
         body.gsub(/^\s*(\\)?(<.*?>)/) do |match|
           $~[1].nil? ? "" : $~[2]
         end
+      end
+      
+      def command?
+        if response.pm?
+          is_pm_command?(response.text)
+        else
+          is_command?(response.text)
+        end
+      end
+      
+      def pm?
+        response.pm?
+      end
+      
+      def event?
+        locals[:is_event]
       end
   end
 end
