@@ -32,8 +32,7 @@ module Grunt
             result = Evaluator.new(command[:name], command[:args], locals).eval!
             privmsg(result, response.channel) if result
           end
-        rescue NoCommandError => e
-          notice(%{"#{e.command}" is not a command!}, response.sender.nick)
+        rescue NoCommandError
         rescue ArgumentParseError => e
           notice(%{You made a mistake somewhere in your arguments for "#{e.command}"!}, response.sender.nick)
         rescue StackDepthError => e
