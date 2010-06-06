@@ -3,16 +3,29 @@ module Grunt
     include Grunt::Concerns::Commands
     include Grunt::Responses::Messages
     
+    EXPOSED_EVENTS = [ :on_ctcp, :on_join, :on_nick, :on_part, :on_privmsg ]
+    
+    alias :original_handle :handle
+    
+    def handle
+      original_handle
+      
+      if EXPOSED_EVENTS.include?(response.method_name)
+        handle_event(response.method_name)
+      end
+    end
+    
     protected
       def handle_command(command)
         return unless command.is_a?(Hash)
         
         begin
           locals = {
-            :sender => response.sender.dup,
+            :event => response.method_name,
+            :sender => response.sender,
             :channel => response.channel,
             :stack_depth => 1
-          }
+          }.merge(command[:locals] || {})
           
           timeout = (Grunt.config["timeout"] || 10).to_i
           GruntTimeout.timeout(timeout) do
@@ -31,6 +44,12 @@ module Grunt
           notice(%{Error in "#{command[:name]}": #{e.message}}, response.sender.nick)
           log(:debug, e.message)
           log(:debug, e.backtrace.join("\n"))
+        end
+      end
+      
+      def handle_event(event)
+        Models::Command.all(:events => event).each do |command|
+          handle_command({ :name => command.name, :args => "" })
         end
       end
       
