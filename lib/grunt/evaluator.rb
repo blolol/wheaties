@@ -85,6 +85,19 @@ module Grunt
         end
       end
       
+      def subcommands!(&block)
+        if args[0] =~ /^[a-zA-Z0-9_-]+$/
+          subcommand = args.shift.strip.downcase
+          begin
+            Evaluator.new("#{name}_#{subcommand}", args, locals).eval!
+          rescue Grunt::NoCommandError
+            block.call if block_given?
+          end
+        else
+          block.call if block_given?
+        end
+      end
+      
       def command?
         if response.pm?
           is_pm_command?(response.text)
