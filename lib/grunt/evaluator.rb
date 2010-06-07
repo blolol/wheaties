@@ -1,14 +1,14 @@
 module Grunt
   class Evaluator
     include Grunt::Concerns::Commands
+    include Grunt::Concerns::Convenience
     include Wheaties::Concerns::Formatting
     include Wheaties::Concerns::Logging
     include Wheaties::Concerns::Messaging
     
     attr_reader :name, :locals
     
-    EXPOSED_METHODS = [ :color, :c, :uncolor, :uc, :colors, :plain, :pl, :bold,
-      :b, :italic, :i, :underline, :u, *Wheaties::Concerns::Formatting::COLORS.keys ]
+    EXPOSED_METHODS = [ :desc, :help, :usage ]
     
     def initialize(name, args = nil, locals = {})
       @name = name
@@ -83,35 +83,6 @@ module Grunt
         body.gsub(/^\s*(\\)?(<.*?>)/) do |match|
           $~[1].nil? ? "" : $~[2]
         end
-      end
-      
-      def subcommands!(&block)
-        if args[0] =~ /^[a-zA-Z0-9_-]+$/
-          subcommand = args.shift.strip.downcase
-          begin
-            Evaluator.new("#{name}_#{subcommand}", args, locals).eval!
-          rescue Grunt::NoCommandError
-            block.call if block_given?
-          end
-        else
-          block.call if block_given?
-        end
-      end
-      
-      def command?
-        if response.pm?
-          is_pm_command?(response.text)
-        else
-          is_command?(response.text)
-        end
-      end
-      
-      def pm?
-        response.pm?
-      end
-      
-      def event?
-        locals[:is_event]
       end
   end
 end
