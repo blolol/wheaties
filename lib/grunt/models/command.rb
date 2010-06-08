@@ -19,7 +19,7 @@ module Grunt
       ensure_index :name, :unique => true
       
       validates_format_of :name, :with => /^[a-zA-Z0-9_\-]+$/,
-                          :message => "may contain only alphanumeric characters, underscores, periods and hyphens"
+                          :message => "may contain only alphanumeric characters, underscores and hyphens"
       validates_uniqueness_of :name
     end
   end
