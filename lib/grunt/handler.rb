@@ -24,6 +24,7 @@ module Grunt
             :event => response.method_name,
             :response => response,
             :sender => response.sender,
+            :from => response.from,
             :channel => response.channel,
             :stack_depth => 1
           }.merge(command[:locals] || {})
@@ -31,7 +32,7 @@ module Grunt
           timeout = (Grunt.config["timeout"] || 10).to_i
           GruntTimeout.timeout(timeout) do
             result = Evaluator.new(command[:name], command[:args], locals).eval!
-            privmsg(result, response.channel) if result
+            privmsg(result, response.from) if result
           end
         rescue NoCommandError
         rescue ArgumentParseError => e
