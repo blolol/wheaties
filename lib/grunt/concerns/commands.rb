@@ -3,7 +3,7 @@ module Grunt
     module Commands
       def is_command?(string, prefix = nil)
         prefix ||= Grunt.config["prefix"] || "."
-        if string =~ /^#{Regexp.escape(prefix)}([a-zA-Z0-9_]+)\s*?(.*)$/
+        if string =~ /^#{Regexp.escape(prefix)}([a-zA-Z0-9_\-]+)(?: +(.*))?$/
           { :name => $~[1], :args => $~[2] }
         else
           nil
