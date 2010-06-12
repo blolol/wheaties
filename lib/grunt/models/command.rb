@@ -13,8 +13,8 @@ module Grunt
       key :type, String, :required => true
       key :events, Array
       key :uses, Integer, :default => 0
-      key :last_used_by, String
-      key :last_used_at, Time
+      key :used_by, String
+      key :used_at, Time
       key :created_by, String
       key :updated_by, String
       timestamps!
@@ -26,8 +26,8 @@ module Grunt
       validates_uniqueness_of :name
       
       def used!(nick)
-        self.last_used_by = nick
-        self.last_used_at = Time.now
+        self.used_by = nick
+        self.used_at = Time.now
         self.uses += 1
         save
       end
