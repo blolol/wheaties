@@ -69,17 +69,10 @@ module Grunt
         eval(command.body)
       end
       
-      # Remove comments (except for escaped comments), add a dummy space to
-      # completely blank lines in order to preserve them, and hide old-school
-      # "<reply>" and friends (unless they are escaped with a backslash).
+      # Add a dummy space to blank lines in order to preserve them, and hide
+      # old-school "<reply>" and friends (unless they are escaped).
       def eval_text(command)
-        body = command.body
-        body.gsub!(/^\s*(\\\s*)?(#.*)$/) do |match|
-          $~[1].nil? ? "\0" : match[/^\\(.*)$/, 1]
-        end
-        body.gsub!(/(\n)?\000\n/) do |match|
-          $~[1].nil? ? "" : "\n"
-        end
+        body = command.body.dup
         body.gsub!("\n\n", "\n \n")
         body.gsub(/^\s*(\\)?(<.*?>)/) do |match|
           $~[1].nil? ? "" : $~[2]
