@@ -25,12 +25,24 @@ module Grunt
                           :message => "may contain only alphanumeric characters, underscores and hyphens"
       validates_uniqueness_of :name
       
+      before_save :update_metadata
+      
       def used!(nick)
         self.used_by = nick
         self.used_at = Time.now
         self.uses += 1
         save
       end
+      
+      protected
+        def update_metadata
+          metadata_method = :"update_#{type}_metadata"
+          send(metadata_method) if respond_to?(metadata_method)
+        end
+
+        def update_text_metadata
+          self.desc = self.body.split("\n").first
+        end
     end
   end
 end
