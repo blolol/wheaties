@@ -65,11 +65,11 @@ module Grunt
         
         if command.new?
           command.name = assignment[:name]
-          command.type = "text"
+          command.type = "plain_text"
           command.body = ""
           command.created_by = response.sender.nick
         else
-          if command.type == "text"
+          if command.type == "plain_text"
             command.updated_by = response.sender.nick
           else
             notice(%{"#{command.name}" is a #{command.type.capitalize} command and may not be modified.}, response.sender.nick)

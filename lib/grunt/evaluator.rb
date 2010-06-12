@@ -71,7 +71,7 @@ module Grunt
       
       # Add a dummy space to blank lines in order to preserve them, and hide
       # old-school "<reply>" and friends (unless they are escaped).
-      def eval_text(command)
+      def eval_plain_text(command)
         body = command.body.dup
         body.gsub!("\n\n", "\n \n")
         body.gsub(/^\s*(\\)?(<.*?>)/) do |match|

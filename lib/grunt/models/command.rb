@@ -40,7 +40,7 @@ module Grunt
           send(metadata_method) if respond_to?(metadata_method)
         end
 
-        def update_text_metadata
+        def update_plain_text_metadata
           self.desc = self.body.split("\n").first
         end
     end
