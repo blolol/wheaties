@@ -63,7 +63,7 @@ def convert!
     
     command = {
       :name => factoid.sanitized_name,
-      :type => "text",
+      :type => "plain_text",
       :body => factoid.definitions.map { |definition| definition.sanitized_body }.join("\n"),
       :created_by => @config["commands"]["creator"]
     }
