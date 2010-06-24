@@ -22,6 +22,7 @@ end
 
 require "grunt/boot"
 require "grunt/arguments.rb"
+require "grunt/array"
 require "grunt/concerns/commands"
 require "grunt/concerns/convenience"
 require "grunt/errors"
