@@ -75,5 +75,10 @@ module Grunt
           $~[1].nil? ? "" : $~[2]
         end
       end
+      
+      # Apply plain text formatting, then pick a random line.
+      def eval_plain_text_random(command)
+        eval_plain_text(command).split("\n").random
+      end
   end
 end
