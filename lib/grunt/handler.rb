@@ -66,7 +66,7 @@ module Grunt
           command.body = ""
           command.created_by = response.sender.nick
         else
-          if command.type == "plain_text"
+          if %w(plain_text plain_text_random).include?(command.type)
             command.updated_by = response.sender.nick
           else
             notice(%{"#{command.name}" is a #{command.type.capitalize} command and may not be modified.}, response.sender.nick)
