@@ -66,14 +66,9 @@ module Grunt
         eval(command.body)
       end
       
-      # Add a dummy space to blank lines in order to preserve them, and hide
-      # old-school "<reply>" and friends (unless they are escaped).
+      # Add a dummy space to blank lines in order to preserve them.
       def eval_plain_text(command)
-        body = command.body.dup
-        body.gsub!("\n\n", "\n \n")
-        body.gsub(/^\s*(\\)?(<.*?>)/) do |match|
-          $~[1].nil? ? "" : $~[2]
-        end
+        command.body.gsub("\n\n", "\n \n")
       end
       
       # Apply plain text formatting, then pick a random line.
