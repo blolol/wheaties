@@ -17,9 +17,6 @@ module Grunt
     end
     
     def eval!
-      locals[:stack_depth] += 1
-      raise StackDepthError, name if locals[:stack_depth] >= 10
-      
       locals[:args] = if @args.is_a?(String) && !@args.empty?
                         parser = ArgumentsParser.new.parse(@args)
                         raise ArgumentParseError, name unless parser

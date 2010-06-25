@@ -25,8 +25,7 @@ module Grunt
             :response => response,
             :sender => response.sender,
             :from => response.from,
-            :channel => response.channel,
-            :stack_depth => 1
+            :channel => response.channel
           }.merge(command[:locals] || {})
           
           timeout = (Grunt.config["timeout"] || 10).to_i
@@ -37,8 +36,6 @@ module Grunt
         rescue NoCommandError
         rescue ArgumentParseError => e
           notice(%{You made a mistake somewhere in your arguments for "#{e.command}"!}, response.sender.nick)
-        rescue StackDepthError => e
-          notice(%{"#{e.command}" called too many methods!}, response.sender.nick)
         rescue Timeout::Error
           notice(%{"#{command[:name]}" timed out after #{timeout} seconds!}, response.sender.nick)
         rescue => e

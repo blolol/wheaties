@@ -15,5 +15,4 @@ module Grunt
   
   class ArgumentParseError < CommandError; end
   class NoCommandError     < CommandError; end
-  class StackDepthError    < CommandError; end
 end
