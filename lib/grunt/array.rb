@@ -40,6 +40,8 @@ class Array
         return n if w >= point
         point -= w
       end
+      
+      return self.shuffle.first # Fallback if zip does not work for some reason
     else
       count = [self.size, count].min
       randomize(weights)[0...count]
