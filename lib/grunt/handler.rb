@@ -89,7 +89,7 @@ module Grunt
       def normalize(body)
         body.gsub(/^\s*(\\)?(<.*?>)/i) do |match|
           $~[1].nil? ? "" : match
-        end
+        end.gsub('\n', "\n")
       end
   end
 end
