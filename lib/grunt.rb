@@ -22,9 +22,10 @@ end
 
 require "grunt/boot"
 require "grunt/arguments.rb"
-require "grunt/array"
 require "grunt/concerns/commands"
 require "grunt/concerns/convenience"
+require "grunt/concerns/random"
+require "grunt/array"
 require "grunt/errors"
 require "grunt/evaluator"
 require "grunt/models/command"
