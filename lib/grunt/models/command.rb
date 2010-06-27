@@ -6,6 +6,7 @@ module Grunt
       set_collection_name "commands"
       
       key :name, String, :required => true, :unique => true
+      key :url_title, String, :unique => true
       key :body, String, :required => true
       key :desc, String
       key :usage, String
@@ -19,10 +20,13 @@ module Grunt
       key :updated_by, String
       timestamps!
       
-      validates_format_of :name, :with => /^[a-zA-Z0-9_\-]+$/,
-                          :message => "may contain only alphanumeric characters, underscores and hyphens"
+      validates_format_of :name, :with => /^[a-zA-Z0-9_\-\*\?\!]+$/,
+                          :message => "may contain only alphanumeric characters, " +
+                                      "underscores, hyphens, question marks and " +
+                                      "exclamation points"
       
       before_save :update_metadata
+      before_save :update_url_title
       
       def used!(nick)
         self.used_by = nick
@@ -31,7 +35,12 @@ module Grunt
         save
       end
       
+      def update_url_title
+        self.url_title = "#{rand(999).to_i}_#{self.name.parameterize}"
+      end
+      
       protected
+        
         def update_metadata
           metadata_method = "update_#{type}_metadata"
           send(metadata_method) if respond_to?(metadata_method)

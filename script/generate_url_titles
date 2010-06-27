@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require "rubygems"
+require "active_support"
+require "mongo_mapper"
+
+def setup
+  $KCODE = "UTF8"
+  load_config
+  load_mongo
+  load_grunt
+end
+
+def load_config
+  config_filename = File.join(File.dirname(__FILE__), "generate_url_titles.yml")
+  @config = YAML.load_file(config_filename)
+end
+
+def load_mongo
+  host = @config["database"]["host"]
+  database = @config["database"]["database"]
+  MongoMapper.connection = Mongo::Connection.new(host)
+  MongoMapper.database = database
+end
+
+def load_grunt
+  $:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
+  require "grunt/models/command"
+end
+
+def convert!
+  Grunt::Models::Command.all.each do |command|
+    begin
+      command.update_url_title
+      command.save!
+      puts "Saved #{command.name.inspect} with url_title #{command.url_title.inspect}"
+    rescue => e
+      puts "Could not save #{command.name.inspect}: #{e.message}"
+    end
+  end
+end
+
+setup
+convert!
