@@ -3,8 +3,7 @@ $:.unshift(File.join(__FILE__, "..", "lib"))
 require "digest/sha1"
 
 begin
-  require "active_support/multibyte/chars"
-  require "active_support/core_ext/string/inflections"
+  require "active_support"
   require "mongo_mapper"
   require "polyglot"
   require "treetop"
