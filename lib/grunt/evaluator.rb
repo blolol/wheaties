@@ -13,7 +13,7 @@ module Grunt
     
     def initialize(name, args = nil, locals = {})
       @name = name
-      @args = args.dup
+      @args = args.dup unless args.nil?
       @locals = locals.dup
     end
     
