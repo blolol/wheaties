@@ -43,7 +43,13 @@ module Grunt
       
       if EXPOSED_METHODS.include?(name.to_sym) && respond_to?(name)
         send(name, *locals[:args])
-      elsif command = Models::Command.first(:name => /^#{Regexp.escape(name)}$/i)
+      elsif command = Models::Command.first(:name => /^#{Regexp.escape(name)}$/i, :name_is_regex => false)
+        command.used!(sender.nick) unless event?
+        eval_method = "eval_#{command.type}"
+        respond_to?(eval_method) ? send(eval_method, command) : nil
+      elsif result = Models::Command.find_by_regex(name)
+        locals[:match] = result[:match].dup
+        command = result[:command]
         command.used!(sender.nick) unless event?
         eval_method = "eval_#{command.type}"
         respond_to?(eval_method) ? send(eval_method, command) : nil
