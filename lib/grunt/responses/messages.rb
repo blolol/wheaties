@@ -4,7 +4,7 @@ module Grunt
       def on_privmsg
         unless response.pm?
           history = (Grunt.history[response.channel] ||= [])
-          history.pop if history.size >= 25
+          history.pop if history.size >= (Grunt.config["history"] || 25).to_i
           history.unshift(response.dup)
         end
         
