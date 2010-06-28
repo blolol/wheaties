@@ -26,7 +26,7 @@ module Grunt
                                       "exclamation points"
       
       before_save :update_metadata
-      before_save :update_url_title
+      before_create :update_url_title
       
       def used!(nick)
         self.used_by = nick
