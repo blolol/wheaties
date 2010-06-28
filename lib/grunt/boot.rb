@@ -1,11 +1,13 @@
 module Grunt
   class << self
     attr_accessor :config
+    attr_reader :history
     
     def start
       load_defaults
       load_parser
       load_database
+      load_history
     end
     
     def load_defaults
@@ -22,6 +24,10 @@ module Grunt
       database = Grunt.config["database"]["database"]
       MongoMapper.connection = Mongo::Connection.new(host)
       MongoMapper.database = database
+    end
+    
+    def load_history
+      @history = {}
     end
   end
   

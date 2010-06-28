@@ -25,16 +25,20 @@ end
 
 require "grunt/extensions/array"
 require "grunt/extensions/channel"
+require "grunt/extensions/response"
 require "grunt/extensions/set"
 
 require "grunt/concerns/commands"
 require "grunt/concerns/convenience"
 
+require "grunt/models/command"
+
+require "grunt/responses/channel"
+require "grunt/responses/messages"
+
 require "grunt/boot"
 require "grunt/arguments.rb"
 require "grunt/errors"
 require "grunt/evaluator"
-require "grunt/models/command"
-require "grunt/responses/messages"
 require "grunt/handler"
 require "grunt/range"

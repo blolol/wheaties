@@ -1,6 +1,7 @@
 module Grunt
   class Handler < Wheaties::Handler
     include Grunt::Concerns::Commands
+    include Grunt::Responses::Channel
     include Grunt::Responses::Messages
     
     EXPOSED_EVENTS = [ :on_ctcp, :on_join, :on_nick, :on_part, :on_privmsg ]
@@ -25,7 +26,8 @@ module Grunt
             :response => response.dup,
             :sender => response.sender.dup,
             :from => response.from,
-            :channel => response.channel.dup.tap { |c| c.users.sender = response.sender.dup }
+            :channel => response.channel.dup.tap { |c| c.users.sender = response.sender.dup },
+            :history => Grunt.history[response.channel] || []
           }.merge(command[:locals] || {})
           
           timeout = (Grunt.config["timeout"] || 10).to_i

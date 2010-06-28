@@ -2,6 +2,12 @@ module Grunt
   module Responses
     module Messages
       def on_privmsg
+        unless response.pm?
+          history = (Grunt.history[response.channel] ||= [])
+          history.pop if history.size >= 25
+          history.unshift(response.dup)
+        end
+        
         if (command = is_command?(response.text)) ||
            (response.pm? && command = is_pm_command?(response.text))
           handle_command(command)
