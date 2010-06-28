@@ -34,7 +34,7 @@ module Grunt
         if count == 1
           return random(count, map { |n| n.send(weights) }) if weights.is_a?(Symbol)
     
-          weights ||= Array.new(length, 1.0)
+          weights ||= ::Array.new(length, 1.0)
           total = weights.inject(0.0) { |t, w| t + w }
           point = Kernel.rand * total
     
@@ -67,7 +67,7 @@ module Grunt
       def randomize(weights = nil)
         return randomize(map { |n| n.send(weights) }) if weights.is_a?(Symbol)
     
-        weights = weights.nil? ? Array.new(length, 1.0) : weights.dup
+        weights = weights.nil? ? ::Array.new(length, 1.0) : weights.dup
     
         list, result = self.dup.to_a, []
         until list.empty?
