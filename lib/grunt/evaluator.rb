@@ -47,9 +47,8 @@ module Grunt
         command.used!(sender.nick) unless event?
         eval_method = "eval_#{command.type}"
         respond_to?(eval_method) ? send(eval_method, command) : nil
-      elsif result = Models::Command.find_by_regex(name)
-        locals[:match] = result[:match].dup
-        command = result[:command]
+      elsif command = Models::Command.find_by_regex(name)
+        locals[:match] = command.match.dup
         command.used!(sender.nick) unless event?
         eval_method = "eval_#{command.type}"
         respond_to?(eval_method) ? send(eval_method, command) : nil

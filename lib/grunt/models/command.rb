@@ -21,10 +21,9 @@ module Grunt
       key :updated_by, String
       timestamps!
       
-      validates_format_of :name, :with => /^[a-zA-Z0-9_\-\?\!]+$/,
+      validates_format_of :name, :with => /^[a-zA-Z0-9_\^\[\]\(\)\{\}\.\*\+\-\?\!\,\\]+$/,
                           :message => "may contain only alphanumeric characters, " +
-                                      "underscores, hyphens, question marks and " +
-                                      "exclamation points"
+                                       "^, [, ], (, ), {, }, ., *, +, -, ?, !, \\ and ,"
       
       before_save :update_metadata
       before_create :update_url_title
@@ -54,7 +53,17 @@ module Grunt
         def find_by_regex(name)
           all(:name_is_regex => true).each do |command|
             if match = name.match(/#{command.name}/i)
-              return { :command => command, :match => match }
+              command.instance_eval do
+                def match=(match)
+                  @match = match.dup
+                end
+                
+                def match
+                  @match
+                end
+              end
+              command.match = match
+              return command
             end
           end
           nil
