@@ -50,7 +50,7 @@ module Grunt
         end
       
       class << self
-        def find_by_regex(name)
+        def first_by_regex(name)
           all(:name_is_regex => true).each do |command|
             if match = name.match(/#{command.name}/i)
               command.instance_eval do
@@ -67,7 +67,7 @@ module Grunt
             end
           end
           nil
-        end # find_by_regex
+        end # first_by_regex
       end # class << self
     end # Command
   end # Models
