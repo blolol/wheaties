@@ -58,7 +58,7 @@ module Grunt
       elsif locals.key?(method_name)
         locals[method_name]
       else
-        Evaluator.new(method_name.to_s, args, locals).eval!
+        Evaluator.new(method_name.to_s, args, locals.dup).eval!
       end
     end
     
