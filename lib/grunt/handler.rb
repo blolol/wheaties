@@ -22,10 +22,10 @@ module Grunt
         begin
           locals = {
             :event => response.method_name,
-            :response => response,
-            :sender => response.sender,
+            :response => response.dup,
+            :sender => response.sender.dup,
             :from => response.from,
-            :channel => response.channel
+            :channel => response.channel.dup.tap { |c| c.users.sender = response.sender.dup }
           }.merge(command[:locals] || {})
           
           timeout = (Grunt.config["timeout"] || 10).to_i

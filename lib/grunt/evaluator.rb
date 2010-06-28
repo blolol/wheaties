@@ -13,8 +13,8 @@ module Grunt
     
     def initialize(name, args = nil, locals = {})
       @name = name
-      @args = args
-      @locals = locals
+      @args = args.dup
+      @locals = locals.dup
     end
     
     def eval!
@@ -58,7 +58,7 @@ module Grunt
       elsif locals.key?(method_name)
         locals[method_name]
       else
-        Evaluator.new(method_name.to_s, args, locals.dup).eval!
+        Evaluator.new(method_name.to_s, args, locals).eval!
       end
     end
     

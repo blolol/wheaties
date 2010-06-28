@@ -1,6 +1,6 @@
-module Wheaties
-  module Concerns
-    module Random
+module Grunt
+  module Extensions
+    module Array
       # Choose one or more random elements from the receiver based on the weights
       # provided. If _weights_ is nil, then each element is weighed equally.
       # 
@@ -78,6 +78,10 @@ module Wheaties
     
         result
       end
-    end
-  end
+    end # Array
+  end # Extensions
+end
+
+class Array
+  include Grunt::Extensions::Array
 end

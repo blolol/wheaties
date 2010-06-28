@@ -23,12 +23,15 @@ rescue LoadError
   GruntTimeout = Timeout
 end
 
-require "grunt/boot"
-require "grunt/arguments.rb"
+require "grunt/extensions/array"
+require "grunt/extensions/channel"
+require "grunt/extensions/set"
+
 require "grunt/concerns/commands"
 require "grunt/concerns/convenience"
-require "grunt/concerns/random"
-require "grunt/array"
+
+require "grunt/boot"
+require "grunt/arguments.rb"
 require "grunt/errors"
 require "grunt/evaluator"
 require "grunt/models/command"
