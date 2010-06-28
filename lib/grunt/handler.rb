@@ -26,9 +26,14 @@ module Grunt
             :response => response.dup,
             :sender => response.sender.dup,
             :from => response.from,
-            :channel => response.channel.dup.tap { |c| c.users.sender = response.sender.dup },
             :history => Grunt.history[response.channel] || []
           }.merge(command[:locals] || {})
+          
+          unless response.pm?
+            locals[:channel] = response.channel.dup.tap do |c|
+              c.users.sender = response.sender.dup
+            end
+          end
           
           timeout = (Grunt.config["timeout"] || 10).to_i
           GruntTimeout.timeout(timeout) do
