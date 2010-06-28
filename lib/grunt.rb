@@ -25,6 +25,7 @@ end
 
 require "grunt/extensions/array"
 require "grunt/extensions/channel"
+require "grunt/extensions/range"
 require "grunt/extensions/response"
 require "grunt/extensions/set"
 
@@ -41,4 +42,3 @@ require "grunt/arguments.rb"
 require "grunt/errors"
 require "grunt/evaluator"
 require "grunt/handler"
-require "grunt/range"
