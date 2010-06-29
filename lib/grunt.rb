@@ -26,7 +26,6 @@ end
 require "grunt/extensions/array"
 require "grunt/extensions/channel"
 require "grunt/extensions/range"
-require "grunt/extensions/response"
 require "grunt/extensions/set"
 
 require "grunt/concerns/commands"
