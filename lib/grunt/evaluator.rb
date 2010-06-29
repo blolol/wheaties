@@ -80,7 +80,7 @@ module Grunt
       # Apply plain text formatting, then pick a random line.
       def eval_plain_text_random(command)
         command.body.split(/[\r\n]{2}/).map do |lines|
-          lines.split("\n").random
+          lines.split(/[\r\n]/).random
         end.join("\n")
       end
   end
