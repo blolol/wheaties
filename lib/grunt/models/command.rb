@@ -21,9 +21,9 @@ module Grunt
       key :updated_by, String
       timestamps!
       
-      validates_format_of :name, :with => /^[a-zA-Z0-9_\^\[\]\(\)\{\}\.\*\+\-\?\!\,\\]+$/,
+      validates_format_of :name, :with => /^[a-zA-Z0-9_\^\$\:\[\]\(\)\{\}\.\*\+\-\?\!\,\\]+$/,
                           :message => "may contain only alphanumeric characters, " +
-                                       "^, [, ], (, ), {, }, ., *, +, -, ?, !, \\ and ,"
+                                       "^, $, :, [, ], (, ), {, }, ., *, +, -, ?, !, \\ and ,"
       
       before_save :update_metadata
       before_create :update_url_title
