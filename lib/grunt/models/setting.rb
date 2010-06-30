@@ -15,26 +15,27 @@ module Grunt
         setting.save
       end
       
-      def unserialize(value)
-        if value.strip[0..2] == "---"
-          begin
-            YAML.load(value) || {}
-          rescue; nil; end
-        else
-          value.to_s
+      protected
+        def unserialize(value)
+          if value.strip[0..2] == "---"
+            begin
+              YAML.load(value) || {}
+            rescue; nil; end
+          else
+            value.to_s
+          end
         end
-      end
-      
-      def serialize(value)
-        case value
-        when Hash, Array, Fixnum, Float
-          begin
-            YAML.dump(value)
-          rescue; "---"; end
-        else
-          value.to_s
+
+        def serialize(value)
+          case value
+          when Hash, Array, Fixnum, Float
+            begin
+              YAML.dump(value)
+            rescue; "---"; end
+          else
+            value.to_s
+          end
         end
-      end
     end # class << self
   end # Setting
 end
