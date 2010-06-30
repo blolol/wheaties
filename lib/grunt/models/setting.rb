@@ -15,6 +15,33 @@ module Grunt
         setting.save
       end
       
+      def increment(name, by = 1)
+        by = case by
+             when Numeric then by
+             when String then by.to_num
+             else
+               raise ArgumentError, "cannot increment by the value of a #{by.class.name}"
+             end
+        
+        setting = get(name) || 0
+        setting = case setting
+                  when Numeric then setting
+                  when String then setting.to_num
+                  else
+                    raise ArgumentError, "#{name.class.name} cannot be incremented"
+                  end
+        
+        setting += by
+        set(name, setting)
+        setting
+      end
+      alias :inc :increment
+      
+      def decrement(name, by = 1)
+        increment(name, by * -1)
+      end
+      alias :dec :decrement
+      
       protected
         def unserialize(value)
           if value.strip[0..2] == "---"
@@ -28,7 +55,7 @@ module Grunt
 
         def serialize(value)
           case value
-          when Hash, Array, Fixnum, Float
+          when Hash, Array, Numeric
             begin
               YAML.dump(value)
             rescue; "---"; end

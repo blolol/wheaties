@@ -35,6 +35,16 @@ module Grunt
           Setting.set(name, value)
         end
         
+        def increment(name, by = 1)
+          Setting.increment(name, by)
+        end
+        alias :inc :increment
+        
+        def decrement(name, by = 1)
+          Setting.decrement(name, by)
+        end
+        alias :dec :decrement
+        
         def usage(name, silent = false)
           if command = Command.first(:name => /^#{name}$/i) ||
              command = Command.first_by_regex(name)

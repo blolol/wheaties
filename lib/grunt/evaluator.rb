@@ -8,9 +8,9 @@ module Grunt
     
     attr_reader :name, :locals
     
-    EXPOSED_METHODS = [ :desc, :help, :usage, :get, :set, :pm?, :command?, :event?,
-      :bold, :b, :italic, :i, :plain, :pl, :color, :c, :uncolor, :uc, :colors,
-      *Wheaties::Concerns::Formatting::COLORS.keys ]
+    EXPOSED_METHODS = [ :desc, :help, :usage, :get, :set, :increment, :inc,
+      :decrement, :dec, :bold, :b, :italic, :i, :plain, :pl, :color, :c,
+      :uncolor, :uc, :colors, *Wheaties::Concerns::Formatting::COLORS.keys ]
     
     def initialize(name, args = nil, locals = {})
       @name = name
