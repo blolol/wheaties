@@ -17,27 +17,44 @@ module Grunt
     end
     
     protected
-      def handle_command(name, args, locals = {})
+      def handle_command(name, args = [], locals = {})
         locals = {
+          :response => response,
           :event => response.method_name,
-          :response => response.dup,
-          :sender => response.sender.dup,
-          :from => response.from,
-          :history => Grunt.history[response.channel] || []
+          :sender => response.sender
         }.merge(locals)
         
-        locals[:channel] = response.channel.dup.tap do |c|
-          c.users.sender = response.sender.dup
-        end unless response.pm?
+        locals[:from] = response.from if response.respond_to?(:from)
+        if response.respond_to?(:channel)
+          locals[:history] = Grunt.history[response.channel] || []
+          locals[:channel] = response.channel.dup.tap do |c|
+            c.users.sender = response.sender.dup
+          end unless response.pm?
+        end
         
-        eval_command(name, args, locals)
+        begin
+          timeout = (Grunt.config["timeout"] || 10).to_i
+          GruntTimeout.timeout(timeout) do
+            result = Evaluator.new(name, args, locals).eval!
+            privmsg(result, response.from) if result
+          end
+        rescue NoCommandError
+        rescue ArgumentParseError => e
+          notice(%{You made a mistake somewhere in your arguments for "#{e.command}"!}, response.sender.nick)
+        rescue Timeout::Error
+          notice(%{"#{name}" timed out after #{timeout} seconds!}, response.sender.nick)
+        rescue => e
+          notice(%{Error in "#{name}": #{e.message}}, response.sender.nick)
+          log(:error, e.message)
+          log(:error, e.backtrace.join("\n"))
+        end
       end
       
       def handle_event(event)
         locals = { :is_event => true }
         
         Models::Command.all(:events => event, :fields => [:name]).each do |command|
-          eval_command(command.name, "", locals)
+          handle_command(command.name, "", locals)
         end
       end
       
@@ -67,25 +84,6 @@ module Grunt
           command.errors.each do |field, error|
             notice("Command #{field} #{error}!", response.sender.nick)
           end
-        end
-      end
-      
-      def eval_command(name, args = [], locals = {})
-        begin
-          timeout = (Grunt.config["timeout"] || 10).to_i
-          GruntTimeout.timeout(timeout) do
-            result = Evaluator.new(name, args, locals).eval!
-            privmsg(result, response.from) if result
-          end
-        rescue NoCommandError
-        rescue ArgumentParseError => e
-          notice(%{You made a mistake somewhere in your arguments for "#{e.command}"!}, response.sender.nick)
-        rescue Timeout::Error
-          notice(%{"#{command[:name]}" timed out after #{timeout} seconds!}, response.sender.nick)
-        rescue => e
-          notice(%{Error in "#{name}": #{e.message}}, response.sender.nick)
-          log(:error, e.message)
-          log(:error, e.backtrace.join("\n"))
         end
       end
       
