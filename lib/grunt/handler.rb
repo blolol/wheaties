@@ -17,58 +17,35 @@ module Grunt
     end
     
     protected
-      def handle_command(command)
-        return unless command.is_a?(Hash)
+      def handle_command(name, args, locals = {})
+        locals = {
+          :event => response.method_name,
+          :response => response.dup,
+          :sender => response.sender.dup,
+          :from => response.from,
+          :history => Grunt.history[response.channel] || []
+        }.merge(locals)
         
-        begin
-          locals = {
-            :event => response.method_name,
-            :response => response.dup,
-            :sender => response.sender.dup,
-            :from => response.from,
-            :history => Grunt.history[response.channel] || []
-          }.merge(command[:locals] || {})
-          
-          unless response.pm?
-            locals[:channel] = response.channel.dup.tap do |c|
-              c.users.sender = response.sender.dup
-            end
-          end
-          
-          timeout = (Grunt.config["timeout"] || 10).to_i
-          GruntTimeout.timeout(timeout) do
-            result = Evaluator.new(command[:name], command[:args], locals).eval!
-            privmsg(result, response.from) if result
-          end
-        rescue NoCommandError
-        rescue ArgumentParseError => e
-          notice(%{You made a mistake somewhere in your arguments for "#{e.command}"!}, response.sender.nick)
-        rescue Timeout::Error
-          notice(%{"#{command[:name]}" timed out after #{timeout} seconds!}, response.sender.nick)
-        rescue => e
-          notice(%{Error in "#{command[:name]}": #{e.message}}, response.sender.nick)
-          log(:debug, e.message)
-          log(:debug, e.backtrace.join("\n"))
-        end
+        locals[:channel] = response.channel.dup.tap do |c|
+          c.users.sender = response.sender.dup
+        end unless response.pm?
+        
+        eval_command(name, args, locals)
       end
       
       def handle_event(event)
         locals = { :is_event => true }
-        command_hash = { :args => "", :locals => locals }
         
-        Models::Command.all(:events => event).each do |command|
-          command_hash[:name] = command.name
-          handle_command(command_hash)
+        Models::Command.all(:events => event, :fields => [:name]).each do |command|
+          eval_command(command.name, "", locals)
         end
       end
       
-      def handle_assignment(assignment)
-        return unless assignment.is_a?(Hash)
-        
-        command = Models::Command.first_or_new(:name => /^#{assignment[:name]}$/i)
+      def handle_assignment(name, text)
+        command = Models::Command.first_or_new(:name => /^#{name}$/i)
         
         if command.new?
-          command.name = assignment[:name]
+          command.name = name
           command.type = "plain_text"
           command.body = ""
           command.created_by = response.sender.nick
@@ -81,7 +58,7 @@ module Grunt
           end
         end
         
-        command.body << "#{command.body.empty? ? "" : "\n"}#{normalize(assignment[:text])}"
+        command.body << "#{command.body.empty? ? "" : "\n"}#{normalize(text)}"
         
         begin
           command.save!
@@ -93,8 +70,27 @@ module Grunt
         end
       end
       
+      def eval_command(name, args = [], locals = {})
+        begin
+          timeout = (Grunt.config["timeout"] || 10).to_i
+          GruntTimeout.timeout(timeout) do
+            result = Evaluator.new(name, args, locals).eval!
+            privmsg(result, response.from) if result
+          end
+        rescue NoCommandError
+        rescue ArgumentParseError => e
+          notice(%{You made a mistake somewhere in your arguments for "#{e.command}"!}, response.sender.nick)
+        rescue Timeout::Error
+          notice(%{"#{command[:name]}" timed out after #{timeout} seconds!}, response.sender.nick)
+        rescue => e
+          notice(%{Error in "#{name}": #{e.message}}, response.sender.nick)
+          log(:error, e.message)
+          log(:error, e.backtrace.join("\n"))
+        end
+      end
+      
       def normalize(body)
-        body.gsub(/^\s*(\\)?(<.*?>)/i) do |match|
+        body.gsub(/^\s*(\\)?(<.*?>)/) do |match|
           $~[1].nil? ? "" : match
         end.gsub('\n', "\n")
       end

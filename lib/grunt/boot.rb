@@ -28,6 +28,25 @@ module Grunt
     
     def load_history
       @history = {}
+      history.instance_eval do
+        def max_size=(max_size)
+          @max_size = max_size
+        end
+        
+        def max_size
+          @max_size
+        end
+        
+        def <<(response)
+          return unless response.kind_of?(Wheaties::ResponseTypes::OnPrivmsg)
+          return if response.pm?
+          
+          history = (self[response.channel] ||= [])
+          history.pop if history.size >= max_size
+          history.unshift(response.dup)
+        end
+      end
+      history.max_size = (Grunt.config["history"] || 50).to_i
     end
   end
   

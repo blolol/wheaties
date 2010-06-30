@@ -2,16 +2,12 @@ module Grunt
   module Concerns
     module Convenience
       protected
-        def command?
-          if response.pm?
-            is_pm_command?(response.text)
-          else
-            is_command?(response.text)
-          end
-        end
-
         def pm?
-          response.pm?
+          response.pm? if response.respond_to?(:pm?)
+        end
+        
+        def command?
+          pm? ? parse_pm_command(response.text) : parse_command(response.text)
         end
 
         def event?
