@@ -28,7 +28,7 @@ module Grunt
                   when Numeric then setting
                   when String then setting.to_num
                   else
-                    raise ArgumentError, "#{name.class.name} cannot be incremented"
+                    raise ArgumentError, "#{setting.class.name} cannot be incremented"
                   end
         
         setting += by
