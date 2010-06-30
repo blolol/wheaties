@@ -28,8 +28,8 @@ module Grunt
         end
         
         def usage(name, silent = false)
-          if command = Models::Command.first(:name => /^#{name}$/i) ||
-             command = Models::Command.first_by_regex(name)
+          if command = Command.first(:name => /^#{name}$/i) ||
+             command = Command.first_by_regex(name)
             if command.usage
               "Usage: #{command.usage}"
             else
@@ -41,8 +41,8 @@ module Grunt
         end
         
         def desc(name, silent = false)
-          if command = Models::Command.first(:name => /^#{name}$/i) ||
-             command = Models::Command.first_by_regex(name)
+          if command = Command.first(:name => /^#{name}$/i) ||
+             command = Command.first_by_regex(name)
             if command.desc
               "#{b}#{command.name}:#{pl} #{command.desc}"
             else
@@ -54,8 +54,8 @@ module Grunt
         end
         
         def help(name)
-          if command = Models::Command.first(:name => /^#{name}$/i) ||
-             command = Models::Command.first_by_regex(name)
+          if command = Command.first(:name => /^#{name}$/i) ||
+             command = Command.first_by_regex(name)
             unless command.help.empty? && !command.usage && !command.desc
               command.help.unshift(desc(name, true), usage(name, true))
             else

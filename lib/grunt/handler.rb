@@ -53,13 +53,13 @@ module Grunt
       def handle_event(event)
         locals = { :is_event => true }
         
-        Models::Command.all(:events => event, :fields => [:name]).each do |command|
+        Command.all(:events => event, :fields => [:name]).each do |command|
           handle_command(command.name, "", locals)
         end
       end
       
       def handle_assignment(name, text)
-        command = Models::Command.first_or_new(:name => /^#{name}$/i)
+        command = Command.first_or_new(:name => /^#{name}$/i)
         
         if command.new?
           command.name = name
