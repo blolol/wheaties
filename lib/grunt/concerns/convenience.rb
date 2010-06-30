@@ -27,6 +27,14 @@ module Grunt
           end
         end
         
+        def get(name, default = nil)
+          Setting.get(name, default)
+        end
+        
+        def set(name, value)
+          Setting.set(name, value)
+        end
+        
         def usage(name, silent = false)
           if command = Command.first(:name => /^#{name}$/i) ||
              command = Command.first_by_regex(name)

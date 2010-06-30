@@ -33,6 +33,7 @@ require "grunt/concerns/commands"
 require "grunt/concerns/convenience"
 
 require "grunt/models/command"
+require "grunt/models/setting"
 
 require "grunt/responses/channel"
 require "grunt/responses/messages"
