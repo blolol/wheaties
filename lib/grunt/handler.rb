@@ -73,7 +73,8 @@ module Grunt
           command = PlainTextCommand.new(:name => name, :created_by => response.sender.nick)
         end
         
-        command.body << command.body.nil? || command.body.empty? ? "" : "\n"
+        command.body ||= ""
+        command.body << "\n" unless command.body.empty?
         command.body << text.gsub('\n', "\n")
         
         begin
