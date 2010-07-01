@@ -27,6 +27,7 @@ end
 require "grunt/extensions/array"
 require "grunt/extensions/channel"
 require "grunt/extensions/connection"
+require "grunt/extensions/object"
 require "grunt/extensions/range"
 require "grunt/extensions/set"
 require "grunt/extensions/string"

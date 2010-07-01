@@ -74,7 +74,7 @@ module Arguments
   
   class WordStringNode < Treetop::Runtime::SyntaxNode
     def eval!(locals = {})
-      text_value
+      text_value.to_num
     end
   end
 end
