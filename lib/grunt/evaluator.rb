@@ -8,9 +8,10 @@ module Grunt
     
     attr_reader :name, :locals
     
-    EXPOSED_METHODS = [ :desc, :help, :usage, :get, :set, :increment, :inc, :send,
-      :decrement, :dec, :bold, :b, :italic, :i, :plain, :pl, :color, :c,
-      :uncolor, :uc, :colors, *Wheaties::Concerns::Formatting::COLORS.keys ]
+    EXPOSED_METHODS = [ :desc, :help, :usage, :get, :set, :increment, :inc,
+      :send, :pm?, :command?, :event?, :decrement, :dec, :bold, :b, :italic,
+      :i, :plain, :pl, :color, :c, :uncolor, :uc, :colors,
+      *Wheaties::Concerns::Formatting::COLORS.keys ]
     
     def initialize(name, args = nil, locals = {})
       @name = name
@@ -82,7 +83,7 @@ module Grunt
       end
       
       def eval_ruby_command(command)
-        Kernel.eval(command.body)
+        eval(command.body)
       end
       
       def eval_yaml_command(command)
