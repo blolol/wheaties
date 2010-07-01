@@ -20,10 +20,10 @@ module Grunt
             begin
               Evaluator.new("#{name}_#{subcommand}", args, locals).eval!
             rescue Grunt::NoCommandError
-              block.call if block_given?
+              block.call(subcommand) if block_given?
             end
           else
-            block.call if block_given?
+            block.call(subcommand) if block_given?
           end
         end
         
