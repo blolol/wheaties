@@ -38,7 +38,8 @@ module Grunt
             result = Evaluator.new(name, args, locals).eval!
             privmsg(result, response.from) if result
           end
-        rescue NoCommandError
+        rescue NoCommandError => e
+          notice(%{"#{e.command}" is not a command!}, response.sender.nick)
         rescue ArgumentParseError => e
           notice(%{You made a mistake somewhere in your arguments for "#{e.command}"!}, response.sender.nick)
         rescue Timeout::Error
