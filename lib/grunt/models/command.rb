@@ -48,7 +48,7 @@ class Command
     def first_by_regex(name)
       all(:regex => true).each do |command|
         if match = name.match(/#{command.name}/i)
-          command.instance_eval! do
+          command.instance_eval do
             def match=(match)
               @match = match.dup
             end
