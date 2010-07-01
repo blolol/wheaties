@@ -27,9 +27,9 @@ module Grunt
           end
         end
         
-        def get(name, default)
+        def get(name, default = nil)
           command = YamlCommand.first(:name => name)
-          command ? command.eval! : default
+          command ? eval_yaml_command(command) : default
         end
         
         def set(name, value)
@@ -47,8 +47,7 @@ module Grunt
               command.name = name
               command.created_by = sender.nick
             end
-            command.save!
-            value
+            command.save! ? value : false
           else
             raise ArgumentError, "can't increment a #{value.class.name}!"
           end
