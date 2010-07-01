@@ -76,26 +76,8 @@ class Command
   end # class << self
 end
 
-class RubyCommand < Command
-  humanize_as "Ruby"
-  
-  def eval!(context)
-    Kernel.eval(body, context)
-  end
-  
-  def self.update_metadata(command)
-    command.desc = command.body.strip.split("\n").first[/^\s*#\s*(.*?)\s*$/, 1]
-    command.usage = command.body[/^\s*#\s*Usage:\s*(.*?)\s*$/i, 1]
-    command.help = command.body.scan(/^\s*#\s*Help:\s*(.*?)\s*$/i).flatten
-  end
-end
-
 class PlainTextCommand < Command
   humanize_as "Plain Text"
-  
-  def eval!(context)
-    body.gsub("\n\n", "\n \n") # Preserve blank lines with dummy spaces
-  end
   
   def self.update_metadata(command)
     command.desc = command.body.strip.split("\n").first
@@ -105,25 +87,23 @@ end
 class RandomLineCommand < Command
   humanize_as "Random Line"
   
-  def eval!(context)
-    body.split(/[\r\n]{2}/).map do |lines|
-      lines.split(/[\r\n]/).random
-    end.join("\n")
-  end
-  
   def self.update_metadata(command)
     command.desc = command.body.strip.split("\n").first
   end
 end
 
+class RubyCommand < Command
+  humanize_as "Ruby"
+  
+  def self.update_metadata(command)
+    command.desc = command.body.strip.split("\n").first[/^\s*#\s*(.*?)\s*$/, 1]
+    command.usage = command.body[/^\s*#\s*Usage:\s*(.*?)\s*$/i, 1]
+    command.help = command.body.scan(/^\s*#\s*Help:\s*(.*?)\s*$/i).flatten
+  end
+end
+
 class YamlCommand < Command
   humanize_as "YAML"
-  
-  def eval!(context = nil)
-    begin
-      YAML.load(body)
-    rescue; nil; end
-  end
   
   def self.update_metadata(command)
     command.desc = command.body.strip.split("\n").first[/^\s*#\s*(.*?)\s*$/, 1]

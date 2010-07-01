@@ -45,12 +45,10 @@ module Grunt
       if EXPOSED_METHODS.include?(name.to_sym) && respond_to?(name)
         send(name, *locals[:args])
       elsif command = Command.first(:name => /^#{Regexp.escape(name)}$/i)
-        command.used!(sender.nick) unless event?
-        command.eval!(binding)
+        eval_command(command)
       elsif command = Command.first_by_regex(name)
         locals[:match] = command.match.dup
-        command.used!(sender.nick) unless event?
-        command.eval!(binding)
+        eval_command(command)
       else
         raise NoCommandError, name
       end
@@ -67,6 +65,12 @@ module Grunt
     end
     
     protected
+      def eval_command(command)
+        command.used!(sender.nick) unless event?
+        eval_method = "eval_#{command.class.name.underscore}"
+        respond_to?(eval_method) ? send(eval_method, command) : nil
+      end
+      
       def eval_plain_text_command(command)
         command.body.gsub("\n\n", "\n \n") # Preserve blank lines with dummy spaces
       end
