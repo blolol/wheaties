@@ -33,9 +33,9 @@ module Grunt
         end
         
         def set(name, value)
-          command = YamlCommand.find_or_new(:name => name)
+          command = YamlCommand.first_or_new(:name => name)
           command.body = YAML.dump(value)
-          command.save!
+          command.save! ? value : false
         end
         
         def increment(name, by = 1)
