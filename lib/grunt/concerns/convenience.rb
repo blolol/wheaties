@@ -35,6 +35,10 @@ module Grunt
         def set(name, value)
           command = YamlCommand.first_or_new(:name => name)
           command.body = YAML.dump(value)
+          if command.new?
+            command.name = name
+            command.created_by = sender.nick
+          end
           command.save! ? value : false
         end
         
