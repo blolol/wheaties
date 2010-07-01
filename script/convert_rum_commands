@@ -69,7 +69,7 @@ def convert!
     }
     
     begin
-      Grunt::Models::Command.create!(command)
+      Command.create!(command)
       puts "Converted #{factoid.name.inspect} => #{command[:name].inspect}"
     rescue MongoMapper::DocumentNotValid => e
       puts "Skipped #{factoid.name.inspect} => #{command[:name].inspect}: #{e.message}"

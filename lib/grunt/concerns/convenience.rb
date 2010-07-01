@@ -27,21 +27,36 @@ module Grunt
           end
         end
         
-        def get(name, default = nil)
-          Setting.get(name, default)
+        def get(name, default)
+          command = YamlCommand.first(:name => name)
+          command ? command.eval! : default
         end
         
         def set(name, value)
-          Setting.set(name, value)
+          command = YamlCommand.find_or_new(:name => name)
+          command.body = YAML.dump(value)
+          command.save!
         end
         
         def increment(name, by = 1)
-          Setting.increment(name, by)
+          command = YamlCommand.first_or_new(:name => name)
+          if (value = command.eval!).is_a?(Numeric)
+            value += by
+            command.body = YAML.dump(value)
+            command.save!
+          else
+            raise ArgumentError, "can't increment a #{value.class.name}!"
+          end
         end
         alias :inc :increment
         
         def decrement(name, by = 1)
-          Setting.decrement(name, by)
+          begin
+            increment(name, by * -1)
+          rescue ArgumentError => e
+            e.message.gsub!("increment", "decrement")
+            raise e
+          end
         end
         alias :dec :decrement
         

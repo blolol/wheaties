@@ -44,7 +44,7 @@ module Grunt
         rescue Timeout::Error
           notice(%{"#{name}" timed out after #{timeout} seconds!}, response.sender.nick)
         rescue => e
-          notice(%{Error in "#{name}": #{e.message}}, response.sender.nick)
+          notice(%{#{e.class.name} in "#{name}": #{e.message}}, response.sender.nick)
           log(:error, e.message)
           log(:error, e.backtrace.join("\n"))
         end
@@ -59,23 +59,21 @@ module Grunt
       end
       
       def handle_assignment(name, text)
-        command = Command.first_or_new(:name => /^#{name}$/i)
+        command = Command.first(:name => /^#{name}$/i)
         
-        if command.new?
-          command.name = name
-          command.type = "plain_text"
-          command.body = ""
-          command.created_by = response.sender.nick
-        else
-          if %w(plain_text plain_text_random).include?(command.type)
+        if command
+          if [PlainTextCommand, RandomLineCommand].include?(command.class)
             command.updated_by = response.sender.nick
           else
-            notice(%{"#{command.name}" is a #{command.type.capitalize} command and may not be modified.}, response.sender.nick)
+            notice(%{"#{command.name}" is a #{command.class.humanize} command and may not be modified.}, response.sender.nick)
             return
           end
+        else
+          command = PlainTextCommand.new(:name => name, :created_by => response.sender.nick)
         end
         
-        command.body << "#{command.body.empty? ? "" : "\n"}#{normalize(text)}"
+        command.body << command.body.nil? || command.body.empty? ? "" : "\n"
+        command.body << text.gsub('\n', "\n")
         
         begin
           command.save!
@@ -85,12 +83,6 @@ module Grunt
             notice("Command #{field} #{error}!", response.sender.nick)
           end
         end
-      end
-      
-      def normalize(body)
-        body.gsub(/^\s*(\\)?(<.*?>)/) do |match|
-          $~[1].nil? ? "" : match
-        end.gsub('\n', "\n")
       end
   end
 end

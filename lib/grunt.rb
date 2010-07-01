@@ -1,6 +1,7 @@
 $:.unshift(File.join(__FILE__, "..", "lib"))
 
 require "digest/sha1"
+require "yaml"
 
 begin
   require "active_support"
@@ -26,7 +27,6 @@ end
 require "grunt/extensions/array"
 require "grunt/extensions/channel"
 require "grunt/extensions/connection"
-require "grunt/extensions/numeric"
 require "grunt/extensions/range"
 require "grunt/extensions/set"
 require "grunt/extensions/string"
@@ -35,7 +35,6 @@ require "grunt/concerns/commands"
 require "grunt/concerns/convenience"
 
 require "grunt/models/command"
-require "grunt/models/setting"
 
 require "grunt/responses/channel"
 require "grunt/responses/messages"

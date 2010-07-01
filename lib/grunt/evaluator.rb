@@ -46,13 +46,11 @@ module Grunt
         send(name, *locals[:args])
       elsif command = Command.first(:name => /^#{Regexp.escape(name)}$/i)
         command.used!(sender.nick) unless event?
-        eval_method = "eval_#{command.type}"
-        respond_to?(eval_method) ? send(eval_method, command) : nil
+        command.eval!(binding)
       elsif command = Command.first_by_regex(name)
         locals[:match] = command.match.dup
         command.used!(sender.nick) unless event?
-        eval_method = "eval_#{command.type}"
-        respond_to?(eval_method) ? send(eval_method, command) : nil
+        command.eval!(binding)
       else
         raise NoCommandError, name
       end
@@ -69,20 +67,24 @@ module Grunt
     end
     
     protected
-      def eval_ruby(command)
-        eval(command.body)
+      def eval_plain_text_command(command)
+        command.body.gsub("\n\n", "\n \n") # Preserve blank lines with dummy spaces
       end
       
-      # Add a dummy space to blank lines in order to preserve them.
-      def eval_plain_text(command)
-        command.body.gsub("\n\n", "\n \n")
-      end
-      
-      # Apply plain text formatting, then pick a random line.
-      def eval_plain_text_random(command)
+      def eval_random_line_command(command)
         command.body.split(/[\r\n]{2}/).map do |lines|
           lines.split(/[\r\n]/).random
         end.join("\n")
+      end
+      
+      def eval_ruby_command(command)
+        Kernel.eval(command.body)
+      end
+      
+      def eval_yaml_command(command)
+        begin
+          YAML.load(command.body)
+        rescue; nil; end
       end
   end
 end

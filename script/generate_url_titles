@@ -29,7 +29,7 @@ def load_grunt
 end
 
 def convert!
-  Grunt::Models::Command.all.each do |command|
+  Command.all.each do |command|
     begin
       command.update_url_title
       command.save!
