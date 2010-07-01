@@ -40,10 +40,15 @@ module Grunt
         
         def increment(name, by = 1)
           command = YamlCommand.first_or_new(:name => name)
-          if (value = command.eval!).is_a?(Numeric)
+          if (value = eval_yaml_command(command) || 0).is_a?(Numeric)
             value += by
             command.body = YAML.dump(value)
+            if command.new?
+              command.name = name
+              command.created_by = sender.nick
+            end
             command.save!
+            value
           else
             raise ArgumentError, "can't increment a #{value.class.name}!"
           end
