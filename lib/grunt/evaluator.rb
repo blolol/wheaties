@@ -8,7 +8,7 @@ module Grunt
     
     attr_reader :name, :locals
     
-    EXPOSED_METHODS = [ :desc, :help, :usage, :get, :set, :increment, :inc,
+    EXPOSED_METHODS = [ :desc, :help, :usage, :get, :set, :increment, :inc, :send,
       :decrement, :dec, :bold, :b, :italic, :i, :plain, :pl, :color, :c,
       :uncolor, :uc, :colors, *Wheaties::Concerns::Formatting::COLORS.keys ]
     
