@@ -5,7 +5,7 @@ module Grunt
         unless !respond_to?(:to_s)
           case value = self.to_s
           when /^-?[\d_]+$/ then value.to_i
-          when /^-?[\d\._eE]+$/ then value.to_f
+          when /^-?[\d]+\.?[\deE]*$/ then value.to_f
           else value; end
         end
       end
