@@ -15,7 +15,7 @@ module Grunt
     
     def initialize(name, args = nil, locals = {})
       @name = name
-      @args = args.dup unless args.nil?
+      @args = args.dup.compact unless args.nil?
       @locals = locals.dup
     end
     
