@@ -15,7 +15,7 @@ module Grunt
     
     def initialize(name, args = nil, locals = {})
       @name = name
-      @args = args.dup.compact unless args.nil?
+      @args = args.dup unless args.nil?
       @locals = locals.dup
     end
     
@@ -29,6 +29,7 @@ module Grunt
                       else
                         []
                       end
+      locals[:args].compact!
       
       if @args.is_a?(String)
         locals[:args].instance_eval do

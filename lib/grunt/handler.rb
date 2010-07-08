@@ -29,7 +29,7 @@ module Grunt
           locals[:history] = Grunt.history[response.channel] || []
           locals[:channel] = response.channel.dup.tap do |c|
             c.users.sender = response.sender.dup
-          end unless response.pm?
+          end unless response.respond_to?(:pm?) && response.pm?
         end
         
         begin
