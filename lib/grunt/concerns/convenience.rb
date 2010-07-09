@@ -6,10 +6,19 @@ module Grunt
           response.pm? if response.respond_to?(:pm?)
         end
         
+        # Was the message which invoked this command evaluation an actual
+        # command? This is often useful to know during events.
         def command?
           pm? ? parse_pm_command(response.text) : parse_command(response.text)
         end
-
+        
+        # Is the command currently being evaluated the "primary" command (that
+        # is, is it the first command being evaluated for a given invocation)?
+        def primary?
+          locals[:level] == 0
+        end
+        
+        # Is this command being evaluated automatically in response to an event?
         def event?
           locals[:is_event]
         end

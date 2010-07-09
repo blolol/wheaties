@@ -20,6 +20,12 @@ module Grunt
     end
     
     def eval!
+      if locals[:level].nil?
+        locals[:level] = 0
+      else
+        locals[:level] += 1
+      end
+      
       locals[:args] = if @args.is_a?(String) && !@args.empty?
                         parser = ArgumentsParser.new.parse(@args)
                         raise ArgumentParseError, name unless parser
