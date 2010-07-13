@@ -74,7 +74,7 @@ module Grunt
     
     protected
       def eval_command(command)
-        command.used!(sender.nick) unless event?
+        command.used!(sender.nick) if primary? && !event?
         eval_method = "eval_#{command.class.name.underscore}"
         respond_to?(eval_method) ? send(eval_method, command) : nil
       end
