@@ -20,7 +20,7 @@ module Grunt
         
         # Is this command being evaluated automatically in response to an event?
         def event?
-          locals[:is_event]
+          locals[:is_event] == true
         end
         
         def subcommands!(&block)
