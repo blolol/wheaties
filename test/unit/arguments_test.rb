@@ -2,7 +2,8 @@ begin
   require "test_helper"
   require "polyglot"
   require "treetop"
-  require "grunt/arguments.rb"
+  require "grunt/extensions/object" # For Object#to_num
+  require "grunt/arguments"
 rescue LoadError => e
   if require "rubygems"
     retry
