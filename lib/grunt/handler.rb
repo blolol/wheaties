@@ -45,9 +45,9 @@ module Grunt
         rescue Timeout::Error
           notice(%{"#{name}" timed out after #{timeout} seconds!}, response.sender.nick)
         rescue => e
-          notice(%{#{e.class.name} in "#{name}": #{e.message}}, response.sender.nick)
-          log(:error, e.message)
+          log(:error, %{Error while evaluating command "#{name}": #{e.message}})
           log(:error, e.backtrace.join("\n"))
+          notice(%{#{e.class.name} in "#{name}": #{e.message}}, response.sender.nick)
         end
       end
       
