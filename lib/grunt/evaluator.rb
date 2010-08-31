@@ -90,7 +90,10 @@ module Grunt
       end
       
       def eval_ruby_command(command)
-        eval(command.body)
+        Thread.start do
+          $SAFE = 2
+          eval(command.body)
+        end.value
       end
       
       def eval_yaml_command(command)
