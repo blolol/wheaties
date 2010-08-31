@@ -94,9 +94,9 @@ module Grunt
       end
       
       def eval_yaml_command(command)
-        begin
-          YAML.load(command.body)
-        rescue; nil; end
+        YAML.load(command.body)
+      rescue
+        nil
       end
   end
 end
