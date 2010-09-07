@@ -42,6 +42,9 @@ module Grunt
           notice(%{"#{e.command}" is not a command!}, response.sender.nick)
         rescue ArgumentParseError => e
           notice(%{You made a mistake somewhere in your arguments for "#{e.command}"!}, response.sender.nick)
+        rescue SyntaxError => e
+          notice(%{There is a syntax error in "#{name}"!}, response.sender.nick)
+          notice(e.message, response.sender.nick)
         rescue Timeout::Error
           notice(%{"#{name}" timed out after #{timeout} seconds!}, response.sender.nick)
         rescue => e
