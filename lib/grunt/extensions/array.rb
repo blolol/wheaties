@@ -1,81 +1,81 @@
 module Grunt
   module Extensions
     module Array
-      # Choose one or more random elements from the receiver based on the weights
-      # provided. If _weights_ is nil, then each element is weighed equally.
-      # 
-      #   [1,2,3].random          #=> 2
-      #   [1,2,3].random          #=> 1
-      #   [1,2,3].random          #=> 3
-      #   [1,2,3].random(2)       #=> [2,1]
+      # Select one or more random elements from the array, optionally based on
+      # weights. Arguments may come in several forms:
       #
-      # If _weights_ is an array, then each element of the receiver gets its
-      # weight from the corresponding element of _weights_. Notice that it
-      # favors the element with the highest weight.
+      #   %w(dog cat bird bug).random => "dog"
+      #   %w(dog cat bird bug).random(2) => ["bug", "dog"]
+      #   %w(dog cat bird bug).random([5, 1, 2, 2]) => most likely "dog"
+      #   %w(dog cat bird bug).random(2, [5, 1, 5, 2]) => most likely ["dog", "bird"]
+      #   %w(dog cat bird bug).random :count => 3, :weights => [...]
+      #   %w(dog cat bird bug).random :count => 10, :unique => false
       #
-      #   [1,2,3].random(1, [1,4,1]) #=> 2
-      #   [1,2,3].random(1, [1,4,1]) #=> 1
-      #   [1,2,3].random(1, [1,4,1]) #=> 2
-      #   [1,2,3].random(1, [1,4,1]) #=> 2
-      #   [1,2,3].random(1, [1,4,1]) #=> 3
+      # If weights are not provided, all elements are equally-weighted.
       #
-      # If _weights_ is a symbol, the weight array is constructed by calling
-      # the appropriate method on each array element in turn. Notice that
-      # it favors the longer word when using :length.
-      #
-      #   ['dog', 'cat', 'hippopotamus'].random(:length) #=> "hippopotamus"
-      #   ['dog', 'cat', 'hippopotamus'].random(:length) #=> "dog"
-      #   ['dog', 'cat', 'hippopotamus'].random(:length) #=> "hippopotamus"
-      #   ['dog', 'cat', 'hippopotamus'].random(:length) #=> "hippopotamus"
-      #   ['dog', 'cat', 'hippopotamus'].random(:length) #=> "cat"
-      #
-      # Modified from http://snippets.dzone.com/posts/show/898.
-      def random(count = 1, weights = nil)
-        if count == 1
-          return random(count, map { |n| n.send(weights) }) if weights.is_a?(Symbol)
-    
-          weights ||= ::Array.new(length, 1.0)
-          total = weights.inject(0.0) { |t, w| t + w }
-          point = Kernel.rand * total
-    
-          zip(weights).each do |n, w|
-            return n if w >= point
-            point -= w
+      # By default, <tt>:unique</tt> is +true+, and assures no element will be
+      # chosen more than once. However, if you'd like to allow duplicates (for
+      # example, to choose ten elements from a four-element array), set
+      # <tt>:unique</tt> to +false+.
+      def random(*args)
+        options = if args.size == 1
+                    case args.first
+                    when Hash then args.first
+                    when Array, Symbol then { :weights => args.first }
+                    else { :count => args.first.to_i }
+                    end
+                  elsif args.size == 2
+                    { :count => args[0].to_i, :weights => args[1] }
+                  else {}; end
+        options.reverse_merge! :count => 1,
+                               :weights => ::Array.new(length, 1),
+                               :unique => true
+        
+        if block_given?
+          weights = map { |o| yield o }
+          return random(options.merge(:weights => weights))
+        end
+        
+        if options[:weights].is_a?(Symbol)
+          weights = map { |o| o.send(options[:weights]) }
+          return random(options.merge(:weights => weights))
+        end
+        
+        if options[:count] == 1
+          total = options[:weights].inject(0.0) { |t, w| t + w }
+          cutoff = Kernel.rand * total
+          
+          zip(options[:weights]).each do |n, w|
+            return n if w >= cutoff
+            cutoff -= w
           end
-      
-          return self.shuffle.first # Fallback if zip does not work for some reason
+          
+          return self.shuffle.first # If zip doesn't return for some reason...
         else
-          count = [self.size, count].min
-          randomize(weights)[0...count]
+          if options[:unique]
+            randomize(options[:weights])[0...options[:count]]
+          else
+            pool = randomize(options[:weights])
+            ::Array.new(options[:count]) { pool.random }
+          end
         end
       end
-  
-      # Generates a permutation of the receiver based on _weights_ as in
-      # Array#random. Notice that it favors the element with the highest
-      # weight.
-      #
-      #   [1,2,3].randomize           #=> [2,1,3]
-      #   [1,2,3].randomize           #=> [1,3,2]
-      #   [1,2,3].randomize([1,4,1])  #=> [2,1,3]
-      #   [1,2,3].randomize([1,4,1])  #=> [2,3,1]
-      #   [1,2,3].randomize([1,4,1])  #=> [1,2,3]
-      #   [1,2,3].randomize([1,4,1])  #=> [2,3,1]
-      #   [1,2,3].randomize([1,4,1])  #=> [3,2,1]
-      #   [1,2,3].randomize([1,4,1])  #=> [2,1,3]
-      #
-      # Stolen from http://snippets.dzone.com/posts/show/898.
+      
+      # Return a randomized permutation of the array, optionally based on
+      # weights. If weights are not provided, all elements are equally-weighted.
       def randomize(weights = nil)
-        return randomize(map { |n| n.send(weights) }) if weights.is_a?(Symbol)
-    
+        return randomize(map { |o| yield o }) if block_given?
+        return randomize(map { |o| o.send(weights) }) if weights.is_a?(Symbol)
+        
         weights = weights.nil? ? ::Array.new(length, 1.0) : weights.dup
-    
+        
         list, result = self.dup.to_a, []
         until list.empty?
-          result << list.random(1, weights)
+          result << list.random(:count => 1, :weights => weights)
           weights.delete_at(list.index(result.last))
           list.delete result.last
         end
-    
+        
         result
       end
     end # Array
