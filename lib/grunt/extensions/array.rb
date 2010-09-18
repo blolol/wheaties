@@ -17,6 +17,8 @@ module Grunt
       # chosen more than once. However, if you'd like to allow duplicates (for
       # example, to choose ten elements from a four-element array), set
       # <tt>:unique</tt> to +false+.
+      #
+      # TODO: Document using a symbol or a block to compute weights.
       def random(*args)
         options = if args.size == 1
                     case args.first
@@ -62,7 +64,7 @@ module Grunt
       end
       
       # Return a randomized permutation of the array, optionally based on
-      # weights. If weights are not provided, all elements are equally-weighted.
+      # weights, as in Grunt::Extensions::Array#random.
       def randomize(weights = nil)
         return randomize(map { |o| yield o }) if block_given?
         return randomize(map { |o| o.send(weights) }) if weights.is_a?(Symbol)
