@@ -17,6 +17,7 @@ module Grunt
         def primary?
           locals[:level] == 0
         end
+        alias :top? :primary?
         
         # Is this command being evaluated automatically in response to an event?
         def event?
