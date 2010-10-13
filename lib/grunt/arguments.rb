@@ -21,6 +21,16 @@ module Arguments
     end
   end
   
+  class HashNode < Treetop::Runtime::SyntaxNode
+    def eval!(locals = {})
+      {}.tap do |hash|
+        pairs.elements.each do |pair|
+          hash[pair.key.eval!(locals)] = pair.value.eval!(locals)
+        end
+      end
+    end
+  end
+  
   class ArrayNode < Treetop::Runtime::SyntaxNode
     def args
       arguments.elements
