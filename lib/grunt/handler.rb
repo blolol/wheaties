@@ -35,7 +35,9 @@ module Grunt
         begin
           timeout = (Grunt.config["timeout"] || 10).to_i
           GruntTimeout.timeout(timeout) do
-            result = Evaluator.new(name, args, locals).eval!
+            result = catch :stop do
+              Evaluator.new(name, args, locals).eval!
+            end
             privmsg(result, response.from) if result
           end
         rescue NoCommandError => e
