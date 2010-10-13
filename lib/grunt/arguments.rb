@@ -84,7 +84,11 @@ module Arguments
   
   class WordStringNode < Treetop::Runtime::SyntaxNode
     def eval!(locals = {})
-      text_value.to_num
+      if text_value =~ /^:(.*)$/
+        $~[1].to_sym
+      else
+        text_value.to_num
+      end
     end
   end
 end
