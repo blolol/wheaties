@@ -68,7 +68,8 @@ module Grunt
       elsif locals.key?(method_name)
         locals[method_name]
       else
-        Evaluator.new(method_name.to_s, args, locals).eval!
+        new_locals = locals.merge(:caller => name)
+        Evaluator.new(method_name.to_s, args, new_locals).eval!
       end
     end
     
