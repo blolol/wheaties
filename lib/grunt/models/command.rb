@@ -19,7 +19,7 @@ class Command
   key :updated_by, String
   timestamps!
 
-  validates_format_of :name, :with => /^[a-zA-Z0-9_\^\$\:\[\]\(\)\{\}\.\*\+\-\?\!\,\/\\]+$/,
+  validates_format_of :name, :with => /^[a-zA-Z0-9_@\^\$\:\[\]\(\)\{\}\.\*\+\-\?\!\,\/\\]+$/,
                       :message => "may only contain letters, numbers and common regex symbols"
   
   before_create :update_metadata

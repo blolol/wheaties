@@ -3,7 +3,7 @@ module Grunt
     module Commands
       def parse_command(message, prefix = nil)
         prefix ||= Grunt.config["prefix"] || "."
-        if message =~ /^#{Regexp.escape(prefix)}([a-zA-Z0-9_\^\/\-\?\!]+)(?: +(.*))?$/
+        if message =~ /^#{Regexp.escape(prefix)}([a-zA-Z0-9_@\^\/\-\?\!]+)(?: +(.*))?$/
           { :name => $~[1], :args => $~[2] }
         else
           nil
