@@ -1,6 +1,7 @@
 $:.unshift(File.join(__FILE__, "..", "lib"))
 
 require "digest/sha1"
+require "erb"
 require "yaml"
 
 begin
