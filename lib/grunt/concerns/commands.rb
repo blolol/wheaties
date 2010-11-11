@@ -15,7 +15,7 @@ module Grunt
       end
       
       def parse_assignment(message)
-        if message =~ /^\s*#{Wheaties::Connection.nick}\s*:\s*(.*?)\s+is\s+(.*)$/i
+        if message =~ /^\s*#{Wheaties::Connection.nick}\s*[:,]*\s*(.*?)\s+is\s+(.*)$/i
           { :name => $~[1], :text => $~[2] }
         end
       end
