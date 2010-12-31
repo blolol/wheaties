@@ -14,9 +14,10 @@ module Grunt
         
         # Is the command currently being evaluated the "primary" command (that
         # is, is it the first command being evaluated for a given invocation)?
-        def top?
+        def primary?
           locals[:level] == 0
         end
+        alias :top? :primary?
         
         # Is this command being evaluated automatically in response to an event?
         def event?
