@@ -1,6 +1,8 @@
 module Grunt
   module Concerns
     module Convenience
+      include Matching
+      
       protected
         def pm?
           response.pm? if response.respond_to?(:pm?)
@@ -9,7 +11,7 @@ module Grunt
         # Was the message which invoked this command evaluation an actual
         # command? This is often useful to know during events.
         def command?
-          pm? ? parse_pm_command(response.text) : parse_command(response.text)
+          response.text =~ command_regex
         end
         
         # Is the command currently being evaluated the "primary" command (that

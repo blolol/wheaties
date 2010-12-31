@@ -1,6 +1,5 @@
 module Grunt
   class Evaluator
-    include Grunt::Concerns::Commands
     include Grunt::Concerns::Convenience
     include Wheaties::Concerns::Formatting
     include Wheaties::Concerns::Logging

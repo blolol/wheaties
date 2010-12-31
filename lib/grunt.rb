@@ -34,7 +34,7 @@ require "grunt/extensions/range"
 require "grunt/extensions/set"
 require "grunt/extensions/string"
 
-require "grunt/concerns/commands"
+require "grunt/concerns/matching"
 require "grunt/concerns/convenience"
 
 require "grunt/models/command"

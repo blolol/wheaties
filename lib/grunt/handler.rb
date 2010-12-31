@@ -1,6 +1,5 @@
 module Grunt
   class Handler < Wheaties::Handler
-    include Grunt::Concerns::Commands
     include Grunt::Responses::Channel
     include Grunt::Responses::Messages
     
@@ -18,6 +17,8 @@ module Grunt
     
     protected
       def handle_command(name, args = [], locals = {})
+        name.unformat!
+        
         locals = {
           :response => response,
           :event => response.method_name,

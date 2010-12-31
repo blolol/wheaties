@@ -1,16 +1,17 @@
 module Grunt
   module Responses
     module Messages
+      include Concerns::Matching
+      
       def on_privmsg
         Grunt.history << response
         
-        if (metadata = parse_command(response.text)) ||
-           (response.pm? && metadata = parse_pm_command(response.text))
-          handle_command(metadata[:name], metadata[:args])
-        elsif metadata = parse_assignment(response.text)
-          handle_assignment(metadata[:name], metadata[:text])
+        if response.text =~ command_regex
+          handle_command $~[1], $~[2]
+        elsif response.text =~ assignment_regex
+          handle_assignment *$~
         end
       end
-    end # Messages
-  end # Responses
+    end
+  end
 end
