@@ -42,7 +42,9 @@ module Grunt
             privmsg(result, response.from) if result
           end
         rescue NoCommandError => e
-          notice(%{"#{e.command}" is not a command!}, response.sender.nick)
+          if Grunt.config["verbose"]
+            notice(%{"#{e.command}" is not a command!}, response.sender.nick)
+          end
         rescue ArgumentParseError => e
           notice(%{You made a mistake somewhere in your arguments for } +
                  %{"#{e.command}"!}, response.sender.nick)
