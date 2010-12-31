@@ -43,16 +43,19 @@ module Grunt
         rescue NoCommandError => e
           notice(%{"#{e.command}" is not a command!}, response.sender.nick)
         rescue ArgumentParseError => e
-          notice(%{You made a mistake somewhere in your arguments for "#{e.command}"!}, response.sender.nick)
+          notice(%{You made a mistake somewhere in your arguments for } +
+                 %{"#{e.command}"!}, response.sender.nick)
         rescue SyntaxError => e
           notice(%{There is a syntax error in "#{name}"!}, response.sender.nick)
           notice(e.message, response.sender.nick)
         rescue Timeout::Error
-          notice(%{"#{name}" timed out after #{timeout} seconds!}, response.sender.nick)
+          notice(%{"#{name}" timed out after #{timeout} seconds!},
+                 response.sender.nick)
         rescue => e
           log(:error, %{Error while evaluating command "#{name}": #{e.message}})
           log(:error, e.backtrace.join("\n"))
-          notice(%{#{e.class.name} in "#{name}": #{e.message}}, response.sender.nick)
+          notice(%{#{e.class.name} in "#{name}": #{e.message}},
+                 response.sender.nick)
         end
       end
       
@@ -71,11 +74,13 @@ module Grunt
           if [PlainTextCommand, RandomLineCommand].include?(command.class)
             command.updated_by = response.sender.nick
           else
-            notice(%{"#{command.name}" is a #{command.class.humanize} command and may not be modified.}, response.sender.nick)
+            notice(%{"#{command.name}" is a #{command.class.humanize} } +
+                   %{command and may not be modified.}, response.sender.nick)
             return
           end
         else
-          command = PlainTextCommand.new(:name => name, :created_by => response.sender.nick)
+          command = PlainTextCommand.new(:name => name,
+                                         :created_by => response.sender.nick)
         end
         
         command.body ||= ""
