@@ -3,7 +3,7 @@ module Grunt
     include Grunt::Responses::Channel
     include Grunt::Responses::Messages
     
-    EXPOSED_EVENTS = [ :on_ctcp, :on_join, :on_nick, :on_part, :on_privmsg ]
+    EXPOSED_EVENTS = [ :on_001, :on_ctcp, :on_join, :on_nick, :on_part, :on_privmsg ]
     
     alias :original_handle :handle
     
