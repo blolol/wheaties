@@ -9,7 +9,7 @@ module Grunt
         if response.text =~ command_regex
           handle_command $~[1], $~[2]
         elsif response.text =~ assignment_regex
-          handle_assignment *$~
+          handle_assignment $~[1], $~[2]
         end
       end
     end
