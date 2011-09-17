@@ -5,7 +5,7 @@ require "erb"
 require "yaml"
 
 begin
-  require "active_support"
+  require "active_support/core_ext/hash/reverse_merge"
   require "mongo_mapper"
   require "polyglot"
   require "treetop"
