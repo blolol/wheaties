@@ -16,7 +16,7 @@ module Grunt
     end
     
     protected
-      def handle_command(name, args = [], locals = {})
+      def handle_command(name, args = [], locals = {}, options = {})
         name.unformat!
         
         locals = {
@@ -39,7 +39,14 @@ module Grunt
             result = catch :stop do
               Evaluator.new(name, args, locals).eval!
             end
-            privmsg(result, response.from) if result
+            
+            if result
+              if options[:return]
+                result
+              else
+                privmsg(result, response.from)
+              end
+            end
           end
         rescue NoCommandError => e
           if Grunt.config["verbose"]
@@ -88,6 +95,17 @@ module Grunt
         
         command.body ||= ""
         command.body << "\n" unless command.body.empty?
+        if text =~ /^\s*\[(\S+)\s+(.*?)\]\s*$/
+          text_command_name, text_command_args = $~[1], $~[2]
+          result = handle_command(text_command_name, text_command_args, {}, { :return => true }).to_s
+          if result && !result.empty? && result !~ /^\s+\Z/
+            text = result
+          else
+            notice(%{That command did not return anything to assign to "#{text_command_name}"})
+            return
+          end
+        end
+        
         command.body << text.gsub('\n', "\n")
         
         begin
