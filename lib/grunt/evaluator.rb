@@ -9,8 +9,7 @@ module Grunt
     
     EXPOSED_METHODS = [ :desc, :help, :usage, :get, :set, :increment, :inc,
       :send, :pm?, :command?, :event?, :decrement, :dec, :bold, :b, :italic,
-      :i, :plain, :pl, :color, :co, :uncolor, :uc, :colors,
-      *Wheaties::Concerns::Formatting::COLORS.keys ]
+      :i, :plain, :pl, :color, :co, :uncolor, :uc, *Wheaties::Concerns::Formatting::COLORS.keys ]
     
     def initialize(name, args = nil, locals = {})
       @name = name
