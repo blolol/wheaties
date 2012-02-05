@@ -22,8 +22,13 @@ module Grunt
     def load_database
       host = Grunt.config["database"]["host"]
       database = Grunt.config["database"]["database"]
+      
       MongoMapper.connection = Mongo::Connection.new(host)
       MongoMapper.database = database
+      
+      if Grunt.config["database"]["username"] && Grunt.config["database"]["password"]
+        MongoMapper.database.authenticate(Grunt.config["database"]["username"], Grunt.config["database"]["password"])
+      end
     end
     
     def load_history
