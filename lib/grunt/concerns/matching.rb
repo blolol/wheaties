@@ -8,7 +8,7 @@ module Grunt
       
       def assignment_regex
         nick = Wheaties::Connection.nick
-        /\A#{formatting_regex}#{nick} *[:,]+ *(.*?) +is +(.*)\Z/i
+        /\A#{formatting_regex}#{nick} *:+ *(.*?) +is +(.*)\Z/i
       end
       
       def command_regex
