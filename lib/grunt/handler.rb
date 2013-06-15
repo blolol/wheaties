@@ -2,29 +2,29 @@ module Grunt
   class Handler < Wheaties::Handler
     include Grunt::Responses::Channel
     include Grunt::Responses::Messages
-    
+
     EXPOSED_EVENTS = [ :on_001, :on_ctcp, :on_join, :on_nick, :on_part, :on_privmsg ]
-    
+
     alias :original_handle :handle
-    
+
     def handle
       original_handle
-      
+
       if EXPOSED_EVENTS.include?(response.method_name)
         handle_event(response.method_name)
       end
     end
-    
+
     protected
       def handle_command(name, args = [], locals = {}, options = {})
         name.unformat!
-        
+
         locals = {
           :response => response,
           :event => response.method_name,
           :sender => response.sender
         }.merge(locals)
-        
+
         locals[:from] = response.from if response.respond_to?(:from)
         if response.respond_to?(:channel)
           locals[:history] = Grunt.history[response.channel] || []
@@ -32,14 +32,14 @@ module Grunt
             c.users.sender = response.sender.dup
           end unless response.respond_to?(:pm?) && response.pm?
         end
-        
+
         begin
           timeout = (Grunt.config["timeout"] || 10).to_i
           GruntTimeout.timeout(timeout) do
             result = catch :stop do
               Evaluator.new(name, args, locals).eval!
             end
-            
+
             if result
               if options[:return]
                 result
@@ -68,20 +68,21 @@ module Grunt
                  response.sender.nick)
         end
       end
-      
+
       def handle_event(event)
         locals = { :is_event => true }
-        
+
         Command.all(:events => event, :fields => [:name]).each do |command|
           handle_command(command.name, "", locals)
         end
       end
-      
+
       def handle_assignment(name, text)
         command = Command.first(:name => /^#{name}$/i)
-        
+
         if command
           if [PlainTextCommand, RandomLineCommand].include?(command.class)
+            command.updated_at = Time.now
             command.updated_by = response.sender.nick
           else
             notice(%{"#{command.name}" is a #{command.class.humanize} } +
@@ -89,10 +90,10 @@ module Grunt
             return
           end
         else
-          command = PlainTextCommand.new(:name => name,
-                                         :created_by => response.sender.nick)
+          command = PlainTextCommand.new(:name => name, :created_at => Time.now,
+            :created_by => response.sender.nick)
         end
-        
+
         command.body ||= ""
         command.body << "\n" unless command.body.empty?
         if text =~ /^\s*\[(\S+)\s+(.*?)\]\s*$/
@@ -105,9 +106,9 @@ module Grunt
             return
           end
         end
-        
+
         command.body << text.gsub('\n', "\n")
-        
+
         begin
           command.save!
           notice(%{Saved "#{command.name}"!}, response.sender.nick)
