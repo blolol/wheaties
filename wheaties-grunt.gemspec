@@ -11,5 +11,7 @@ spec = Gem::Specification.new do |s|
   s.files = Dir['lib/**/*.rb']
   s.require_path = 'lib'
 
+  s.add_runtime_dependency 'mongo_mapper', '~> 0.12.0'
+  s.add_runtime_dependency 'treetop', '~> 1.4.10'
   s.add_runtime_dependency 'wheaties', '>= 1.0.0'
 end
