@@ -20,16 +20,9 @@ module Grunt
     end
 
     def load_database
-      host = Grunt.config["database"]["host"]
-      port = Grunt.config["database"]["port"] || 27017
-      database = Grunt.config["database"]["database"]
-
-      MongoMapper.connection = Mongo::Connection.new(host, port)
-      MongoMapper.database = database
-
-      if Grunt.config["database"]["username"] && Grunt.config["database"]["password"]
-        MongoMapper.database.authenticate(Grunt.config["database"]["username"], Grunt.config["database"]["password"])
-      end
+      environment = "production"
+      database_config = { environment => Grunt.config["database"] }
+      MongoMapper.setup(database_config, environment)
     end
 
     def load_history
