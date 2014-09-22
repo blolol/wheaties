@@ -20,7 +20,7 @@ class Command
   key :updated_at, Time
   key :updated_by, String
 
-  validates_format_of :name, :with => /^[a-zA-Z0-9_@\^\$\:\[\]\(\)\{\}\.\*\+\-\?\!\,\/\\]+$/,
+  validates_format_of :name, :with => /\A[a-zA-Z0-9_@\^\$\:\[\]\(\)\{\}\.\*\+\-\?\!\,\/\\]+\z/,
                       :message => "may only contain letters, numbers and common regex symbols"
 
   before_create :update_metadata
