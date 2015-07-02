@@ -1,13 +1,14 @@
 module Grunt
   class << self
     attr_accessor :config
-    attr_reader :history
+    attr_reader :history, :redis
 
     def start
       load_defaults
       load_parser
       load_database
       load_history
+      load_redis
     end
 
     def load_defaults
@@ -46,6 +47,14 @@ module Grunt
         end
       end
       history.max_size = (Grunt.config["history"] || 50).to_i
+    end
+
+    def load_redis
+      if redis_url = Grunt.config["redis"]
+        require "redis"
+        @redis = Redis.new(url: redis_url)
+        Wheaties.logger.info "[Grunt] Connected to Redis at #{redis_url}"
+      end
     end
   end
 

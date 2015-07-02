@@ -2,30 +2,30 @@ module Grunt
   module Concerns
     module Convenience
       include Matching
-      
+
       protected
         def pm?
           response.pm? if response.respond_to?(:pm?)
         end
-        
+
         # Was the message which invoked this command evaluation an actual
         # command? This is often useful to know during events.
         def command?
           response.text =~ command_regex
         end
-        
+
         # Is the command currently being evaluated the "primary" command (that
         # is, is it the first command being evaluated for a given invocation)?
         def primary?
           locals[:level] == 0
         end
         alias :top? :primary?
-        
+
         # Is this command being evaluated automatically in response to an event?
         def event?
           locals[:is_event] == true
         end
-        
+
         def subcommands!(&block)
           if args[0] =~ /^[a-zA-Z0-9_-]+$/
             subcommand = args.shift.strip.downcase
@@ -39,12 +39,12 @@ module Grunt
             block.call(subcommand) if block_given?
           end
         end
-        
+
         def get(name, default = nil)
           command = YamlCommand.first(:name => name)
           command ? eval_yaml_command(command) : default
         end
-        
+
         def set(name, value)
           command = YamlCommand.first_or_new(:name => name)
           command.body = YAML.dump(value)
@@ -54,7 +54,7 @@ module Grunt
           end
           command.save! ? value : false
         end
-        
+
         def increment(name, by = 1)
           command = YamlCommand.first_or_new(:name => name)
           if (value = eval_yaml_command(command) || 0).is_a?(Numeric)
@@ -70,7 +70,7 @@ module Grunt
           end
         end
         alias :inc :increment
-        
+
         def decrement(name, by = 1)
           begin
             increment(name, by * -1)
@@ -80,7 +80,7 @@ module Grunt
           end
         end
         alias :dec :decrement
-        
+
         def usage(name, silent = false)
           if command = Command.first(:name => /^#{name}$/i) ||
              command = Command.first_by_regex(name)
@@ -93,7 +93,7 @@ module Grunt
             notice %{"#{name}" is not a command!}, sender.nick unless silent
           end
         end
-        
+
         def desc(name, silent = false)
           if command = Command.first(:name => /^#{name}$/i) ||
              command = Command.first_by_regex(name)
@@ -106,7 +106,7 @@ module Grunt
             notice %{"#{name}" is not a command!}, sender.nick unless silent
           end
         end
-        
+
         def help(name)
           if command = Command.first(:name => /^#{name}$/i) ||
              command = Command.first_by_regex(name)
@@ -118,6 +118,10 @@ module Grunt
           else
             notice %{"#{name}" is not a command!}, sender.nick
           end
+        end
+
+        def redis
+          Grunt.redis
         end
     end # Convenience
   end # Concerns
