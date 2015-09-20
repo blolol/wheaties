@@ -82,26 +82,20 @@ module Grunt
       end
 
       def eval_plain_text_command(command)
-        result = ERB.new(command.body, nil, "%").result(binding)
-        result.gsub(/[\r\n]{2}/, "\n \n") # Preserve blank lines with dummy spaces
+        # Preserve blank lines with dummy spaces
+        ERB.new(command.body, nil, "%").result(binding).gsub /[\r\n]{2}/, "\n \n"
       end
 
       def eval_random_line_command(command)
-        result = ERB.new(command.body, nil, "%").result(binding)
-        result.split(/[\r\n]{2}/).map do |lines|
-          lines.split(/[\r\n]/).random
-        end.join("\n")
+        ERB.new(command.body, nil, "%").result(binding).split(/[\r\n]+/).random
       end
 
       def eval_ruby_command(command)
-        eval(command.body)
+        eval command.body
       end
 
       def eval_yaml_command(command)
-        result = ERB.new(command.body, nil, "%").result(binding)
-        YAML.load(result)
-      rescue
-        nil
+        YAML.load ERB.new(command.body, nil, "%").result(binding)
       end
   end
 end
