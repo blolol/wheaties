@@ -22,6 +22,7 @@ module Wheaties
       config.release_stage = ENV.fetch('WHEATIES_ENV', 'development')
     end
   end
+  private_class_method :configure_bugsnag
 
   def self.configure_mongoid
     Mongoid.load!(Wheaties.root.join('mongoid.yml').to_s)
