@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+require 'bundler'
+Bundler.require(:default, :commands)
+
+Dotenv.load
+
+$:.unshift File.join(File.dirname(__FILE__), '../lib')
+require 'wheaties'
+
+bot = Cinch::Bot.new do
+  configure do |c|
+    c.channels = ENV['IRC_CHANNELS'].split(',')
+    c.messages_per_second = Integer(ENV['IRC_MESSAGES_PER_SECOND'] || 1)
+    c.nick = ENV['IRC_NICK']
+    c.password = ENV['IRC_PASS']
+    c.plugins.plugins = [Wheaties::CinchPlugin]
+    c.port = Integer(ENV['IRC_PORT'])
+    c.realname = ENV['IRC_REALNAME']
+    c.server = ENV['IRC_SERVER']
+    c.ssl.use = ENV['IRC_SSL'] == 'true'
+    c.ssl.verify = ENV.fetch('IRC_SSL_VERIFY', 'true') == 'true'
+    c.user = ENV['IRC_USER']
+  end
+end
+
+Bugsnag.configuration.logger = Wheaties::BugsnagLogger.new(bot)
+
+bot.start
