@@ -10,9 +10,13 @@ module Wheaties
 
     private
 
+    def built_in_command?
+      InvocationEnvironment.built_in_command?(command_name)
+    end
+
     def command
-      if method_exposed_as_command?
-        ExposedMethodInvoker.new(command_name)
+      if built_in_command?
+        BuiltInCommand.new(command_name)
       else
         Command.find_by_name(command_name)
       end
@@ -28,10 +32,6 @@ module Wheaties
 
     def match_data
       @match_data ||= @message.message.match(CinchPlugin::COMMAND_PATTERN)
-    end
-
-    def method_exposed_as_command?
-      InvocationEnvironment.method_exposed_as_command?(command_name)
     end
 
     def parsed_arguments

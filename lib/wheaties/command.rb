@@ -22,6 +22,10 @@ class Command
     raise Wheaties::CommandNotFoundError.new(command_name: name)
   end
 
+  def built_in?
+    false
+  end
+
   def invoke(environment)
     Wheaties::NullInvocationResult.new
   end

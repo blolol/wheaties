@@ -9,11 +9,11 @@ module Wheaties
     include StorageHelpers
 
     # Constants
-    METHODS_EXPOSED_AS_COMMANDS = %i(b bold co color decrement del get help hget hset i increment
+    BUILT_IN_COMMANDS = %i(b bold co color decrement del get help hget hset i increment
       italic jget jset pl plain set uc uncolor unformat) + FormattingHelpers::COLORS
 
-    def self.method_exposed_as_command?(name)
-      METHODS_EXPOSED_AS_COMMANDS.include?(name.downcase.to_sym)
+    def self.built_in_command?(name)
+      BUILT_IN_COMMANDS.include?(name.downcase.to_sym)
     end
 
     def initialize(message, arguments, event: :command, stack: [])
@@ -34,7 +34,7 @@ module Wheaties
       end
     end
 
-    def invoke_method_as_command(method_name)
+    def invoke_built_in_command(method_name)
       return_value = send(method_name, *@arguments)
       RubyInvocationResult.new(return_value)
     end
