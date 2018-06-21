@@ -25,6 +25,7 @@ require 'wheaties/helpers/formatting_helpers'
 require 'wheaties/helpers/logging_helpers'
 require 'wheaties/helpers/message_helpers'
 require 'wheaties/helpers/storage_helpers'
+require 'wheaties/helpers/version_helpers'
 
 require 'wheaties/bugsnag_logger'
 require 'wheaties/bugsnag_notifier'

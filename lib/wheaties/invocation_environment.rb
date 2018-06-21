@@ -7,10 +7,11 @@ module Wheaties
     include LoggingHelpers
     include MessageHelpers
     include StorageHelpers
+    include VersionHelpers
 
     # Constants
     BUILT_IN_COMMANDS = %i(b bold co color decrement del get help hget hset i increment
-      italic jget jset pl plain set uc uncolor unformat) + FormattingHelpers::COLORS
+      italic jget jset pl plain set uc uncolor unformat version) + FormattingHelpers::COLORS
 
     def self.built_in_command?(name)
       BUILT_IN_COMMANDS.include?(name.downcase.to_sym)
