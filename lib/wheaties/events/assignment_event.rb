@@ -26,6 +26,10 @@ module Wheaties
       PlainTextCommand.new(created_by: @message.user.user, name: name)
     end
 
+    def built_in_command?
+      InvocationEnvironment.built_in_command?(command_name)
+    end
+
     def command
       find_command || build_command
     end
@@ -35,7 +39,11 @@ module Wheaties
     end
 
     def find_command
-      Command.where(name: name).first
+      if built_in_command?
+        BuiltInCommand.new(name)
+      else
+        Command.where(name: name).first
+      end
     end
 
     def match_data
