@@ -1,5 +1,10 @@
 module Wheaties
   class BaseEvent
+    class << self
+      # Attributes
+      attr_accessor :cache
+    end
+
     def initialize(message)
       @message = message
     end
@@ -14,12 +19,20 @@ module Wheaties
 
     private
 
+    def cache
+      self.class.cache ||= EventCommandCache.new(legacy_grunt_event)
+    end
+
     def commands
-      raise('This method should be implemented by subclasses')
+      cache.commands
     end
 
     def event
       raise('This method should be implemented by subclasses')
+    end
+
+    def legacy_grunt_event
+      event
     end
   end
 end

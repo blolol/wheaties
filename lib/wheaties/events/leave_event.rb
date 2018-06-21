@@ -2,12 +2,12 @@ module Wheaties
   class LeaveEvent < BaseEvent
     private
 
-    def commands
-      Command.where(events: 'on_part')
-    end
-
     def event
       :leave
+    end
+
+    def legacy_grunt_event
+      :on_part
     end
   end
 end

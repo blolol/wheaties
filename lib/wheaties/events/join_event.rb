@@ -2,12 +2,12 @@ module Wheaties
   class JoinEvent < BaseEvent
     private
 
-    def commands
-      Command.where(events: 'on_join')
-    end
-
     def event
       :join
+    end
+
+    def legacy_grunt_event
+      :on_join
     end
   end
 end
