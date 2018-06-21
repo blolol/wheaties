@@ -10,7 +10,7 @@ module Wheaties
     include VersionHelpers
 
     # Constants
-    BUILT_IN_COMMANDS = %i(b bold co color decrement del get help hget hset i increment
+    BUILT_IN_COMMANDS = %i(b bold builtins co color decrement del get help hget hset i increment
       italic jget jset pl plain set uc uncolor unformat version) + FormattingHelpers::COLORS
 
     def self.built_in_command?(name)

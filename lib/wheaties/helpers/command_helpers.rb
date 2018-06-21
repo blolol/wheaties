@@ -2,6 +2,10 @@ module Wheaties
   module CommandHelpers
     private
 
+    def builtins
+      InvocationEnvironment::BUILT_IN_COMMANDS.sort.join(', ')
+    end
+
     # Halts execution of the current command, returning an optional value.
     def halt(return_value = nil)
       throw(stack.last, return_value)
