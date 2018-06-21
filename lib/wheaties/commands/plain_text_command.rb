@@ -1,4 +1,6 @@
 class PlainTextCommand < Command
+  include Wheaties::CommandAssignable
+
   def invoke(environment)
     PlainTextInvocationResult.new(body)
   end
@@ -9,9 +11,7 @@ class PlainTextCommand < Command
     end
 
     def reply_to_chat(message)
-      @text.each_line do |line|
-        message.safe_reply(line)
-      end
+      message.safe_reply(@text)
     end
 
     def ruby_value

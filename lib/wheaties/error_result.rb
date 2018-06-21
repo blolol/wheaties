@@ -120,24 +120,13 @@ module Wheaties
     end
 
     def notify_bugsnag(severity: 'warning')
-      Bugsnag.notify(@error) do |report|
-        report.severity = severity
+      wheaties_tab = {
+        command_stack: @invocation.stack.map(&:name),
+        error_id: error_uuid,
+        event: @invocation.event
+      }
 
-        report.user = {
-          nickname: @message.user.nick,
-          username: @message.user.user
-        }
-
-        report.add_tab(:wheaties, {
-          bot_nickname: @message.bot.nick,
-          command_stack: @invocation.stack.map(&:name),
-          error_id: error_uuid,
-          event: @invocation.event,
-          message: @message.message,
-          raw_message: @message.raw,
-          target: @message.target.name
-        })
-      end
+      BugsnagNotifier.new(@error, @message, severity: severity, wheaties_tab: wheaties_tab).notify
     end
 
     def send_more_details_to_user

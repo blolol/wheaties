@@ -19,7 +19,7 @@ module Wheaties
       if built_in_command?(name)
         BuiltInCommand.new(name)
       else
-        Command.find_by_name(command_name)
+        Command.find_by_name(name)
       end
     end
   end

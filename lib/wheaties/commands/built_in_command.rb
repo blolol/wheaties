@@ -7,6 +7,10 @@ module Wheaties
       @name = name
     end
 
+    def assign_value(value, message)
+      message.reply("Sorry, you can't modify a built-in command! 🙅‍♀️", true)
+    end
+
     def built_in?
       true
     end

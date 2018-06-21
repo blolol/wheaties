@@ -31,7 +31,7 @@ module Wheaties
     end
 
     def match_data
-      @match_data ||= @message.message.match(CinchPlugin::COMMAND_PATTERN)
+      @match_data ||= sanitized_message.match(CinchPlugin::COMMAND_PATTERN)
     end
 
     def parsed_arguments
@@ -39,8 +39,7 @@ module Wheaties
     end
 
     def parser
-      delegate = ParserDelegate.new(@message)
-      Harby::Parser.new(delegate)
+      ParserFactory.parser(@message)
     end
 
     def result

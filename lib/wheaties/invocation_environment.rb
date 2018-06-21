@@ -26,7 +26,7 @@ module Wheaties
     def eval(command)
       update_command_usage_stats(command)
 
-      @stack << command
+      stack << command
       eval_file_name = command.name
 
       catch(command) do
@@ -41,7 +41,8 @@ module Wheaties
 
     def method_missing(name, *arguments)
       command = Command.find_by_name(name)
-      CommandInvocation.new(@message, command, arguments, stack: @stack).result.ruby_value
+      CommandInvocation.new(@message, command, arguments, event: event,
+        stack: stack).result.ruby_value
     rescue CommandNotFoundError
       super
     end

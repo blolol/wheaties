@@ -1,8 +1,9 @@
 class Command
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   # Fields
-  field :body, type: String
+  field :body, type: String, default: ''
   field :created_by, type: String
   field :desc, type: String
   field :events, type: Array, default: []
@@ -16,10 +17,18 @@ class Command
   field :used_by, type: String
   field :uses, type: Integer, default: 0
 
+  # Callbacks
+  before_create :generate_description
+  before_create :generate_url_title
+
   def self.find_by_name(name)
     command_cache.get(name)
   rescue Mongoid::Errors::DocumentNotFound
     raise Wheaties::CommandNotFoundError.new(command_name: name)
+  end
+
+  def assign_value(value, message)
+    raise("#assign_value is not implemented by #{self.class.name}")
   end
 
   def built_in?
@@ -44,4 +53,13 @@ class Command
     Thread.current[:wheaties_command_cache] ||= Wheaties::CommandCache.new
   end
   private_class_method :command_cache
+
+  def generate_description
+    self.desc = body.lines.first.strip
+  end
+
+  def generate_url_title
+    digest = Digest::SHA256.hexdigest(name).first(5)
+    self.url_title = "#{digest}-#{name.parameterize}"
+  end
 end

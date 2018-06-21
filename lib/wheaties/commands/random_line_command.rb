@@ -1,4 +1,6 @@
 class RandomLineCommand < Command
+  include Wheaties::CommandAssignable
+
   def invoke(environment)
     RandomLineInvocationResult.new(random_line)
   end
