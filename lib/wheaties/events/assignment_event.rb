@@ -27,7 +27,7 @@ module Wheaties
     end
 
     def built_in_command?
-      InvocationEnvironment.built_in_command?(command_name)
+      InvocationEnvironment.built_in_command?(name)
     end
 
     def command
