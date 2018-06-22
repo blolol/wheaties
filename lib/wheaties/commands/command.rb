@@ -2,6 +2,9 @@ class Command
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  # Attributes
+  attr_accessor :find_by_regex_match_data
+
   # Fields
   field :body, type: String, default: ''
   field :created_by, type: String
@@ -25,6 +28,12 @@ class Command
     command_cache.get(name)
   rescue Mongoid::Errors::DocumentNotFound
     raise Wheaties::CommandNotFoundError.new(command_name: name)
+  end
+
+  def self.find_by_regex(input)
+    where(regex: true).for_js('input.match(this.name)', input: input).first.tap do |command|
+      command.find_by_regex_match_data = input.match(command.name) if command
+    end
   end
 
   def assign_value(value, message)

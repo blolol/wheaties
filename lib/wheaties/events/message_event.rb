@@ -2,6 +2,7 @@ module Wheaties
   class MessageEvent < BaseEvent
     def run
       super
+      wait_for_threads_to_finish
       message_history.push(@message)
     end
 

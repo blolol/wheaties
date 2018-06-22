@@ -1,3 +1,5 @@
+require 'thwait'
+
 module Wheaties
   class BaseEvent
     class << self
@@ -41,6 +43,10 @@ module Wheaties
 
     def legacy_grunt_event
       event
+    end
+
+    def wait_for_threads_to_finish
+      ThreadsWait.all_waits(*@thread_group.list)
     end
   end
 end

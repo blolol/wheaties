@@ -17,6 +17,10 @@ module Wheaties
       throw(stack.first, return_value)
     end
 
+    def match
+      stack.last.find_by_regex_match_data
+    end
+
     # Treats the currently-executing command's first argument as a subcommand, and attempts to
     # find and run a command with the name of the currently-executing command, plus the subcommand,
     # joined by an underscore. For example, if the currently-executing command's name is "foo",

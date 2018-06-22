@@ -30,10 +30,19 @@ module Wheaties
 
     class TargetHistory
       # Delegates
-      delegate :[], :clear, :dup, :each, :first, :last, :size, to: :@messages
+      delegate :[], :clear, :dup, :each, :find, :first, :last, :select, :size, to: :@messages
 
       def initialize
         @messages = []
+      end
+
+      def for_matching_nick(nick)
+        pattern = /#{nick}/i
+        select { |message| message.user.nick.match?(pattern) }
+      end
+
+      def for_user(user)
+        select { |message| message.user == user }
       end
 
       def push(message)

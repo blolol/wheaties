@@ -16,12 +16,12 @@ module Wheaties
       @message = message
 
       if internal_error?
-        log_internal_error
+        log_error
         notify_bugsnag
         alert_channel_about_internal_error
       else
         notify_bugsnag(severity: 'info') if event?
-        alert_channel if alert?
+        alert_channel_or_log_error
       end
     end
 
@@ -62,6 +62,14 @@ module Wheaties
         @message.reply("#{self.class.emoji} #{a_or_an} #{error_class_name} was raised in my " \
           'code. The proper authorities have been notified so that it can be fixed. ' \
           "(Error ID: #{error_uuid})", true)
+      end
+    end
+
+    def alert_channel_or_log_error
+      if alert?
+        alert_channel
+      else
+        log_error
       end
     end
 
@@ -109,7 +117,7 @@ module Wheaties
       relevant_traces.empty?
     end
 
-    def log_internal_error
+    def log_error
       @error.full_message(highlight: false).each_line do |line|
         @message.bot.loggers.log("[#{error_uuid}] #{line}", :exception, :error)
       end

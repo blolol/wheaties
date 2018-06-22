@@ -1,13 +1,24 @@
 module Wheaties
   class CommandCache
     def initialize
-      @cache = {}
+      @cache = Hash.new do |cache, name|
+        command = find_by_name(name) || find_by_regex(name)
+        cache[name] = command if command
+      end
     end
 
     def get(name)
-      @cache.fetch(name) do
-        @cache[name] = Command.find_by(name: name)
-      end
+      @cache[name]
+    end
+
+    private
+
+    def find_by_name(name)
+      Command.where(name: name).first
+    end
+
+    def find_by_regex(input)
+      Command.find_by_regex(input)
     end
   end
 end
