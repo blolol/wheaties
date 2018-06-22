@@ -7,14 +7,12 @@ module Wheaties
 
     def initialize(message)
       @message = message
+      @thread_group = ThreadGroup.new
     end
 
     def run
-      arguments = []
-
-      commands.each do |command|
-        CommandInvocation.new(@message, command, arguments, event: event).invoke
-      end
+      commands.each { |command| invoke_command_in_thread(command) }
+      @thread_group.enclose
     end
 
     private
@@ -29,6 +27,16 @@ module Wheaties
 
     def event
       raise('This method should be implemented by subclasses')
+    end
+
+    def invoke_command_in_thread(command)
+      arguments = []
+
+      thread = Thread.new do
+        CommandInvocation.new(@message, command, arguments, event: event).invoke
+      end
+
+      @thread_group.add(thread)
     end
 
     def legacy_grunt_event
