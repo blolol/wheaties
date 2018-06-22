@@ -14,6 +14,14 @@ module Wheaties
     listen_to :message, method: :on_message
     listen_to :nick, method: :on_nick
 
+    def self.instance(bot)
+      bot.plugins.find { |plugin| plugin.class == Wheaties::CinchPlugin }
+    end
+
+    def message_history
+      @message_history ||= MessageHistory.new(bot)
+    end
+
     private
 
     def assignment_pattern
@@ -32,14 +40,15 @@ module Wheaties
       sanitize_message(message).match?(COMMAND_PATTERN)
     end
 
-    def notify_bugsnag(error, message)
+    def log_error_and_notify_bugsnag(error, message)
+      exception(error)
       BugsnagNotifier.new(error, message).notify
     end
 
     def on_connect(message)
       ConnectEvent.new(message).run
     rescue => error
-      notify_bugsnag(error, message)
+      log_error_and_notify_bugsnag(error, message)
     end
 
     def on_ctcp(message)
@@ -47,7 +56,7 @@ module Wheaties
         CtcpEvent.new(message).run
       end
     rescue => error
-      notify_bugsnag(error, message)
+      log_error_and_notify_bugsnag(error, message)
     end
 
     def on_join(message)
@@ -55,7 +64,7 @@ module Wheaties
         JoinEvent.new(message).run
       end
     rescue => error
-      notify_bugsnag(error, message)
+      log_error_and_notify_bugsnag(error, message)
     end
 
     def on_leave(message)
@@ -63,7 +72,7 @@ module Wheaties
         LeaveEvent.new(message).run
       end
     rescue => error
-      notify_bugsnag(error, message)
+      log_error_and_notify_bugsnag(error, message)
     end
 
     def on_message(message)
@@ -77,7 +86,7 @@ module Wheaties
         end
       end
     rescue => error
-      notify_bugsnag(error, message)
+      log_error_and_notify_bugsnag(error, message)
     end
 
     def on_nick(message)
@@ -85,7 +94,7 @@ module Wheaties
         NickEvent.new(message).run
       end
     rescue => error
-      notify_bugsnag(error, message)
+      log_error_and_notify_bugsnag(error, message)
     end
 
     def sanitize_message(message)

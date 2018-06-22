@@ -14,6 +14,10 @@ module Wheaties
       !command?
     end
 
+    def history
+      CinchPlugin.instance(bot).message_history.for(@message.target)
+    end
+
     def pm?
       !@message.channel?
     end
