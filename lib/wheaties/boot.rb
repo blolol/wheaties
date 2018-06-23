@@ -25,7 +25,7 @@ module Wheaties
   private_class_method :configure_bugsnag
 
   def self.configure_mongoid
-    Mongoid.load!(Wheaties.root.join('mongoid.yml').to_s)
+    Mongoid.load!(root.join('config/mongoid.yml').to_s)
   end
   private_class_method :configure_mongoid
 
@@ -35,7 +35,8 @@ module Wheaties
   private_class_method :configure_redis
 
   def self.configure_root
-    self.root = Pathname.new(File.expand_path(ENV['WHEATIES_ROOT']) || Dir.getwd)
+    relative_path = File.join(File.dirname(__FILE__), '../..')
+    self.root = Pathname.new(File.expand_path(relative_path))
   end
   private_class_method :configure_root
 end

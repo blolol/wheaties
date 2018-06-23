@@ -1,0 +1,11 @@
+development:
+  clients:
+    default:
+      database: wheaties_development
+      hosts:
+        - localhost:27017
+
+production:
+  clients:
+    default:
+      uri: '<%= ENV['MONGODB_URL'] %>'
