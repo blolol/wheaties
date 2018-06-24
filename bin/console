@@ -8,6 +8,5 @@ Dotenv.load
 $:.unshift File.join(File.dirname(__FILE__), '../lib')
 require 'wheaties'
 
-require 'irb'
-require 'irb/completion'
-IRB.start
+require 'pry'
+binding.pry(quiet: true)

@@ -8,6 +8,7 @@ gem 'connection_pool', '~> 2.2.2'
 gem 'dotenv'
 gem 'harby', '~> 1.2.0'
 gem 'mongoid', '~> 7.0.1'
+gem 'pry'
 gem 'redis', '~> 4.0.1'
 
 group :commands do
