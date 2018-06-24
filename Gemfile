@@ -9,6 +9,7 @@ gem 'dotenv'
 gem 'harby', '~> 1.2.0'
 gem 'mongoid', '~> 7.0.1'
 gem 'pry'
+gem 'rake'
 gem 'redis', '~> 4.0.1'
 
 group :commands do
