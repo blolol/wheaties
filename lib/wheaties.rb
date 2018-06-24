@@ -9,6 +9,8 @@ require 'wheaties/commands/random_line_command'
 require 'wheaties/commands/ruby_command'
 require 'wheaties/commands/yaml_command'
 
+require 'wheaties/core_ext/enumerable'
+
 require 'wheaties/events/assignment_event'
 require 'wheaties/events/base_event'
 require 'wheaties/events/command_event'
@@ -45,5 +47,6 @@ require 'wheaties/ruby_invocation_result'
 require 'wheaties/subcommand_invocation'
 require 'wheaties/syntax_error_result'
 require 'wheaties/version'
+require 'wheaties/weighted_random'
 
 require 'wheaties/boot'
