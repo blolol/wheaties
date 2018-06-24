@@ -1,5 +1,7 @@
 require 'pathname'
 
+require 'wheaties/cinch_ext/target'
+
 require 'wheaties/concerns/command_assignable'
 
 require 'wheaties/commands/built_in_command'
