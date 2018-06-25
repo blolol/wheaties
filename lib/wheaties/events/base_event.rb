@@ -31,13 +31,13 @@ module Wheaties
       raise('This method should be implemented by subclasses')
     end
 
+    def invoke_command(command)
+      CommandInvocation.new(@message, command, arguments, event: event).invoke
+    end
+
     def invoke_command_in_thread(command)
       arguments = []
-
-      thread = Thread.new do
-        CommandInvocation.new(@message, command, arguments, event: event).invoke
-      end
-
+      thread = Thread.new { invoke_command(command) }
       @thread_group.add(thread)
     end
 
