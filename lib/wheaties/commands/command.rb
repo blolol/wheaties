@@ -25,9 +25,9 @@ class Command
   before_create :generate_url_title
 
   def self.find_by_name(name)
-    command_cache.get(name)
+    command_cache.get(name) || not_found!(name)
   rescue Mongoid::Errors::DocumentNotFound
-    raise Wheaties::CommandNotFoundError.new(command_name: name)
+    not_found!(name)
   end
 
   def self.find_by_regex(input)
@@ -62,6 +62,11 @@ class Command
     Thread.current[:wheaties_command_cache] ||= Wheaties::CommandCache.new
   end
   private_class_method :command_cache
+
+  def self.not_found!(name)
+    raise(Wheaties::CommandNotFoundError.new(command_name: name))
+  end
+  private_class_method :not_found!
 
   def generate_description
     self.desc = body.lines.first.strip
