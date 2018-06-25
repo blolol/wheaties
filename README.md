@@ -8,7 +8,7 @@ Wheaties is Blolol's resident chat bot. Users program him on the fly using a com
 
 You can run Wheaties using Docker. There's also a Docker Compose config that will run MongoDB and Redis.
 
-To configure Wheaties, use any of Docker's methods for setting the container environment. The included Docker Compose config automatically attempts to read from a file named `docker.env`. See "Configuration", below, for details about the supported environment variables.
+To configure Wheaties, use any of Docker's methods for setting the container environment. The included Docker Compose config automatically attempts to read from a file named `docker.env`. See "[Configuration](#configuration)", below, for details about the supported environment variables.
 
 ```sh
 docker build -t wheaties . # Build manually
@@ -36,7 +36,7 @@ First, install the Ruby gem dependencies using Bundler.
 bundle install
 ```
 
-Configure Wheaties with environment variables. See "Configuration", below, for details.
+Configure Wheaties with environment variables. See "[Configuration](#configuration)", below, for details.
 
 ```sh
 cp .env.example .env
@@ -48,7 +48,7 @@ To start Wheaties, simply run `bin/wheaties`. He'll attempt to connect to MongoD
 bin/wheaties
 ```
 
-You can also run `bin/console` to start an IRB REPL with Wheaties' environment loaded, which can be useful for interacting manually with commands.
+You can also run `bin/console` to start a Pry REPL with Wheaties' environment loaded, which can be useful for interacting manually with commands.
 
 ### Configuration
 
@@ -56,21 +56,21 @@ Wheaties can be configured using the following environment variables.
 
 | Name | Required? | Description |
 |------|-----------|-------------|
-| `BUGSNAG_API_KEY` | Required | API key for reporting errors to [Bugsnag](https://www.bugsnag.com) |
+| `BUGSNAG_API_KEY` | **Required** | API key for reporting errors to [Bugsnag](https://www.bugsnag.com) |
 | `COMMAND_PREFIX` | Optional | Prefix for triggering commands (default: ".") |
-| `IRC_CHANNELS` | Required | Comma-separated list of IRC channels to join |
+| `IRC_CHANNELS` | **Required** | Comma-separated list of IRC channels to join |
 | `IRC_MESSAGES_PER_SECOND` | Optional | Maximum messages per second to send to the IRC server |
-| `IRC_NICK` | Required | IRC nickname |
+| `IRC_NICK` | **Required** | IRC nickname |
 | `IRC_PASS` | Optional | IRC server password |
-| `IRC_PORT` | Required | IRC server port |
-| `IRC_REALNAME` | Required | IRC real name |
-| `IRC_SERVER` | Required | IRC server address |
+| `IRC_PORT` | **Required** | IRC server port |
+| `IRC_REALNAME` | **Required** | IRC real name |
+| `IRC_SERVER` | **Required** | IRC server address |
 | `IRC_SSL` | Optional | Set to `true` to connect using SSL/TLS |
 | `IRC_SSL_VERIFY` | Optional | Set to `false` to skip TLS certificate verification |
-| `IRC_USER` | Required | IRC server username |
+| `IRC_USER` | **Required** | IRC server username |
 | `MONGODB_URL` | Optional | Mongoid connection URL |
 | `REDIS_URL` | Optional | Redis connection URL |
-| `WHEATIES_BASE_URL` | Required | The base URL to Wheaties' web interface |
+| `WHEATIES_BASE_URL` | **Required** | The base URL to Wheaties' web interface |
 | `WHEATIES_ENV` | Optional | The environment to use (`development`, `staging`, `production`) |
 
 ## License
