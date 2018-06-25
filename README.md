@@ -4,17 +4,60 @@ Wheaties is Blolol's resident chat bot. Users program him on the fly using a com
 
 ## Installation
 
-To install Wheaties, you'll need Ruby and [Bundler](https://bundler.io). First, install the Ruby gem dependencies.
+### Using Docker
+
+You can run Wheaties using Docker. There's also a Docker Compose config that will run MongoDB and Redis.
+
+To configure Wheaties, use any of Docker's methods for setting the container environment. The included Docker Compose config automatically attempts to read from a file named `docker.env`. See "Configuration", below, for details about the supported environment variables.
+
+```sh
+docker build -t wheaties . # Build manually
+bundle exec rake docker:build # Or use the Rake task, which automatically tags the correct version
+
+docker run --rm -i --env-file=docker.env wheaties # Run a one-off container
+bundle exec rake docker:run # Or use the Rake task to do the same thing
+
+docker-compose up # Bring up MongoDB, Redis and Wheaties using Docker Compose
+bundle exec rake docker:mongo:restore[path/to/mongo/dump] # Restore a MongoDB dump to the Compose MongoDB container
+```
+
+### From Source
+
+To run Wheaties from source, you'll need:
+
+* Ruby >= 2.5.1
+* [Bundler](https://bundler.io)
+* MongoDB >= 3.6
+* Redis >= 4.0
+
+First, install the Ruby gem dependencies using Bundler.
 
 ```sh
 bundle install
 ```
 
-Configure Wheaties with environment variables. See `.env.example` for examples.
+Configure Wheaties with environment variables. See "Configuration", below, for details.
+
+```sh
+cp .env.example .env
+```
+
+To start Wheaties, simply run `bin/wheaties`. He'll attempt to connect to MongoDB and Redis running on `localhost` on their default ports. You can override this behavior by setting `MONGODB_URL` and `REDIS_URL`.
+
+```sh
+bin/wheaties
+```
+
+You can also run `bin/console` to start an IRB REPL with Wheaties' environment loaded, which can be useful for interacting manually with commands.
+
+### Configuration
+
+Wheaties can be configured using the following environment variables.
 
 | Name | Required? | Description |
 |------|-----------|-------------|
 | `BUGSNAG_API_KEY` | Required | API key for reporting errors to [Bugsnag](https://www.bugsnag.com) |
+| `COMMAND_PREFIX` | Optional | Prefix for triggering commands (default: ".") |
 | `IRC_CHANNELS` | Required | Comma-separated list of IRC channels to join |
 | `IRC_MESSAGES_PER_SECOND` | Optional | Maximum messages per second to send to the IRC server |
 | `IRC_NICK` | Required | IRC nickname |
@@ -25,16 +68,10 @@ Configure Wheaties with environment variables. See `.env.example` for examples.
 | `IRC_SSL` | Optional | Set to `true` to connect using SSL/TLS |
 | `IRC_SSL_VERIFY` | Optional | Set to `false` to skip TLS certificate verification |
 | `IRC_USER` | Required | IRC server username |
-| `MONGOID_ENV` | Required | The Mongoid config environment to use (`development` or `production`) |
+| `MONGODB_URL` | Optional | Mongoid connection URL |
+| `MONGOID_ENV` | Required | The Mongoid config environment to use (`development`, `staging`, `production`) |
+| `REDIS_URL` | Optional | Redis connection URL |
 | `WHEATIES_BASE_URL` | Required | The base URL to Wheaties' web interface |
-
-To start Wheaties, simply run `bin/wheaties`.
-
-```sh
-bin/wheaties
-```
-
-You can also run `bin/console` to start an IRB REPL with Wheaties' environment loaded, which can be useful for interacting manually with commands.
 
 ## License
 

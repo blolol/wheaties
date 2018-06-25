@@ -1,11 +1,16 @@
 development:
   clients:
     default:
-      database: wheaties_development
-      hosts:
-        - localhost:27017
+      uri: '<%= ENV.fetch('MONGODB_URL', 'mongodb://localhost:27017/wheaties_development') %>'
+  options:
+    log_level: :debug
 
 production:
+  clients:
+    default:
+      uri: '<%= ENV['MONGODB_URL'] %>'
+
+staging:
   clients:
     default:
       uri: '<%= ENV['MONGODB_URL'] %>'
