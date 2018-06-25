@@ -24,6 +24,8 @@ bot = Cinch::Bot.new do
   end
 end
 
-Bugsnag.configuration.logger = Wheaties::BugsnagLogger.new(bot)
+Bugsnag.configuration.logger = Wheaties::Logger.new(bot)
+Mongo::Logger.logger = Wheaties::Logger.new(bot)
+Mongoid.logger = Wheaties::Logger.new(bot)
 
 bot.start
