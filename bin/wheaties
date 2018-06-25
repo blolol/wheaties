@@ -8,7 +8,7 @@ Dotenv.load
 $:.unshift File.join(File.dirname(__FILE__), '../lib')
 require 'wheaties'
 
-bot = Cinch::Bot.new do
+Wheaties.bot = Cinch::Bot.new do
   configure do |c|
     c.channels = ENV['IRC_CHANNELS'].split(',')
     c.messages_per_second = Integer(ENV['IRC_MESSAGES_PER_SECOND'] || 1)
@@ -24,8 +24,5 @@ bot = Cinch::Bot.new do
   end
 end
 
-Bugsnag.configuration.logger = Wheaties::Logger.new(bot)
-Mongo::Logger.logger = Wheaties::Logger.new(bot)
-Mongoid.logger = Wheaties::Logger.new(bot)
-
-bot.start
+Wheaties.configure
+Wheaties.start

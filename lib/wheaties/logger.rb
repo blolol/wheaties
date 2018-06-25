@@ -1,9 +1,5 @@
 module Wheaties
   class Logger
-    def initialize(bot)
-      @logger = bot.loggers
-    end
-
     def debug(name, &block)
       log(:debug, name, &block)
     end
@@ -36,6 +32,10 @@ module Wheaties
       true
     end
 
+    def level=(level)
+      logger.level = level
+    end
+
     def log(level, name, &block)
       messages = if block_given?
         Array(block.call).map { |message| "#{name} #{message}" }
@@ -43,7 +43,7 @@ module Wheaties
         Array(name)
       end
 
-      @logger.log(messages, level.to_sym)
+      logger.log(messages, level.to_sym)
     end
 
     def warn(name, &block)
@@ -52,6 +52,12 @@ module Wheaties
 
     def warn?
       true
+    end
+
+    private
+
+    def logger
+      @logger ||= Wheaties.bot.loggers
     end
   end
 end

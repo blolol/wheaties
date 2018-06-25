@@ -69,9 +69,9 @@ Wheaties can be configured using the following environment variables.
 | `IRC_SSL_VERIFY` | Optional | Set to `false` to skip TLS certificate verification |
 | `IRC_USER` | Required | IRC server username |
 | `MONGODB_URL` | Optional | Mongoid connection URL |
-| `MONGOID_ENV` | Required | The Mongoid config environment to use (`development`, `staging`, `production`) |
 | `REDIS_URL` | Optional | Redis connection URL |
 | `WHEATIES_BASE_URL` | Required | The base URL to Wheaties' web interface |
+| `WHEATIES_ENV` | Optional | The environment to use (`development`, `staging`, `production`) |
 
 ## License
 

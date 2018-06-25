@@ -31,6 +31,7 @@ require 'wheaties/helpers/message_helpers'
 require 'wheaties/helpers/storage_helpers'
 require 'wheaties/helpers/version_helpers'
 
+require 'wheaties/boot'
 require 'wheaties/bugsnag_notifier'
 require 'wheaties/cinch_plugin'
 require 'wheaties/command_cache'
@@ -50,5 +51,3 @@ require 'wheaties/subcommand_invocation'
 require 'wheaties/syntax_error_result'
 require 'wheaties/version'
 require 'wheaties/weighted_random'
-
-require 'wheaties/boot'

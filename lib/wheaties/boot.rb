@@ -1,13 +1,20 @@
 module Wheaties
   class << self
-    attr_accessor :redis, :root
+    attr_accessor :bot, :env, :logger, :redis, :root
   end
 
-  def self.boot
+  def self.configure
     configure_root
+    configure_logger
+    configure_environment
     configure_bugsnag
     configure_redis
     configure_mongoid
+    load_environment
+  end
+
+  def self.start
+    bot.start
   end
 
   private
@@ -18,14 +25,25 @@ module Wheaties
       config.app_type = 'cinch'
       config.app_version = Wheaties::VERSION
       config.notify_release_stages = %w(production staging)
+      config.logger = Wheaties.logger
       config.project_root = File.expand_path(File.join(File.dirname(__FILE__), '../..'))
-      config.release_stage = ENV.fetch('WHEATIES_ENV', 'development')
+      config.release_stage = self.env
     end
   end
   private_class_method :configure_bugsnag
 
+  def self.configure_environment
+    self.env = ActiveSupport::StringInquirer.new(ENV.fetch('WHEATIES_ENV', 'development'))
+  end
+  private_class_method :configure_environment
+
+  def self.configure_logger
+    self.logger ||= Wheaties::Logger.new
+  end
+  private_class_method :configure_logger
+
   def self.configure_mongoid
-    Mongoid.load!(root.join('config/mongoid.yml').to_s)
+    Mongoid.load!(root.join('config/mongoid.yml').to_s, Wheaties.env)
   end
   private_class_method :configure_mongoid
 
@@ -39,6 +57,10 @@ module Wheaties
     self.root = Pathname.new(File.expand_path(relative_path))
   end
   private_class_method :configure_root
-end
 
-Wheaties.boot
+  def self.load_environment
+    environment_config = self.root.join('config/environments', self.env)
+    require environment_config.to_s
+  end
+  private_class_method :load_environment
+end
