@@ -6,6 +6,10 @@ module Wheaties
       InvocationEnvironment::BUILT_IN_COMMANDS.sort.join(', ')
     end
 
+    def env
+      Wheaties.env
+    end
+
     # Halts execution of the current command, returning an optional value.
     def halt(return_value = nil)
       throw(stack.last, return_value)

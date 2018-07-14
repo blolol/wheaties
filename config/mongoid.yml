@@ -14,3 +14,10 @@ staging:
   clients:
     default:
       uri: '<%= ENV['MONGODB_URL'] %>'
+
+test:
+  clients:
+    default:
+      uri: '<%= ENV['MONGODB_URL'] %>'
+  options:
+    log_level: :debug

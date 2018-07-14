@@ -34,6 +34,7 @@ module Wheaties
 
   def self.configure_environment
     self.env = ActiveSupport::StringInquirer.new(ENV.fetch('WHEATIES_ENV', 'development'))
+    logger.info("Loading #{env} environment")
   end
   private_class_method :configure_environment
 
@@ -43,7 +44,7 @@ module Wheaties
   private_class_method :configure_logger
 
   def self.configure_mongoid
-    Mongoid.load!(root.join('config/mongoid.yml').to_s, Wheaties.env)
+    Mongoid.load!(root.join('config/mongoid.yml').to_s, self.env)
   end
   private_class_method :configure_mongoid
 
