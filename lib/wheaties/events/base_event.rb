@@ -32,11 +32,11 @@ module Wheaties
     end
 
     def invoke_command(command)
+      arguments = []
       CommandInvocation.new(@message, command, arguments, event: event).invoke
     end
 
     def invoke_command_in_thread(command)
-      arguments = []
       thread = Thread.new { invoke_command(command) }
       @thread_group.add(thread)
     end
