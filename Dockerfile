@@ -1,6 +1,6 @@
 FROM ruby:2.5.1-alpine3.7
 
-RUN apk add --no-cache build-base
+RUN apk add --no-cache build-base tzdata
 
 # Throw error if Gemfile has been modified since Gemfile.lock
 RUN bundle config --global frozen 1
