@@ -41,12 +41,12 @@ module Wheaties
 
     def alert_channel
       if event?
-        event_command_updater.safe_send("#{self.class.emoji} #{a_or_an} #{error_class_name} was " \
-          "raised on line #{most_recent_trace.lineno} of “#{most_recent_trace.path}” while " \
-          "running “#{event_command.name}”, which was last updated by you.")
+        event_command_updater.safe_send("#{emoji} #{a_or_an} #{error_class_name} was raised on " \
+          "line #{most_recent_trace.lineno} of “#{most_recent_trace.path}” while running " \
+          "“#{event_command.name}”, which was last updated by you.")
       else
-        @message.safe_reply("#{self.class.emoji} #{a_or_an} #{error_class_name} was raised on " \
-          "line #{most_recent_trace.lineno} of “#{most_recent_trace.path}”. I'll PM you more " \
+        @message.safe_reply("#{emoji} #{a_or_an} #{error_class_name} was raised on line " \
+          "#{most_recent_trace.lineno} of “#{most_recent_trace.path}”. I'll PM you more " \
           'details.', true)
       end
 
