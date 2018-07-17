@@ -1,16 +1,17 @@
 module Wheaties
-  class SyntaxErrorResult
+  class SyntaxErrorResult < ErrorResult
     # Constants
     SYNTAX_ERROR_PATTERN = /^(?<command_name>.+):(?<line_number>\d+): syntax error, (?<message>.*)$/
 
     def initialize(invocation, error)
-      @invocation = invocation
-      @error = error
+      super
       parse_error_message
     end
 
     def reply_to_chat(message)
       @message = message
+
+      notify_bugsnag
 
       if event?
         event_command_updater&.safe_send(event_explanation)
@@ -19,15 +20,7 @@ module Wheaties
       end
     end
 
-    def ruby_value
-      nil
-    end
-
     private
-
-    def bot
-      @message.bot
-    end
 
     def command_explanation
       if parsed?
@@ -40,22 +33,6 @@ module Wheaties
 
     def command_with_syntax_error
       Command.find_by_name(@command_name)
-    end
-
-    def emoji
-      ErrorResult.emoji
-    end
-
-    def event?
-      @invocation.event != :command
-    end
-
-    def event_command
-      @event_command ||= @invocation.stack.first
-    end
-
-    def event_command_updater
-      bot.user_list.find(event_command.updated_by)
     end
 
     def event_explanation
@@ -74,6 +51,10 @@ module Wheaties
           'response to an event, and a Ruby syntax error was raised: ' \
           "#{@error.message.lines.first} #{event_command.url}"
       end
+    end
+
+    def notify_bugsnag
+      super(severity: 'info')
     end
 
     def parse_error_message

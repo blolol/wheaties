@@ -3,10 +3,6 @@ module Wheaties
     # Constants
     EMOJI = %w(🤮 😱 😫 😬 ☹️ 😧 🤢 😵 🤕 🤯 😢 😭 💩 🙊 🌚)
 
-    def self.emoji
-      EMOJI.sample
-    end
-
     def initialize(invocation, error)
       @invocation = invocation
       @error = error
@@ -20,7 +16,7 @@ module Wheaties
         notify_bugsnag
         alert_channel_about_internal_error
       else
-        notify_bugsnag(severity: 'info') if event?
+        notify_bugsnag(severity: 'info')
         alert_channel_or_log_error
       end
     end
@@ -91,6 +87,10 @@ module Wheaties
 
     def command_url(command, line:)
       "#{command.url}\#L#{line}"
+    end
+
+    def emoji
+      EMOJI.sample
     end
 
     def error_class_name
