@@ -53,7 +53,7 @@ class Command
   end
 
   def url
-    "#{ENV['WHEATIES_BASE_URL']}/commands/#{url_title}"
+    "#{ENV['WHEATIES_BASE_URL']}/c/#{url_title}"
   end
 
   private
