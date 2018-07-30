@@ -67,7 +67,7 @@ module Wheaties
       log_error_and_notify_bugsnag(error, message)
     end
 
-    def on_leave(message)
+    def on_leave(message, user)
       unless bot_caused_event?(message)
         LeaveEvent.new(message).run
       end
