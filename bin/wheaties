@@ -18,6 +18,7 @@ Wheaties.bot = Cinch::Bot.new do
     c.port = Integer(ENV['IRC_PORT'])
     c.realname = ENV['IRC_REALNAME']
     c.server = ENV['IRC_SERVER']
+    c.server_queue_size = Integer(ENV['IRC_SERVER_QUEUE_SIZE'] || 10)
     c.ssl.use = ENV['IRC_SSL'] == 'true'
     c.ssl.verify = ENV.fetch('IRC_SSL_VERIFY', 'true') == 'true'
     c.user = ENV['IRC_USER']
