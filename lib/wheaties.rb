@@ -1,5 +1,6 @@
 require 'pathname'
 
+require 'wheaties/cinch_ext/message_queue'
 require 'wheaties/cinch_ext/target'
 
 require 'wheaties/concerns/command_assignable'
