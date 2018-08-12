@@ -35,7 +35,7 @@ module Wheaties
         {}
       end
 
-      options.reverse_merge!(count: 1, weights: Array.new(@enumerable.length, 1), unique: true)
+      options.reverse_merge!(count: 1, weights: Array.new(@enumerable.to_a.length, 1), unique: true)
 
       if block_given?
         weights = @enumerable.map { |object| yield(object) }
@@ -56,13 +56,12 @@ module Wheaties
           cutoff -= weight
         end
 
-        return @enumerable.shuffle.first # Fallback if zip doesn't return
+        return @enumerable.sample # Fallback if zip doesn't return
       else
         if options[:unique]
           randomize(options[:weights])[0...options[:count]]
         else
-          pool = randomize(options[:weights])
-          Array.new(options[:count]) { pool.random }
+          Array.new(options[:count]) { random(count: 1, weights: options[:weights]) }
         end
       end
     end
@@ -82,7 +81,7 @@ module Wheaties
       result = []
 
       until list.empty?
-        result << list.random(count: 1, weights: weights)
+        result << self.class.new(list).random(weights: weights)
         weights.delete_at(list.index(result.last))
         list.delete(result.last)
       end

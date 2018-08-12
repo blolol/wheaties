@@ -19,3 +19,7 @@ group :commands do
   gem 'nokogiri', '~> 1.8.3'
   gem 'twitter', '~> 4.8.1'
 end
+
+group :test do
+  gem 'rspec', '~> 3.7.0'
+end
