@@ -2,6 +2,7 @@ module Wheaties
   module CommandAssignable
     def assign_value(value, message)
       self.body << "\n#{value}"
+      self.body.strip!
 
       if save
         message.reply("Okay, “#{name}” is now #{value}", true)
