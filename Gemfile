@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.6.1'
+ruby '2.7.0'
 
 gem 'activesupport', '~> 5.2.0', require: 'active_support/all'
 gem 'bugsnag', '~> 6.7.3'
@@ -8,7 +8,6 @@ gem 'connection_pool', '~> 2.2.2'
 gem 'dotenv'
 gem 'harby', '~> 1.2.0'
 gem 'mongoid', '~> 7.0.1'
-gem 'pry'
 gem 'rake'
 gem 'redis', '~> 4.0.1'
 
@@ -18,6 +17,10 @@ group :commands do
   gem 'httparty', '~> 0.16.2'
   gem 'nokogiri', '~> 1.8.3'
   gem 'twitter', '~> 4.8.1'
+end
+
+group :development do
+  gem 'pry'
 end
 
 group :test do
