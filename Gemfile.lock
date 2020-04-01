@@ -41,7 +41,7 @@ GEM
     i18n (1.0.1)
       concurrent-ruby (~> 1.0)
     method_source (0.9.0)
-    mini_portile2 (2.3.0)
+    mini_portile2 (2.4.0)
     minitest (5.11.3)
     mongo (2.5.3)
       bson (>= 4.3.0, < 5.0.0)
@@ -51,8 +51,8 @@ GEM
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
-    nokogiri (1.8.3)
-      mini_portile2 (~> 2.3.0)
+    nokogiri (1.10.8)
+      mini_portile2 (~> 2.4.0)
     numerizer (0.1.1)
     polyglot (0.3.5)
     pry (0.11.3)
@@ -102,7 +102,7 @@ DEPENDENCIES
   http (~> 3.3.0)
   httparty (~> 0.16.2)
   mongoid (~> 7.0.1)
-  nokogiri (~> 1.8.3)
+  nokogiri (~> 1.10.8)
   pry
   rake
   redis (~> 4.0.1)
