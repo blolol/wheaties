@@ -1,26 +1,31 @@
 source 'https://rubygems.org'
-ruby '2.7.0'
+ruby '2.7.1'
 
-gem 'activesupport', '~> 5.2.0', require: 'active_support/all'
-gem 'bugsnag', '~> 6.7.3'
+gem 'activesupport', '~> 5.2.4', require: 'active_support/all'
+gem 'bugsnag', '~> 6.13.0'
 gem 'cinch', '~> 2.3.4'
 gem 'connection_pool', '~> 2.2.2'
 gem 'dotenv'
 gem 'harby', '~> 1.2.0'
-gem 'mongoid', '~> 7.0.1'
+gem 'mongoid', '~> 7.0'
+gem 'pry'
 gem 'rake'
-gem 'redis', '~> 4.0.1'
+gem 'redis', '~> 4.1.3'
+
+# These gems are dependencies of polyglot 0.3.5, which is a dependency
+# of treetop 1.6.x, which is a dependency of harby 1.2. They were
+# removed from Ruby's standard library in Ruby 2.7, and released as gems.
+# If polyglot is updated to specify the gems as dependencies, then these
+# explicit dependencies can be removed from Wheaties' Gemfile.
+gem 'e2mmap'
+gem 'thwait'
 
 group :commands do
   gem 'chronic_duration', '~> 0.10.6'
-  gem 'http', '~> 3.3.0'
-  gem 'httparty', '~> 0.16.2'
-  gem 'nokogiri', '~> 1.10.8'
-  gem 'twitter', '~> 4.8.1'
-end
-
-group :development do
-  gem 'pry'
+  gem 'http', '~> 4.4.1'
+  gem 'httparty', '~> 0.18.0'
+  gem 'nokogiri', '~> 1.10.9'
+  gem 'twitter', '~> 7.0.0'
 end
 
 group :test do
