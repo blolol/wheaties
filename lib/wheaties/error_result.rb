@@ -137,6 +137,12 @@ module Wheaties
       BugsnagNotifier.new(@error, @message, severity: severity, wheaties_tab: wheaties_tab).notify
     end
 
+    def relevant_traces
+      @relevant_traces ||= (@error&.backtrace_locations || []).select do |location|
+        !location.path.starts_with?('/') && location.path != '(eval)'
+      end.reverse
+    end
+
     def send_more_details_to_user
       detail_target.safe_send("Here's the trace of the #{error_class_name} that occurred " \
         '(most recent last):')
@@ -157,21 +163,19 @@ module Wheaties
       end
 
       # Include error message with last trace
-      trace_message = "#{index}. #{error_class_name} on line #{most_recent_trace.lineno} in " \
-        "“#{most_recent_trace.path}”: #{@error.message}"
+      trace_message = if most_recent_trace
+        "#{index}. #{error_class_name} on line #{most_recent_trace.lineno} in " \
+          "“#{most_recent_trace.path}”: #{@error.message}"
+      else
+        "#{index}. #{error_class_name}: #{@error.message}"
+      end
 
-      if command_exists?(most_recent_trace.path)
+      if most_recent_trace && command_exists?(most_recent_trace.path)
         command = Command.find_by_name(most_recent_trace.path)
         trace_message << " #{command_url(command, line: most_recent_trace.lineno)}"
       end
 
       detail_target.safe_send(trace_message)
-    end
-
-    def relevant_traces
-      @relevant_traces ||= @error.backtrace_locations.select do |location|
-        !location.path.starts_with?('/') && location.path != '(eval)'
-      end.reverse
     end
   end
 end
