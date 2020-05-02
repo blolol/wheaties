@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/blolol/cinch.git
-  revision: 0b937dbbfa3810b58913f1646da46377e5348c7d
+  revision: 745108e75811e13e67443bc147783c057bbaf844
   branch: wheaties
   specs:
-    cinch (2.3.1)
+    cinch (2.3.5)
 
 GEM
   remote: https://rubygems.org/
