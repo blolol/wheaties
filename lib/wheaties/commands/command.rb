@@ -49,7 +49,7 @@ class Command
   end
 
   def update_usage_stats(used_by:)
-    update_attributes(used_at: Time.current, used_by: used_by, uses: uses + 1)
+    timeless.update_attributes(used_at: Time.current, used_by: used_by, uses: uses + 1)
   end
 
   def url
