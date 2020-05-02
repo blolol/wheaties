@@ -3,7 +3,7 @@ ruby '2.7.1'
 
 gem 'activesupport', '~> 5.2.4', require: 'active_support/all'
 gem 'bugsnag', '~> 6.13.0'
-gem 'cinch', '~> 2.3.4'
+gem 'cinch', github: 'blolol/cinch', branch: 'wheaties'
 gem 'connection_pool', '~> 2.2.2'
 gem 'dotenv'
 gem 'harby', '~> 1.2.0'
