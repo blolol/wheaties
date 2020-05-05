@@ -8,7 +8,7 @@ class RandomLineCommand < Command
   private
 
   def random_line
-    body.lines.sample
+    body.lines.sample.strip
   end
 
   class RandomLineInvocationResult
