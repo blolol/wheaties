@@ -34,10 +34,9 @@ module Wheaties
     def unformat(text = '')
       Cinch::Formatting.unformat(text)
     end
+    alias_method :uf, :unformat
     alias_method :plain, :unformat
     alias_method :pl, :unformat
-    alias_method :uncolor, :unformat
-    alias_method :uc, :unformat
 
     COLORS.each do |color_name|
       define_method(color_name) do |text|
