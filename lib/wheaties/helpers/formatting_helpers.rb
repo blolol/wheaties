@@ -21,6 +21,16 @@ module Wheaties
     end
     alias_method :i, :italic
 
+    def invert(text = '')
+      Cinch::Formatting.format(:reverse, text)
+    end
+    alias_method :inv, :invert
+
+    def underline(text = '')
+      Cinch::Formatting.format(:underline, text)
+    end
+    alias_method :ul, :underline
+
     def unformat(text = '')
       Cinch::Formatting.unformat(text)
     end

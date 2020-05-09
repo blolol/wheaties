@@ -11,7 +11,8 @@ module Wheaties
 
     # Constants
     BUILT_IN_COMMANDS = %i(b bold builtins co color decrement del env get help hget hset i increment
-      italic jget jset pl plain set uc uncolor unformat version) + FormattingHelpers::COLORS
+      invert inv italic jget jset pl plain set uc uncolor underline ul unformat version) +
+      FormattingHelpers::COLORS
 
     def self.built_in_command?(name)
       BUILT_IN_COMMANDS.include?(name.downcase.to_sym)
