@@ -14,7 +14,7 @@ module Wheaties
       redis.get(key) || default
     end
 
-    def hexists(key, field)
+    def hexists?(key, field)
       redis.hexists(key, field)
     end
 
