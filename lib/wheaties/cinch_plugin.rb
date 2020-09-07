@@ -4,7 +4,14 @@ module Wheaties
 
     # Constants
     COMMAND_PREFIX = ENV.fetch('COMMAND_PREFIX', '.')
-    COMMAND_PATTERN = /\A#{Regexp.escape(COMMAND_PREFIX)}(?<name>\S+)(\s*(?<arguments>.*))/
+    COMMAND_PATTERN = /
+      \A#{Regexp.escape(COMMAND_PREFIX)}
+      (?<name>
+        (?!#{Regexp.escape(COMMAND_PREFIX)}) # Command name cannot start with the prefix
+        \S+
+      )
+      (\s*(?<arguments>.*))
+    /x
 
     # Events
     listen_to :connect, method: :on_connect
