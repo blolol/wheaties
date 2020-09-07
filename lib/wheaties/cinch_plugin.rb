@@ -5,12 +5,18 @@ module Wheaties
     # Constants
     COMMAND_PREFIX = ENV.fetch('COMMAND_PREFIX', '.')
     COMMAND_PATTERN = /
-      \A#{Regexp.escape(COMMAND_PREFIX)}
+      #{Regexp.escape(COMMAND_PREFIX)}
       (?<name>
         (?!#{Regexp.escape(COMMAND_PREFIX)}) # Command name cannot start with the prefix
         \S+
       )
       (\s*(?<arguments>.*))
+    /x
+    IRC_COMMAND_INVOCATION_PATTERN = /\A#{COMMAND_PATTERN}/
+    MATTERBRIDGE_COMMAND_INVOCATION_PATTERN = /
+      \A\[(?<source>.*?)\]\s+
+      <(?<nick>.*?)>\s+
+      #{COMMAND_PATTERN}
     /x
 
     # Events
@@ -39,12 +45,21 @@ module Wheaties
       message.user == bot
     end
 
+    def matterbridge_command_invocation?(message)
+      message.user.user == 'matterbridge' &&
+        sanitize_message(message).match?(MATTERBRIDGE_COMMAND_INVOCATION_PATTERN)
+    end
+
     def command_assignment?(message)
       sanitize_message(message).match?(assignment_pattern)
     end
 
     def command_invocation?(message)
-      sanitize_message(message).match?(COMMAND_PATTERN)
+      irc_command_invocation?(message) || matterbridge_command_invocation?(message)
+    end
+
+    def irc_command_invocation?(message)
+      sanitize_message(message).match?(IRC_COMMAND_INVOCATION_PATTERN)
     end
 
     def log_error_and_notify_bugsnag(error, message)
