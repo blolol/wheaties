@@ -12,12 +12,7 @@ module Wheaties
       )
       (\s*(?<arguments>.*))
     /x
-    IRC_COMMAND_INVOCATION_PATTERN = /\A#{COMMAND_PATTERN}/
-    MATTERBRIDGE_COMMAND_INVOCATION_PATTERN = /
-      \A\[(?<source>.*?)\]\s+
-      <(?<nick>.*?)>\s+
-      #{COMMAND_PATTERN}
-    /x
+    COMMAND_INVOCATION_PATTERN = /\A#{COMMAND_PATTERN}/
 
     # Events
     listen_to :connect, method: :on_connect
@@ -46,8 +41,8 @@ module Wheaties
     end
 
     def matterbridge_command_invocation?(message)
-      message.user.user == 'matterbridge' &&
-        sanitize_message(message).match?(MATTERBRIDGE_COMMAND_INVOCATION_PATTERN)
+      message.user.user == ENV['MATTERBRIDGE_USER'] &&
+        sanitize_message(message).match?(MatterbridgeMessage::COMMAND_INVOCATION_PATTERN)
     end
 
     def command_assignment?(message)
@@ -59,7 +54,7 @@ module Wheaties
     end
 
     def irc_command_invocation?(message)
-      sanitize_message(message).match?(IRC_COMMAND_INVOCATION_PATTERN)
+      sanitize_message(message).match?(COMMAND_INVOCATION_PATTERN)
     end
 
     def log_error_and_notify_bugsnag(error, message)
@@ -99,8 +94,11 @@ module Wheaties
 
     def on_message(message)
       unless bot_caused_event?(message)
-        if command_invocation?(message)
+        if irc_command_invocation?(message)
           CommandEvent.new(message).run
+        elsif respond_to_matterbridge_commands? && matterbridge_command_invocation?(message)
+          matterbridge_message = MatterbridgeMessage.from(message)
+          CommandEvent.new(matterbridge_message).run
         elsif command_assignment?(message)
           AssignmentEvent.new(message).run
         else
@@ -117,6 +115,10 @@ module Wheaties
       end
     rescue => error
       log_error_and_notify_bugsnag(error, message)
+    end
+
+    def respond_to_matterbridge_commands?
+      ENV.include?('MATTERBRIDGE_USER')
     end
 
     def sanitize_message(message)
