@@ -4,8 +4,7 @@ module Wheaties
   class MatterbridgeMessage < ::Cinch::Message
     # Constants
     COMMAND_INVOCATION_PATTERN = /
-      \A\[(?<source>.*?)\]\s+
-      <(?<nick>.*?)>\s+
+      \A<(?<nick>.*?)>\s+
       #{CinchPlugin::COMMAND_PATTERN}
     /x
 
