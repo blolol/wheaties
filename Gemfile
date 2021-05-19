@@ -24,7 +24,7 @@ group :commands do
   gem 'chronic_duration', '~> 0.10.6'
   gem 'http', '~> 4.4.1'
   gem 'httparty', '~> 0.18.0'
-  gem 'nokogiri', '~> 1.10.9'
+  gem 'nokogiri', '~> 1.11.4'
   gem 'twitter', '~> 7.0.0'
 end
 
