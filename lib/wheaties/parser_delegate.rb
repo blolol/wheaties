@@ -1,12 +1,13 @@
 module Wheaties
   class ParserDelegate
-    def initialize(message)
+    def initialize(message, stack:)
       @message = message
+      @stack = stack
     end
 
     def call(command_name, arguments)
       command = find_command(command_name)
-      CommandInvocation.new(@message, command, arguments).result.ruby_value
+      CommandInvocation.new(@message, command, arguments, stack: @stack).result.ruby_value
     end
 
     private

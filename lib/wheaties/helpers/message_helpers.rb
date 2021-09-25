@@ -3,7 +3,7 @@ module Wheaties
     private
 
     def channel
-      @message.channel
+      message.channel
     end
 
     def command?
@@ -15,21 +15,21 @@ module Wheaties
     end
 
     def history
-      CinchPlugin.instance(bot).message_history.for(@message.target)
+      CinchPlugin.instance(bot).message_history.for(message.target)
     end
 
     def pm?
-      !@message.channel?
+      !message.channel?
     end
 
     # Provided for legacy compatibility with existing commands.
     def response
-      @response ||= ResponseShim.new(@message)
+      @response ||= ResponseShim.new(message)
     end
 
     # Provided for legacy compatibility with existing commands.
     def sender
-      @message.user
+      message.user
     end
 
     ResponseShim = Struct.new(:message) do

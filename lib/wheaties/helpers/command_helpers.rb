@@ -22,7 +22,7 @@ module Wheaties
     end
 
     def match
-      stack.last.find_by_regex_match_data
+      stack.last.command.find_by_regex_match_data
     end
 
     # Treats the currently-executing command's first argument as a subcommand, and attempts to
@@ -32,7 +32,7 @@ module Wheaties
     # rest of the arguments are passed to the subcommand.
     def subcommands!(&block)
       if args.first.to_s.match?(/\A[a-zA-Z0-9_-]+\z/)
-        SubcommandInvocation.new(@message, args, stack).invoke(&block)
+        SubcommandInvocation.new(message, args, stack).invoke(&block)
       end
     end
 

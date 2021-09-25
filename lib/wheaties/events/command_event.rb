@@ -23,7 +23,7 @@ module Wheaties
     end
 
     def command_invocation
-      CommandInvocation.new(@message, command, parsed_arguments)
+      CommandInvocation.new(@message, command, parsed_arguments, stack: stack)
     end
 
     def command_name
@@ -39,7 +39,7 @@ module Wheaties
     end
 
     def parser
-      ParserFactory.parser(@message)
+      ParserFactory.parser(@message, stack: stack)
     end
 
     def result
@@ -50,6 +50,10 @@ module Wheaties
 
     def sanitized_message
       Cinch::Helpers.sanitize(Cinch::Formatting.unformat(@message.message))
+    end
+
+    def stack
+      @stack ||= []
     end
 
     def unparsed_arguments
