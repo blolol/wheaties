@@ -25,7 +25,7 @@ bundle exec rake docker:mongo:restore[path/to/mongo/dump] # Restore a MongoDB du
 
 To run Wheaties from source, you'll need:
 
-* Ruby >= 2.5.1
+* Ruby >= 2.7.4
 * [Bundler](https://bundler.io)
 * MongoDB >= 3.6
 * Redis >= 4.0

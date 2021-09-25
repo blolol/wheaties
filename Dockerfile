@@ -1,6 +1,7 @@
-FROM ruby:2.5.1-alpine3.7
+FROM ruby:2.7.4-alpine
 
-RUN apk add --no-cache build-base tzdata
+# Git is required to fetch Ruby gems from Git repositories
+RUN apk add --no-cache build-base git tzdata
 
 # Throw error if Gemfile has been modified since Gemfile.lock
 RUN bundle config --global frozen 1

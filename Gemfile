@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
-ruby '2.7.1'
+ruby '2.7.4'
 
 gem 'activesupport', '~> 5.2.4', require: 'active_support/all'
 gem 'bugsnag', '~> 6.13.0'
-gem 'cinch', github: 'blolol/cinch', branch: 'wheaties'
+gem 'cinch', git: 'https://github.com/blolol/cinch', branch: 'wheaties'
 gem 'connection_pool', '~> 2.2.2'
 gem 'dotenv'
 gem 'harby', '~> 1.2.0'
@@ -24,7 +24,7 @@ group :commands do
   gem 'chronic_duration', '~> 0.10.6'
   gem 'http', '~> 4.4.1'
   gem 'httparty', '~> 0.18.0'
-  gem 'nokogiri', '~> 1.10.9'
+  gem 'nokogiri', '~> 1.12.4'
   gem 'twitter', '~> 7.0.0'
 end
 
