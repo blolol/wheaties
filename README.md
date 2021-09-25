@@ -65,6 +65,8 @@ Wheaties can be configured using the following environment variables.
 | `IRC_PORT` | **Required** | IRC server port |
 | `IRC_REALNAME` | **Required** | IRC real name |
 | `IRC_SERVER` | **Required** | IRC server address |
+| `IRC_SASL_PASS` | Optional | SASL authentication password |
+| `IRC_SASL_USER` | Optional | SASL authentication username |
 | `IRC_SSL` | Optional | Set to `true` to connect using SSL/TLS |
 | `IRC_SSL_VERIFY` | Optional | Set to `false` to skip TLS certificate verification |
 | `IRC_USER` | **Required** | IRC server username |

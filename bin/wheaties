@@ -17,6 +17,8 @@ Wheaties.bot = Cinch::Bot.new do
     c.plugins.plugins = [Wheaties::CinchPlugin]
     c.port = Integer(ENV['IRC_PORT'])
     c.realname = ENV['IRC_REALNAME']
+    c.sasl.username = ENV['IRC_SASL_USER']
+    c.sasl.password = ENV['IRC_SASL_PASS']
     c.server = ENV['IRC_SERVER']
     c.server_queue_size = Integer(ENV['IRC_SERVER_QUEUE_SIZE'] || 10)
     c.ssl.use = ENV['IRC_SSL'] == 'true'
