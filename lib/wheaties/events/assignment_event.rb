@@ -65,7 +65,7 @@ module Wheaties
     end
 
     def parser
-      ParserFactory.parser(@message)
+      ParserFactory.parser(@message, stack: [])
     end
 
     def sanitized_message
