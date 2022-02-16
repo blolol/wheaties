@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.7.4'
+ruby '2.7.5'
 
 gem 'activesupport', '~> 5.2.4', require: 'active_support/all'
 gem 'bugsnag', '~> 6.13.0'

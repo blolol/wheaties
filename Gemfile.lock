@@ -17,7 +17,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
-    bson (4.8.2)
+    bson (4.14.1)
     buftok (0.2.0)
     bugsnag (6.13.0)
       concurrent-ruby (~> 1.0)
@@ -62,8 +62,8 @@ GEM
     mime-types-data (3.2019.1009)
     mini_portile2 (2.6.1)
     minitest (5.14.1)
-    mongo (2.11.4)
-      bson (>= 4.4.2, < 5.0.0)
+    mongo (2.17.0)
+      bson (>= 4.8.2, < 5.0.0)
     mongoid (7.1.0)
       activemodel (>= 5.1, < 6.1)
       mongo (>= 2.7.0, < 3.0.0)
@@ -141,7 +141,7 @@ DEPENDENCIES
   twitter (~> 7.0.0)
 
 RUBY VERSION
-   ruby 2.7.4p191
+   ruby 2.7.5p203
 
 BUNDLED WITH
    2.1.4

@@ -1,4 +1,4 @@
-FROM ruby:2.7.4-alpine
+FROM ruby:2.7.5-alpine
 
 # Git is required to fetch Ruby gems from Git repositories
 RUN apk add --no-cache build-base git tzdata
