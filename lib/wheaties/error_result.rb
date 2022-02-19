@@ -55,7 +55,7 @@ module Wheaties
 
     def alert_channel_about_internal_error
       unless event?
-        @message.reply("#{self.class.emoji} #{a_or_an} #{error_class_name} was raised in my " \
+        @message.reply("#{emoji} #{a_or_an} #{error_class_name} was raised in my " \
           'code. The proper authorities have been notified so that it can be fixed. ' \
           "(Error ID: #{error_uuid})", true)
       end
