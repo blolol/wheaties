@@ -56,6 +56,9 @@ Wheaties can be configured using the following environment variables.
 
 | Name | Required? | Description |
 |------|-----------|-------------|
+| `BLOLOL_API_BASE_URL` | Optional | The base URL to Blolol's API (default: `https://api.blolol.com`) |
+| `BLOLOL_API_KEY` | **Required** | Blolol API key |
+| `BLOLOL_API_SECRET` | **Required** | Blolol API secret |
 | `BUGSNAG_API_KEY` | **Required** | API key for reporting errors to [Bugsnag](https://www.bugsnag.com) |
 | `COMMAND_PREFIX` | Optional | Prefix for triggering commands (default: ".") |
 | `FIND_COMMANDS_BY_REGEX` | Optional | Set to `true` to search for commands using regular expressions (default: true) |

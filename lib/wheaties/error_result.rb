@@ -106,7 +106,7 @@ module Wheaties
     end
 
     def event_command
-      @event_command ||= @invocation.stack.first
+      @event_command ||= @invocation.stack.first.command
     end
 
     def event_command_updater

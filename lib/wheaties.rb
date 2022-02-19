@@ -2,6 +2,7 @@ require 'pathname'
 
 require 'wheaties/cinch_ext/message_queue'
 require 'wheaties/cinch_ext/target'
+require 'wheaties/cinch_ext/user'
 
 require 'wheaties/concerns/command_assignable'
 
@@ -32,6 +33,7 @@ require 'wheaties/helpers/message_helpers'
 require 'wheaties/helpers/storage_helpers'
 require 'wheaties/helpers/version_helpers'
 
+require 'wheaties/blolol_user'
 require 'wheaties/boot'
 require 'wheaties/bugsnag_notifier'
 require 'wheaties/cinch_plugin'
