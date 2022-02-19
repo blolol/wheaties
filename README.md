@@ -58,6 +58,7 @@ Wheaties can be configured using the following environment variables.
 |------|-----------|-------------|
 | `BUGSNAG_API_KEY` | **Required** | API key for reporting errors to [Bugsnag](https://www.bugsnag.com) |
 | `COMMAND_PREFIX` | Optional | Prefix for triggering commands (default: ".") |
+| `FIND_COMMANDS_BY_REGEX` | Optional | Set to `true` to search for commands using regular expressions (default: true) |
 | `IRC_CHANNELS` | **Required** | Comma-separated list of IRC channels to join |
 | `IRC_MESSAGES_PER_SECOND` | Optional | Maximum messages per second to send to the IRC server |
 | `IRC_NICK` | **Required** | IRC nickname |

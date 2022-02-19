@@ -31,9 +31,15 @@ class Command
   end
 
   def self.find_by_regex(input)
+    return unless find_by_regex_enabled?
+
     where(regex: true).for_js('input.match(this.name)', input: input).first.tap do |command|
       command.find_by_regex_match_data = input.match(command.name) if command
     end
+  end
+
+  def self.find_by_regex_enabled?
+    ENV.fetch('FIND_COMMANDS_BY_REGEX', 'true') == 'true'
   end
 
   def assign_value(value, message)
