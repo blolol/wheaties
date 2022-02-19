@@ -40,6 +40,10 @@ module Wheaties
       self['longitude']
     end
 
+    def recognized?
+      response.ok?
+    end
+
     def relayed?
       cinch_user_relayed?
     end
