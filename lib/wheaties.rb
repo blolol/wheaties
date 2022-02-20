@@ -1,3 +1,4 @@
+require 'digest/sha2'
 require 'pathname'
 
 require 'wheaties/cinch_ext/message_queue'

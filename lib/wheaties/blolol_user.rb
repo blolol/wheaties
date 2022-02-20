@@ -16,12 +16,24 @@ module Wheaties
       self['aliases'] || []
     end
 
+    def authname_or_relayed_nick
+      if cinch_user.authed?
+        cinch_user.authname
+      elsif cinch_user_relayed?
+        relayed_nick
+      end
+    end
+
     def bot?
       roles.include?('bot')
     end
 
     def chat_username
       self['chat_username']
+    end
+
+    def hashed_authname_or_relayed_nick
+      @hashed_identifier ||= Digest::SHA256.hexdigest(authname_or_relayed_nick.downcase)
     end
 
     def id
@@ -116,15 +128,7 @@ module Wheaties
     end
 
     def request_url
-      "#{blolol_api_base_url}/v1/users/#{URI.escape(request_username)}"
-    end
-
-    def request_username
-      if cinch_user.authed?
-        cinch_user.authname
-      elsif cinch_user_relayed?
-        relayed_nick
-      end
+      "#{blolol_api_base_url}/v1/users/#{URI.escape(authname_or_relayed_nick)}"
     end
   end
 end
