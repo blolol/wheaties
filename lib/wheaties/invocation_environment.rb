@@ -31,6 +31,15 @@ module Wheaties
       catch(invocation) do
         Kernel.eval(command.body, context, eval_file_name)
       end
+    rescue UncaughtThrowError => error
+      if stack.include?(error.tag)
+        # This should have been caught by `catch(invocation)` in the method body,
+        # so log the unexpected error, then continue
+        logger.warn("#{error.class.name} in InvocationEnvironment#eval: " \
+          "no catch handler for #{error.tag}")
+      else
+        raise error
+      end
     end
 
     def invoke_built_in_command(method_name)
