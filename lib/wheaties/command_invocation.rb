@@ -47,7 +47,7 @@ module Wheaties
         command_id: command.id,
         command_name: command.name,
         nick: message.user.nick,
-        stack: stack.map(&:to_s).inspect,
+        stack: stack.map(&:name).inspect,
         user: message.user.user
       }
 
