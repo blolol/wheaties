@@ -128,7 +128,7 @@ module Wheaties
     end
 
     def request_url
-      "#{blolol_api_base_url}/v1/users/#{URI.escape(authname_or_relayed_nick)}"
+      "#{blolol_api_base_url}/v1/users/#{CGI.escape(authname_or_relayed_nick)}"
     end
   end
 end

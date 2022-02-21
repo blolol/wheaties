@@ -1,3 +1,4 @@
+require 'cgi'
 require 'digest/sha2'
 require 'pathname'
 
