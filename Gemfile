@@ -22,6 +22,7 @@ gem 'thwait'
 
 group :commands do
   gem 'chronic_duration', '~> 0.10.6'
+  gem 'engtagger', '~> 0.2.2'
   gem 'http', '~> 4.4.1'
   gem 'httparty', '~> 0.18.0'
   gem 'nokogiri', '~> 1.12.5'

@@ -31,6 +31,7 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.4.0)
     e2mmap (0.1.0)
+    engtagger (0.2.2)
     equalizer (0.0.11)
     ffi (1.15.4)
     ffi-compiler (1.0.1)
@@ -128,6 +129,7 @@ DEPENDENCIES
   connection_pool (~> 2.2.2)
   dotenv
   e2mmap
+  engtagger (~> 0.2.2)
   harby (~> 1.2.0)
   http (~> 4.4.1)
   httparty (~> 0.18.0)
