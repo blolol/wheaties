@@ -25,7 +25,7 @@ group :commands do
   gem 'engtagger', '~> 0.2.2'
   gem 'http', '~> 4.4.1'
   gem 'httparty', '~> 0.18.0'
-  gem 'nokogiri', '~> 1.12.5'
+  gem 'nokogiri', '~> 1.13.6'
   gem 'twitter', '~> 7.0.0'
 end
 
