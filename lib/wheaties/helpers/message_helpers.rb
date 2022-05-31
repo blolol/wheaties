@@ -15,7 +15,7 @@ module Wheaties
     end
 
     def history
-      CinchPlugin.instance(bot).message_history.for(message.target)
+      CommandsPlugin.instance(bot).message_history.for(message.target)
     end
 
     def pm?

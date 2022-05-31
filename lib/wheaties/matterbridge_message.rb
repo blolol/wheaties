@@ -5,7 +5,7 @@ module Wheaties
     # Constants
     COMMAND_INVOCATION_PATTERN = /
       \A<(?<nick>.*?)>\s+
-      #{CinchPlugin::COMMAND_PATTERN}
+      #{CommandsPlugin::COMMAND_PATTERN}
     /x
 
     def self.from(message)

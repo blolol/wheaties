@@ -1,5 +1,5 @@
 module Wheaties
-  class CinchPlugin
+  class CommandsPlugin
     include Cinch::Plugin
 
     # Constants
@@ -23,7 +23,7 @@ module Wheaties
     listen_to :nick, method: :on_nick
 
     def self.instance(bot)
-      bot.plugins.find { |plugin| plugin.class == Wheaties::CinchPlugin }
+      bot.plugins.find { |plugin| plugin.class == Wheaties::CommandsPlugin }
     end
 
     def message_history

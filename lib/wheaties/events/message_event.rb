@@ -21,7 +21,7 @@ module Wheaties
     end
 
     def plugin
-      CinchPlugin.instance(@message.bot)
+      CommandsPlugin.instance(@message.bot)
     end
   end
 end

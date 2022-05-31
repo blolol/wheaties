@@ -31,7 +31,7 @@ module Wheaties
     end
 
     def match_data
-      @match_data ||= sanitized_message.match(CinchPlugin::COMMAND_PATTERN)
+      @match_data ||= sanitized_message.match(CommandsPlugin::COMMAND_PATTERN)
     end
 
     def parsed_arguments
