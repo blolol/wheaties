@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 ruby '2.7.5'
 
 gem 'activesupport', '~> 5.2.4', require: 'active_support/all'
+gem 'aws-sdk-sqs', '~> 1.51'
 gem 'bugsnag', '~> 6.13.0'
 gem 'cinch', git: 'https://github.com/blolol/cinch', branch: 'wheaties'
 gem 'connection_pool', '~> 2.2.2'
