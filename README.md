@@ -56,6 +56,8 @@ Wheaties can be configured using the following environment variables.
 
 | Name | Required? | Description |
 |------|-----------|-------------|
+| `AWS_ACCESS_KEY_ID` | Optional | AWS access key ID used to read from Amazon SQS |
+| `AWS_SECRET_ACCESS_KEY` | Optional | AWS secret access key used to read from Amazon SQS |
 | `BLOLOL_API_BASE_URL` | Optional | The base URL to Blolol's API (default: `https://api.blolol.com`) |
 | `BLOLOL_API_KEY` | **Required** | Blolol API key |
 | `BLOLOL_API_SECRET` | **Required** | Blolol API secret |
@@ -77,8 +79,42 @@ Wheaties can be configured using the following environment variables.
 | `MATTERBRIDGE_USER` | Optional | Matterbridge bot username. If this environment variable is set, Wheaties will respond to command invocations from any user with this username, where the message matches this pattern: `[source] <nick> message` |
 | `MONGODB_URL` | Optional | Mongoid connection URL |
 | `REDIS_URL` | Optional | Redis connection URL |
+| `RELAY_MESSAGE_CHECK_INTERVAL_SECONDS` | Optional | Long poll Amazon SQS for this many seconds (default: 10) |
+| `RELAY_QUEUE_URL` | Optional | The Amazon SQS queue URL to poll for messages to relay to IRC |
 | `WHEATIES_BASE_URL` | **Required** | The base URL to Wheaties' web interface |
 | `WHEATIES_ENV` | Optional | The environment to use (`development`, `staging`, `production`) |
+
+### Message Relay
+
+Wheaties is capable of relaying messages from an Amazon SQS queue to IRC. Given a queue with messages like this:
+
+```json
+{
+  "event": {
+    "type": "message",
+    "from": "Wheaties",
+    "to": "#example",
+    "message": "Hello world!"
+  }
+}
+```
+
+Wheaties will deliver "Hello world!" to the channel #example, if he is in that channel (or the server and channel allow messages from users not in the channel). `to` can be a channel name or a user's nickname, to deliver a private message.
+
+To enable Wheaties' message relay, set these environment variables:
+
+* `AWS_ACCESS_KEY_ID`
+* `AWS_SECRET_ACCESS_KEY`
+* `RELAY_QUEUE_URL` (an Amazon SQS queue URL)
+
+Your AWS credentials must be allowed to perform these actions on the SQS queue:
+
+* `sqs:ChangeMessageVisibility`
+* `sqs:DeleteMessage`
+* `sqs:GetQueueAttributes`
+* `sqs:ReceiveMessage`
+
+By default, Wheaties will long poll SQS for up to 10 seconds. You can customize his poll interval by setting `RELAY_MESSAGE_CHECK_INTERVAL_SECONDS`.
 
 ## License
 
