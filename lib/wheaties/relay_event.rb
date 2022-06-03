@@ -24,7 +24,7 @@ module Wheaties
     end
 
     def message
-      event['message']
+      event['text']
     end
 
     def to
@@ -32,7 +32,7 @@ module Wheaties
     end
 
     def valid?
-      event.present? && %w(from message to).all? { |key| event.key?(key) }
+      event.present? && %w(from text to).all? { |key| event.key?(key) }
     rescue JSON::ParserError
       false
     end
