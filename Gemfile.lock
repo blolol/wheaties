@@ -85,7 +85,7 @@ GEM
     multi_xml (0.6.0)
     multipart-post (2.1.1)
     naught (1.1.0)
-    nokogiri (1.13.6)
+    nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     numerizer (0.1.1)
@@ -150,7 +150,7 @@ DEPENDENCIES
   http (~> 4.4.1)
   httparty (~> 0.18.0)
   mongoid (~> 7.0)
-  nokogiri (~> 1.13.6)
+  nokogiri (~> 1.13.9)
   pry
   rake
   redis (~> 4.1.3)
