@@ -25,7 +25,7 @@ group :commands do
   gem 'chronic_duration', '~> 0.10.6'
   gem 'engtagger', '~> 0.2.2'
   gem 'http', '~> 4.4.1'
-  gem 'httparty', '~> 0.18.0'
+  gem 'httparty', '~> 0.21.0'
   gem 'nokogiri', '~> 1.13.6'
   gem 'twitter', '~> 7.0.0'
 end
