@@ -14,8 +14,9 @@ module Wheaties
       !command?
     end
 
-    def history
-      CommandsPlugin.instance(bot).message_history.for(message.target)
+    def history(target = nil)
+      history_target = Target(target || message.target)
+      CommandsPlugin.instance(bot).message_history.for(history_target)
     end
 
     def pm?
