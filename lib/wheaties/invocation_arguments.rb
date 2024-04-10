@@ -9,7 +9,7 @@ module Wheaties
 
     def initialize(parsed_arguments = [], unparsed_arguments = '')
       @unparsed = unparsed_arguments
-      super(parsed_arguments)
+      super(parsed_arguments || [])
     end
 
     # Syntactic sugar for Ruby's OptionParser. The block provided will be passed to
