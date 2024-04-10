@@ -1,5 +1,7 @@
 require 'cgi'
 require 'digest/sha2'
+require 'optparse'
+require 'optparse/time'
 require 'pathname'
 
 require 'wheaties/cinch_ext/message_queue'
