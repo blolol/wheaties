@@ -3,7 +3,7 @@ module Wheaties
     # Attributes
     attr_reader :arguments, :command, :event, :id, :message, :stack
 
-    def initialize(message, command, arguments = [], event: :command, stack: [])
+    def initialize(message, command, arguments = InvocationArguments.new, event: :command, stack: [])
       @message = message
       @command = command
       @arguments = arguments

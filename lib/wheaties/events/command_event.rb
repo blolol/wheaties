@@ -35,7 +35,7 @@ module Wheaties
     end
 
     def parsed_arguments
-      parser.parse(unparsed_arguments) || []
+      InvocationArguments.new(parser.parse(unparsed_arguments), unparsed_arguments)
     end
 
     def parser
