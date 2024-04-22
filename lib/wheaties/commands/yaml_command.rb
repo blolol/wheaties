@@ -4,7 +4,7 @@ class YamlCommand < Command
   end
 
   def invoke(environment)
-    RubyInvocationResult.new(parsed_body)
+    Wheaties::RubyInvocationResult.new(parsed_body)
   end
 
   private
