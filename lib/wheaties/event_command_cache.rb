@@ -1,7 +1,7 @@
 module Wheaties
   class EventCommandCache
     # Constants
-    CACHE_TTL_SECONDS = ENV['EVENT_COMMAND_CACHE_TTL_SECONDS'] || 300
+    CACHE_TTL_SECONDS = Integer(ENV['EVENT_COMMAND_CACHE_TTL_SECONDS'] || 300)
 
     def initialize(event)
       @event = event
