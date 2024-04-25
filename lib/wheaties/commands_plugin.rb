@@ -21,6 +21,7 @@ module Wheaties
     listen_to :leaving, method: :on_leave
     listen_to :message, method: :on_message
     listen_to :nick, method: :on_nick
+    listen_to :topic, method: :on_topic
 
     def self.instance(bot)
       bot.plugins.find { |plugin| plugin.class == Wheaties::CommandsPlugin }
@@ -112,6 +113,14 @@ module Wheaties
     def on_nick(message)
       unless bot_caused_event?(message)
         NickEvent.new(message).run
+      end
+    rescue => error
+      log_error_and_notify_bugsnag(error, message)
+    end
+
+    def on_topic(message)
+      unless bot_caused_event?(message)
+        TopicEvent.new(message).run
       end
     rescue => error
       log_error_and_notify_bugsnag(error, message)

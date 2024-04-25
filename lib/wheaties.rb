@@ -28,6 +28,7 @@ require 'wheaties/events/join_event'
 require 'wheaties/events/leave_event'
 require 'wheaties/events/message_event'
 require 'wheaties/events/nick_event'
+require 'wheaties/events/topic_event'
 
 require 'wheaties/helpers/command_helpers'
 require 'wheaties/helpers/documentation_helpers'

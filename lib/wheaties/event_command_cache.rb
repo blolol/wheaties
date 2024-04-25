@@ -1,7 +1,7 @@
 module Wheaties
   class EventCommandCache
     # Constants
-    CACHE_EXPIRATION_SECONDS = 300
+    CACHE_TTL_SECONDS = ENV['EVENT_COMMAND_CACHE_TTL_SECONDS'] || 300
 
     def initialize(event)
       @event = event
@@ -19,7 +19,7 @@ module Wheaties
 
     def cache_expired?
       @commands.nil? || @last_updated_at.nil? ||
-        (Time.now - @last_updated_at) >= CACHE_EXPIRATION_SECONDS
+        (Time.now - @last_updated_at) >= CACHE_TTL_SECONDS
     end
 
     def refresh_cache
