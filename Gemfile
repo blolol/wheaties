@@ -1,17 +1,17 @@
 source 'https://rubygems.org'
-ruby '2.7.6'
+ruby '3.3.1'
 
-gem 'activesupport', '~> 5.2.4', require: 'active_support/all'
-gem 'aws-sdk-sqs', '~> 1.51'
-gem 'bugsnag', '~> 6.13.0'
-gem 'cinch', git: 'https://github.com/blolol/cinch', branch: 'wheaties'
-gem 'connection_pool', '~> 2.2.2'
+gem 'activesupport', '~> 7.1', '>= 7.1.3.2', require: 'active_support/all'
+gem 'aws-sdk-sqs', '~> 1.70'
+gem 'bugsnag', '~> 6.26', '>= 6.26.4'
+gem 'cinch', git: 'https://github.com/blolol/cinch', tag: 'v2.3.5'
+gem 'connection_pool', '~> 2.4', '>= 2.4.1'
 gem 'dotenv'
 gem 'harby', '~> 1.2.0'
-gem 'mongoid', '~> 7.0'
+gem 'mongoid', '~> 8.1', '>= 8.1.5'
 gem 'pry'
 gem 'rake'
-gem 'redis', '~> 4.1.3'
+gem 'redis', '~> 5.2'
 
 # These gems are dependencies of polyglot 0.3.5, which is a dependency
 # of treetop 1.6.x, which is a dependency of harby 1.2. They were
@@ -23,11 +23,10 @@ gem 'thwait'
 
 group :commands do
   gem 'chronic_duration', '~> 0.10.6'
-  gem 'engtagger', '~> 0.2.2'
-  gem 'http', '~> 4.4.1'
-  gem 'httparty', '~> 0.18.0'
-  gem 'nokogiri', '~> 1.13.6'
-  gem 'twitter', '~> 7.0.0'
+  gem 'engtagger', '~> 0.4.0'
+  gem 'http', '~> 5.2'
+  gem 'httparty', '~> 0.21.0'
+  gem 'nokogiri', '~> 1.16', '>= 1.16.4'
 end
 
 group :test do
