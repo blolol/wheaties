@@ -26,7 +26,7 @@ group :commands do
   gem 'engtagger', '~> 0.4.0'
   gem 'http', '~> 5.2'
   gem 'httparty', '~> 0.21.0'
-  gem 'nokogiri', '~> 1.16', '>= 1.16.4'
+  gem 'nokogiri', '~> 1.16'
 end
 
 group :test do
