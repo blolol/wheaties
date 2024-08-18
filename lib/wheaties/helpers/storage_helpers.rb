@@ -31,7 +31,7 @@ module Wheaties
     end
 
     def jget(key, default = nil)
-      if redis.exists(key)
+      if redis.exists?(key)
         JSON.parse(get(key))
       else
         default
