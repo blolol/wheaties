@@ -39,7 +39,7 @@ module Wheaties
     end
 
     def subcommand_arguments
-      @arguments[1..-1]
+      InvocationArguments.new(@arguments[1..-1])
     end
   end
 end
