@@ -6,10 +6,14 @@ module Wheaties
     def initialize(message, command, arguments = InvocationArguments.new, event: :command, stack: [])
       @message = message
       @command = command
-      @arguments = arguments
       @event = event
       @stack = stack
       @id = stack.size
+      @arguments = if arguments.is_a?(InvocationArguments)
+        arguments
+      else
+        InvocationArguments.new(arguments)
+      end
     end
 
     def invoke
