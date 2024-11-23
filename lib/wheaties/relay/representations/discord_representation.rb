@@ -39,7 +39,8 @@ module Wheaties
       end
 
       def avatar_image_data
-        avatar_path = Wheaties.root.join('share/discord-avatar.png')
+        file_name = ENV['DISCORD_DEFAULT_AVATAR'] || 'wheaties.png'
+        avatar_path = Wheaties.root.join('share/avatars', file_name)
         base64_encoded_image_data = Base64.encode64(avatar_path.read)
         "data:image/png;base64,#{base64_encoded_image_data}"
       end

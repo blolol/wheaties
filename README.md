@@ -69,6 +69,7 @@ Wheaties can be configured using the following environment variables.
 | `COMMAND_PREFIX` | Optional | Prefix for triggering commands (default: ".") |
 | `DISCORD_BOT_TOKEN` | Optional | Discord bot API token |
 | `DISCORD_CHANNEL_MAPPINGS` | Optional | JSON object whose keys are IRC channel names and values are corresponding Discord channel names, for when IRC and Discord channel names don't match |
+| `DISCORD_DEFAULT_AVATAR` | Optional | File name in `share/avatars` to use as the default Discord webhook avatar |
 | `DISCORD_SERVER_ID` | Optional | Blolol Discord server ID |
 | `EVENT_COMMAND_CACHE_TTL_SECONDS` | Optional | Seconds to cache the list of commands that are configured to run automatically on certain IRC events (default: 300) |
 | `FIND_COMMANDS_BY_REGEX` | Optional | Set to `true` to search for commands using regular expressions (default: true) |
