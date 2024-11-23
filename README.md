@@ -42,10 +42,14 @@ Configure Wheaties with environment variables. See "[Configuration](#configurati
 cp .env.example .env
 ```
 
-To start Wheaties, simply run `bin/wheaties`. He'll attempt to connect to MongoDB and Redis running on `localhost` on their default ports. You can override this behavior by setting `MONGODB_URL` and `REDIS_URL`.
+To start Wheaties, you can use `heroku local` from the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli), [foreman](https://github.com/ddollar/foreman), or any other tool that supports launching `Procfile`-based applications. You can also launch `bin/{discord,irc,relay}` directly to launch a single process at once.
+
+He'll attempt to connect to MongoDB and Redis running on `localhost` on their default ports. You can override this behavior by setting `MONGODB_URL` and `REDIS_URL`.
 
 ```sh
-bin/wheaties
+heroku local # Launch Discord bot, IRC bot and chat relay processes
+heroku local irc,relay # Only launch IRC bot and chat relay processes
+bin/irc # Just launch the IRC bot process
 ```
 
 You can also run `bin/console` to start a Pry REPL with Wheaties' environment loaded, which can be useful for interacting manually with commands.
@@ -88,19 +92,45 @@ Wheaties can be configured using the following environment variables.
 | `RELAY_MESSAGE_WAIT_TIME_SECONDS` | Optional | Long poll Amazon SQS for this many seconds (default: 10) |
 | `RELAY_QUEUE_URL` | Optional | The Amazon SQS queue URL to poll for messages to relay to the chat |
 | `WHEATIES_BASE_URL` | **Required** | The base URL to Wheaties' web interface |
-| `WHEATIES_ENV` | Optional | The environment to use (`development`, `staging`, `production`) |
+| `WHEATIES_ENV` | Optional | The environment to use (`development`, `staging`, `production`) (default: `development`) |
 
 ### Message Relay
 
 Wheaties is capable of relaying messages from an Amazon SQS queue to IRC. Given a queue with messages like this:
 
-```json
+```json5
 {
+  "version": 1,
   "event": {
+    // Optional. One of "action", "message", "notice". Defaults to "message".
     "type": "message",
-    "from": "Wheaties",
+    // Optionally spoof a nickname instead of using the bot's nick. If present,
+    // must be a valid RELAYMSG nick, meaning it must include a "/" character.
+    "from": "Wheaties/Foo",
     "to": "#example",
     "message": "Hello world!"
+  }
+}
+```
+
+or this:
+
+```json5
+{
+  "version": 2,
+  "to": "#example",
+  "representations": {
+    // Supports any valid Discord webhook JSON payload:
+    // https://discord.com/developers/docs/resources/webhook#execute-webhook
+    "discord": {
+      "content": "Hello _world!_ :grinning:"
+    },
+    // Supports the same "type", "from" and "message" properties as above
+    "irc": {
+      "type": "message",
+      "from": "Wheaties/Foo",
+      "message": "Hello world!"
+    }
   }
 }
 ```
