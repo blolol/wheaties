@@ -2,49 +2,49 @@ module Wheaties
   class RelayPlugin
     include Cinch::Plugin
 
-    # Constants
-    MESSAGE_CHECK_INTERVAL = Integer(ENV.fetch('RELAY_MESSAGE_CHECK_INTERVAL_SECONDS', 10))
-    QUEUE_URL = ENV['RELAY_QUEUE_URL']
-
-    def self.enabled?
-      QUEUE_URL.present?
-    end
-
-    # Timers
-    if enabled?
-      timer MESSAGE_CHECK_INTERVAL, method: :deliver_queued_messages
-    end
+    listen_to :connect, method: :on_connect
 
     private
 
-    def batch_delete_entry(message)
-      { id: message.message_id, receipt_handle: message.receipt_handle }
+    def channel
+      Relay::ChatRelay::RELAY_TO_IRC_REDIS_PUBSUB_CHANNEL
     end
 
-    def delete_delivered_messages(messages)
-      messages.each_slice(10) do |messages|
-        batch_of_entries = messages.map { |message| batch_delete_entry(message) }
-        sqs.delete_message_batch(entries: batch_of_entries, queue_url: QUEUE_URL)
+    def deliver_message(json)
+      payload = JSON.parse(json)
+      Relay::IrcEvent.new(payload).deliver
+    rescue JSON::ParserError
+      logger.warn("[#{self.class.name}] Malformed event JSON: #{json}")
+    end
+
+    def logger
+      Wheaties.logger
+    end
+
+    def on_connect(connect_event)
+      subscribe_to_redis_channel
+      unsubscribe_from_redis_channel_on_exit
+      wait_for_messages
+    end
+
+    def redis
+      Wheaties.redis
+    end
+
+    def subscribe_to_redis_channel
+      redis.subscribe(channel) do |on|
+        on.message do |channel, json|
+          deliver_message(json)
+        end
       end
     end
 
-    def deliver_queued_messages
-      messages = queued_messages
-
-      messages.each do |message|
-        RelayEvent.new(bot, message.body).deliver
-      end
-
-      delete_delivered_messages(messages)
+    def unsubscribe_from_redis_channel_on_exit
+      at_exit { redis.unsubscribe(channel) }
     end
 
-    def queued_messages
-      sqs.receive_message(max_number_of_messages: 10, queue_url: QUEUE_URL,
-        wait_time_seconds: MESSAGE_CHECK_INTERVAL - 1).messages
-    end
-
-    def sqs
-      @sqs ||= Aws::SQS::Client.new
+    def wait_for_messages
+      loop { sleep 1 }
     end
   end
 end

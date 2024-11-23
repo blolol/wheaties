@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "https://blolol.com/json-schemas/chat_event_v1.json",
+  "type": "object",
+  "properties": {
+    "version": {
+      "enum": [1, "1"]
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": ["action", "message", "notice"]
+        },
+        "from": {
+          "$comment": "Valid RELAYMSG nickname containing a forward slash",
+          "type": "string",
+          "pattern": "^\\w+\\/\\w+$"
+        },
+        "to": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": ["to", "text"]
+    }
+  },
+  "required": ["event"]
+}

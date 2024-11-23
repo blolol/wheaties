@@ -8,7 +8,7 @@ Dotenv.load
 $:.unshift File.join(File.dirname(__FILE__), '../lib')
 require 'wheaties'
 Wheaties.logger = Logger.new(STDOUT)
-Wheaties.configure
+Wheaties.configure(platform: :console)
 
 require 'pry'
 binding.pry(quiet: true)

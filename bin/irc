@@ -25,7 +25,15 @@ Wheaties.bot = Cinch::Bot.new do
     c.ssl.verify = ENV.fetch('IRC_SSL_VERIFY', 'true') == 'true'
     c.user = ENV['IRC_USER']
   end
+
+  on :connect do
+    if ENV['IRC_OPER_PASS'].present?
+      oper_user = ENV['IRC_OPER_USER']
+      oper_pass = ENV['IRC_OPER_PASS']
+      bot.oper oper_pass, oper_user
+    end
+  end
 end
 
-Wheaties.configure
+Wheaties.configure(platform: :irc)
 Wheaties.start

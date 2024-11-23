@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require 'bundler'
+Bundler.require(:default, :commands)
+
+Dotenv.load
+
+$:.unshift File.join(File.dirname(__FILE__), '../lib')
+require 'wheaties'
+
+['DISCORD_BOT_TOKEN', 'DISCORD_SERVER_ID', 'RELAY_QUEUE_URL'].each do |required_env_var|
+  unless ENV[required_env_var].present?
+    $stderr.puts "#{required_env_var} is not set or is blank, so the chat relay will not start."
+    exit 1
+  end
+end
+
+queue_url = ENV['RELAY_QUEUE_URL']
+wait_time_seconds = Integer(ENV.fetch('RELAY_MESSAGE_WAIT_TIME_SECONDS', 10))
+
+Wheaties.configure(platform: :relay)
+Wheaties.start(queue_url, wait_time_seconds: wait_time_seconds)

@@ -63,11 +63,16 @@ Wheaties can be configured using the following environment variables.
 | `BLOLOL_API_SECRET` | **Required** | Blolol API secret |
 | `BUGSNAG_API_KEY` | **Required** | API key for reporting errors to [Bugsnag](https://www.bugsnag.com) |
 | `COMMAND_PREFIX` | Optional | Prefix for triggering commands (default: ".") |
+| `DISCORD_BOT_TOKEN` | Optional | Discord bot API token |
+| `DISCORD_CHANNEL_MAPPINGS` | Optional | JSON object whose keys are IRC channel names and values are corresponding Discord channel names, for when IRC and Discord channel names don't match |
+| `DISCORD_SERVER_ID` | Optional | Blolol Discord server ID |
 | `EVENT_COMMAND_CACHE_TTL_SECONDS` | Optional | Seconds to cache the list of commands that are configured to run automatically on certain IRC events (default: 300) |
 | `FIND_COMMANDS_BY_REGEX` | Optional | Set to `true` to search for commands using regular expressions (default: true) |
 | `IRC_CHANNELS` | **Required** | Comma-separated list of IRC channels to join |
 | `IRC_MESSAGES_PER_SECOND` | Optional | Maximum messages per second to send to the IRC server |
 | `IRC_NICK` | **Required** | IRC nickname |
+| `IRC_OPER_USER` | Optional | The username to use in conjunction with `IRC_OPER_PASS` (default: the bot's nick) |
+| `IRC_OPER_PASS` | Optional | Attempt to become an operator using this password |
 | `IRC_PASS` | Optional | IRC server password |
 | `IRC_PORT` | **Required** | IRC server port |
 | `IRC_REALNAME` | **Required** | IRC real name |
@@ -80,8 +85,8 @@ Wheaties can be configured using the following environment variables.
 | `MATTERBRIDGE_USER` | Optional | Matterbridge bot username. If this environment variable is set, Wheaties will respond to command invocations from any user with this username, where the message matches this pattern: `[source] <nick> message` |
 | `MONGODB_URL` | Optional | Mongoid connection URL |
 | `REDIS_URL` | Optional | Redis connection URL |
-| `RELAY_MESSAGE_CHECK_INTERVAL_SECONDS` | Optional | Long poll Amazon SQS for this many seconds (default: 10) |
-| `RELAY_QUEUE_URL` | Optional | The Amazon SQS queue URL to poll for messages to relay to IRC |
+| `RELAY_MESSAGE_WAIT_TIME_SECONDS` | Optional | Long poll Amazon SQS for this many seconds (default: 10) |
+| `RELAY_QUEUE_URL` | Optional | The Amazon SQS queue URL to poll for messages to relay to the chat |
 | `WHEATIES_BASE_URL` | **Required** | The base URL to Wheaties' web interface |
 | `WHEATIES_ENV` | Optional | The environment to use (`development`, `staging`, `production`) |
 

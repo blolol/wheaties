@@ -1,9 +1,17 @@
 module Wheaties
+  PLATFORMS = {
+    console: ConsolePlatform,
+    discord: DiscordPlatform,
+    irc: IrcPlatform,
+    relay: RelayPlatform
+  }
+
   class << self
-    attr_accessor :bot, :env, :logger, :redis, :root
+    attr_accessor :bot, :env, :logger, :platform, :redis, :root
   end
 
-  def self.configure
+  def self.configure(platform:)
+    configure_platform(platform)
     configure_root
     configure_logger
     configure_environment
@@ -13,8 +21,15 @@ module Wheaties
     load_environment
   end
 
-  def self.start
-    bot.start
+  # Starts the bot. This method delegates to {#platform}, which knows how to boot its underlying bot
+  # process.
+  #
+  # @see Wheaties::ConsolePlatform
+  # @see Wheaties::DiscordPlatform
+  # @see Wheaties::IrcPlatform
+  # @see Wheaties::RelayPlatform
+  def self.start(*args, **kwargs)
+    platform.start(*args, **kwargs)
   end
 
   private
@@ -22,7 +37,7 @@ module Wheaties
   def self.configure_bugsnag
     Bugsnag.configure do |config|
       config.api_key = ENV['BUGSNAG_API_KEY']
-      config.app_type = 'cinch'
+      config.app_type = Wheaties.platform.bugsnag_app_type
       config.app_version = Wheaties::VERSION
       config.notify_release_stages = %w(production staging)
       config.logger = Wheaties.logger
@@ -39,7 +54,7 @@ module Wheaties
   private_class_method :configure_environment
 
   def self.configure_logger
-    self.logger ||= Wheaties::Logger.new
+    self.logger ||= platform.logger
   end
   private_class_method :configure_logger
 
@@ -47,6 +62,16 @@ module Wheaties
     Mongoid.load!(root.join('config/mongoid.yml').to_s, self.env)
   end
   private_class_method :configure_mongoid
+
+  def self.configure_platform(platform_name)
+    if PLATFORMS.key?(platform_name)
+      self.platform = PLATFORMS[platform_name].new
+    else
+      raise "#{platform_name.inspect} isn't a valid bot platform name. " \
+        "Valid platform names: #{PLATFORMS.keys.join(', ')}"
+    end
+  end
+  private_class_method :configure_platform
 
   def self.configure_redis
     self.redis = ConnectionPool::Wrapper.new(size: 5, timeout: 5) { Redis.new }

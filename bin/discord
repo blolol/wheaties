@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+require 'bundler'
+Bundler.require(:default, :commands)
+
+Dotenv.load
+
+$:.unshift File.join(File.dirname(__FILE__), '../lib')
+require 'wheaties'
+
+if ENV['DISCORD_BOT_TOKEN'].blank?
+  $stderr.puts 'DISCORD_BOT_TOKEN is not set or is blank, so Discord bot will not start.'
+  exit
+end
+
+Wheaties.bot = Discordrb::Bot.new(fancy_log: $stdout.tty?, name: 'Wheaties',
+  token: ENV['DISCORD_BOT_TOKEN'])
+
+# Gracefully disconnect from Discord when the Ruby process exits
+at_exit { Wheaties.bot.stop }
+
+Wheaties.configure(platform: :discord)
+Wheaties.start
