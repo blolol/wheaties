@@ -40,6 +40,9 @@ require 'wheaties/helpers/message_helpers'
 require 'wheaties/helpers/storage_helpers'
 require 'wheaties/helpers/version_helpers'
 
+require 'wheaties/irc/chat_bridge/cinch_plugin'
+require 'wheaties/irc/chat_bridge/stream_entry'
+
 require 'wheaties/platforms/console_platform'
 require 'wheaties/platforms/discord_platform'
 require 'wheaties/platforms/irc_platform'
