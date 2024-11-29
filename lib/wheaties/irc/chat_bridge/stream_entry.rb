@@ -2,6 +2,8 @@ module Wheaties
   module Irc
     module ChatBridge
       class StreamEntry
+        STREAM_LIMIT = Integer(ENV['CHAT_BRIDGE_STREAM_LIMIT'] || 1000)
+
         def initialize(type:, event:, content:)
           @type = type
           @event = event
@@ -11,7 +13,7 @@ module Wheaties
 
         def publish
           logger.debug("Publishing chat bridge stream entry to #{key} => #{fields.inspect}")
-          redis.xadd(key, fields)
+          redis.xadd(key, fields, maxlen: STREAM_LIMIT, approximate: true)
         end
 
         private

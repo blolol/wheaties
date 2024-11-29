@@ -66,6 +66,7 @@ Wheaties can be configured using the following environment variables.
 | `BLOLOL_API_KEY` | **Required** | Blolol API key |
 | `BLOLOL_API_SECRET` | **Required** | Blolol API secret |
 | `BUGSNAG_API_KEY` | **Required** | API key for reporting errors to [Bugsnag](https://www.bugsnag.com) |
+| `CHAT_BRIDGE_STREAM_LIMIT` | Optional | Limit the chat bridge Redis stream to this many events (default: 1000) |
 | `COMMAND_PREFIX` | Optional | Prefix for triggering commands (default: ".") |
 | `DISCORD_BOT_TOKEN` | Optional | Discord bot API token |
 | `DISCORD_CHANNEL_MAPPINGS` | Optional | JSON object whose keys are IRC channel names and values are corresponding Discord channel names, for when IRC and Discord channel names don't match |
