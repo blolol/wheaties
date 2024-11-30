@@ -1,5 +1,5 @@
 module Wheaties
-  module Irc
+  module Discord
     module ChatBridge
       module Transmit
         class StreamEntry < Wheaties::ChatBridge::StreamEntry
@@ -7,33 +7,30 @@ module Wheaties
 
           def channel_payload
             {
-              name: channel_name,
+              name: event.channel.name,
+              id: event.channel.id.to_s,
               type: channel_type
             }
           end
 
-          def channel_name
-            event.channel? ? event.channel.name : event.user.nick
-          end
-
           def channel_type
-            event.channel? ? 'channel' : 'dm'
+            event.channel.class::TYPES.find do |name, id|
+              id == event.channel.type
+            end.first
           end
 
           def server_payload
             {
-              platform: 'irc',
-              name: ENV['IRC_SERVER']
+              platform: 'discord',
+              name: event.server.name,
+              id: event.server.id.to_s
             }
           end
 
           def user_payload
             {
-              name: event.user.nick,
-              host: event.user.host,
-              user: event.user.user,
-              realname: event.user.realname,
-              authname: event.user.authname
+              name: event.user.display_name,
+              id: event.user.id.to_s
             }
           end
         end

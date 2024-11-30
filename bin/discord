@@ -15,6 +15,7 @@ end
 
 Wheaties.bot = Discordrb::Bot.new(fancy_log: $stdout.tty?, name: 'Wheaties',
   token: ENV['DISCORD_BOT_TOKEN'])
+Wheaties.bot.include!(Wheaties::Discord::ChatBridge::Transmit::EventContainer)
 
 # Gracefully disconnect from Discord when the Ruby process exits
 at_exit { Wheaties.bot.stop }

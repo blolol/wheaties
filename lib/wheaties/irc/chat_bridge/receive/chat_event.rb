@@ -3,6 +3,12 @@ module Wheaties
     module ChatBridge
       module Receive
         class ChatEvent
+          # The maximum length of nicknames accepted by our IRC server, in bytes.
+          MAX_NICK_LENGTH_BYTES = 32
+
+          # A {Regexp} matching an IRC nickname that requires use of the `RELAYMSG` command to spoof
+          # the nick. Our IRC server requires the presence of a "discriminator" character (we use
+          # `/`) somewhere in the middle of the nick.
           VALID_RELAYMSG_NICK_PATTERN = /\A\S+\/\S+\z/
 
           attr_reader :fields, :id, :payload
@@ -10,7 +16,14 @@ module Wheaties
           # Return an instance of {ChatEvent} or one of its subclasses, depending on the type of
           # the event represented by the stream entry.
           def self.from_stream_entry(id, fields)
-            new(id, fields)
+            klass = case fields['type'].split(':')
+            in ['discord', *]
+              DiscordEvent
+            else
+              self
+            end
+
+            klass.new(id, fields)
           end
 
           def initialize(id, fields)
@@ -98,7 +111,8 @@ module Wheaties
           end
 
           def spoofed_nick?
-            spoofed_nick.present? && spoofed_nick =~ VALID_RELAYMSG_NICK_PATTERN
+            spoofed_nick.present? && spoofed_nick =~ VALID_RELAYMSG_NICK_PATTERN &&
+              spoofed_nick.bytesize <= MAX_NICK_LENGTH_BYTES
           end
 
           def target

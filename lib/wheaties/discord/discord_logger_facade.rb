@@ -48,6 +48,22 @@ module Wheaties
       @logger = logger
     end
 
+    def debug(message)
+      @logger.debug(message)
+    end
+
+    def error(message)
+      @logger.error(message)
+    end
+
+    def fatal(message)
+      @logger.error(message)
+    end
+
+    def info(message)
+      @logger.info(message)
+    end
+
     # Sets the underlying {Discordrb::Logger}'s mode using an equivalent from
     # {LEVELS_TO_MODE_SETS}.
     #
@@ -62,6 +78,10 @@ module Wheaties
       messages.each do |message|
         @logger.public_send(mode, message)
       end
+    end
+
+    def warn(message)
+      @logger.warn(message)
     end
   end
 end
