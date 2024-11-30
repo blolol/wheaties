@@ -88,7 +88,9 @@ Wheaties can be configured using the following environment variables.
 | `IRC_SSL` | Optional | Set to `true` to connect using SSL/TLS |
 | `IRC_SSL_VERIFY` | Optional | Set to `false` to skip TLS certificate verification |
 | `IRC_USER` | **Required** | IRC server username |
+| `LOG_LEVEL` | Optional | Log verbosity (`debug`, `info`, `warn`, `error`, `fatal`) (default: `info`) |
 | `MATTERBRIDGE_USER` | Optional | Matterbridge bot username. If this environment variable is set, Wheaties will respond to command invocations from any user with this username, where the message matches this pattern: `[source] <nick> message` |
+| `MONGODB_LOG_LEVEL` | Optional | Log verbosity for the MongoDB driver (default: inherit from `LOG_LEVEL`) |
 | `MONGODB_URL` | Optional | Mongoid connection URL |
 | `REDIS_URL` | Optional | Redis connection URL |
 | `RELAY_MESSAGE_WAIT_TIME_SECONDS` | Optional | Long poll Amazon SQS for this many seconds (default: 10) |

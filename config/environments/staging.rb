@@ -1,1 +1,0 @@
-Wheaties.logger.level = :debug

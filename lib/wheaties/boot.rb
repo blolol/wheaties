@@ -55,11 +55,20 @@ module Wheaties
 
   def self.configure_logger
     self.logger ||= platform.logger
+    log_level = (ENV['LOG_LEVEL'] || :info).to_sym
+    self.logger.level = log_level
   end
   private_class_method :configure_logger
 
   def self.configure_mongoid
     Mongoid.load!(root.join('config/mongoid.yml').to_s, self.env)
+
+    # If MONGODB_LOG_LEVEL is set, leave the Mongo loggers alone (useful if you want to set
+    # Wheaties.logger to debug, but the Mongo loggers to warn in order to avoid log spam)
+    unless ENV['MONGODB_LOG_LEVEL']
+      Mongo::Logger.logger = Wheaties.logger
+      Mongoid.logger = Wheaties.logger
+    end
   end
   private_class_method :configure_mongoid
 

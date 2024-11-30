@@ -1,23 +1,21 @@
+defaults: &defaults
+  clients:
+    default:
+      uri: '<%= ENV['MONGODB_URL'] %>'
+  options:
+    log_level: '<%= ENV['MONGODB_LOG_LEVEL'] || ENV['LOG_LEVEL'] || 'info' %>'
+
 development:
+  <<: *defaults
   clients:
     default:
       uri: '<%= ENV.fetch('MONGODB_URL', 'mongodb://localhost:27017/wheaties_development') %>'
-  options:
-    log_level: :debug
 
 production:
-  clients:
-    default:
-      uri: '<%= ENV['MONGODB_URL'] %>'
+  <<: *defaults
 
 staging:
-  clients:
-    default:
-      uri: '<%= ENV['MONGODB_URL'] %>'
+  <<: *defaults
 
 test:
-  clients:
-    default:
-      uri: '<%= ENV['MONGODB_URL'] %>'
-  options:
-    log_level: :debug
+  <<: *defaults
