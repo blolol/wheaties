@@ -1,0 +1,100 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'optparse'
+
+require 'bundler'
+Bundler.require
+
+Dotenv.load
+
+default_server_name = `hostname`.strip
+default_user_name = `whoami`.strip
+
+options = {
+  channel: 'dev',
+  env: 'dev',
+  payload: {},
+  server: default_server_name,
+  type: 'test:message',
+  user: default_user_name
+}
+
+parser = OptionParser.new do |parser|
+  parser.banner = 'Usage: publish-chat-event [options] <content>'
+
+  parser.on('-h', '--help', 'Prints this help') do
+    puts parser
+    exit
+  end
+
+  parser.on('-c', '--channel [CHANNEL]', 'Channel name (default: "dev")')
+  parser.on('-e', '--env [ENV]', 'Wheaties environment: "dev", "stg", or "prd" (default: "dev")')
+  parser.on('-l', '--limit [LIMIT]', Integer, 'Trim Redis stream to this many events (default: do not trim)')
+  parser.on('-n', '--dry-run', 'Don\'t publish the event')
+  parser.on('-p', '--payload [PAYLOAD]', 'Merge custom JSON into the resulting payload') do |json|
+    options[:payload] = JSON.parse(json)
+  end
+  parser.on('-s', '--server [SERVER]', "Server name (default: \"#{default_server_name}\")")
+  parser.on('-t', '--type [TYPE]', 'Event type (default: "test:message")')
+  parser.on('-u', '--user [USER]', "User name (default: \"#{default_user_name}\")")
+  parser.on('-v', '--verbose', 'Print useful debug info to stderr')
+end
+
+parser.parse!(ARGV, into: options)
+content = ARGV.shift
+
+unless content.present?
+  $stderr.puts(parser)
+  exit 1
+end
+
+if options[:verbose]
+  $stderr.puts "options: #{options.inspect}"
+  $stderr.puts "content: #{content.inspect}"
+end
+
+stream_key = "#{options[:env]}:chat:events"
+platform = options[:type].split(':').first
+
+payload = {
+  version: 1,
+  type: options[:type],
+  timestamp: Time.now(in: 'UTC').iso8601,
+  server: {
+    platform: platform,
+    name: options[:server]
+  },
+  channel: {
+    name: options[:channel]
+  },
+  user: {
+    name: options[:user]
+  },
+  content: content
+}.deep_merge(options[:payload])
+
+fields = {
+  type: payload[:type],
+  timestamp: payload[:timestamp],
+  :'server.name' => payload.dig(:server, :name),
+  :'channel.name' => payload.dig(:channel, :name),
+  payload: JSON.dump(payload)
+}
+
+if options[:verbose]
+  $stderr.puts fields.map { |k, v| "#{k}=#{v}"}.join(' ')
+end
+
+exit if options[:'dry-run']
+
+redis = Redis.new
+
+xadd_params = {}
+if options[:limit]
+  xadd_params[:maxlen] = options[:limit]
+  xadd_params[:approximate] = true
+end
+
+id = redis.xadd(stream_key, fields, **xadd_params)
+puts id

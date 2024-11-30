@@ -14,8 +14,12 @@ Wheaties.bot = Cinch::Bot.new do
     c.messages_per_second = Integer(ENV['IRC_MESSAGES_PER_SECOND'] || 1)
     c.nick = ENV['IRC_NICK']
     c.password = ENV['IRC_PASS']
-    c.plugins.plugins = [Wheaties::CommandsPlugin, Wheaties::Irc::ChatBridge::CinchPlugin,
-      Wheaties::RelayPlugin]
+    c.plugins.plugins = [
+      Wheaties::CommandsPlugin,
+      Wheaties::Irc::ChatBridge::Receive::CinchPlugin,
+      Wheaties::RelayPlugin,
+      Wheaties::Irc::ChatBridge::Transmit::CinchPlugin
+    ]
     c.port = Integer(ENV['IRC_PORT'])
     c.realname = ENV['IRC_REALNAME']
     c.sasl.username = ENV['IRC_SASL_USER']

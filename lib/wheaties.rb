@@ -8,6 +8,7 @@ require 'pathname'
 require 'wheaties/cinch_ext/message_queue'
 require 'wheaties/cinch_ext/user'
 
+require 'wheaties/concerns/chat_bridge/stream_keyable'
 require 'wheaties/concerns/command_assignable'
 
 require 'wheaties/commands/built_in_command'
@@ -40,8 +41,10 @@ require 'wheaties/helpers/message_helpers'
 require 'wheaties/helpers/storage_helpers'
 require 'wheaties/helpers/version_helpers'
 
-require 'wheaties/irc/chat_bridge/cinch_plugin'
-require 'wheaties/irc/chat_bridge/stream_entry'
+require 'wheaties/irc/chat_bridge/receive/chat_event'
+require 'wheaties/irc/chat_bridge/receive/cinch_plugin'
+require 'wheaties/irc/chat_bridge/transmit/cinch_plugin'
+require 'wheaties/irc/chat_bridge/transmit/stream_entry'
 
 require 'wheaties/platforms/console_platform'
 require 'wheaties/platforms/discord_platform'
