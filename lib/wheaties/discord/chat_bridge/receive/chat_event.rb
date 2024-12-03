@@ -3,6 +3,8 @@ module Wheaties
     module ChatBridge
       module Receive
         class ChatEvent
+          AVATAR_CACHE = AvatarCache.new
+
           # Return an instance of {ChatEvent} or one of its subclasses, depending on the type of the
           # event represented by the stream entry.
           def self.from_stream_entry(id, fields)
@@ -33,6 +35,10 @@ module Wheaties
 
           attr_reader :fields, :id, :payload
 
+          def avatar_url
+            AVATAR_CACHE.avatar_url_for_username(payload.dig('user', 'name'))
+          end
+
           def channel
             @channel ||= Wheaties::ChatBridge::ChatEventChannel.new(server, payload['channel'])
           end
@@ -55,8 +61,9 @@ module Wheaties
 
           def plain_text_webhook_payload
             {
-              username: payload.dig('user', 'name'),
-              content: payload['content']
+              avatar_url: avatar_url,
+              content: payload['content'],
+              username: payload.dig('user', 'name')
             }
           end
 

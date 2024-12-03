@@ -26,6 +26,7 @@ require 'wheaties/commands/yaml_command'
 
 require 'wheaties/core_ext/enumerable'
 
+require 'wheaties/discord/chat_bridge/receive/avatar_cache'
 require 'wheaties/discord/chat_bridge/receive/chat_event'
 require 'wheaties/discord/chat_bridge/receive/receiver'
 require 'wheaties/discord/chat_bridge/receive/webhook'
