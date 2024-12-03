@@ -20,8 +20,14 @@ describe Wheaties::DiscordPlatform do
   describe '#start' do
     subject { described_class.new.start }
 
+    let(:discord_chat_bridge_receiver) do
+      instance_double('Wheaties::Discord::ChatBridge::Receive::Receiver', start: nil)
+    end
+
     before do
       Wheaties.bot = instance_double('Discordrb::Bot', run: nil)
+      allow(Wheaties::Discord::ChatBridge::Receive::Receiver).to receive(:new).
+        and_return(discord_chat_bridge_receiver)
     end
 
     after do
@@ -29,7 +35,8 @@ describe Wheaties::DiscordPlatform do
     end
 
     it 'starts the Discordrb bot and the Discord relay subscriber' do
-      expect(Wheaties.bot).to receive(:run).once
+      expect(Wheaties.bot).to receive(:run).with(true).once
+      expect(discord_chat_bridge_receiver).to receive(:start).once
       subject
     end
   end

@@ -106,3 +106,5 @@ Bundler.require(:default, :test)
 
 $:.unshift File.join(File.dirname(__FILE__), '../lib')
 require 'wheaties'
+
+Wheaties.env = ActiveSupport::StringInquirer.new('test')

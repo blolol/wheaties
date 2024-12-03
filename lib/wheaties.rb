@@ -5,8 +5,12 @@ require 'optparse'
 require 'optparse/time'
 require 'pathname'
 
-require 'wheaties/chat_bridge/stream_keyable'
+require 'wheaties/chat_bridge/chat_event_channel'
+require 'wheaties/chat_bridge/chat_event_server'
+require 'wheaties/chat_bridge/errors'
+require 'wheaties/chat_bridge/stream_key'
 require 'wheaties/chat_bridge/stream_entry'
+require 'wheaties/chat_bridge/stream'
 
 require 'wheaties/cinch_ext/message_queue'
 require 'wheaties/cinch_ext/user'
@@ -22,8 +26,13 @@ require 'wheaties/commands/yaml_command'
 
 require 'wheaties/core_ext/enumerable'
 
+require 'wheaties/discord/chat_bridge/receive/chat_event'
+require 'wheaties/discord/chat_bridge/receive/receiver'
+require 'wheaties/discord/chat_bridge/receive/webhook'
 require 'wheaties/discord/chat_bridge/transmit/event_container'
+require 'wheaties/discord/chat_bridge/transmit/event_filter'
 require 'wheaties/discord/chat_bridge/transmit/stream_entry'
+require 'wheaties/discord/chat_bridge/transmit/webhook_cache'
 require 'wheaties/discord/discord_logger_facade'
 
 require 'wheaties/events/assignment_event'

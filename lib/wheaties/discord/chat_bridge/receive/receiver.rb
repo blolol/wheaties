@@ -1,18 +1,18 @@
 module Wheaties
-  module Irc
+  module Discord
     module ChatBridge
       module Receive
-        class CinchPlugin
-          include Cinch::Plugin
-
-          listen_to :connect, method: :on_connect
-
-          private
-
-          def on_connect(event)
+        class Receiver
+          def start
             stream.each_entry do |id, fields|
               ChatEvent.from_stream_entry(id, fields).deliver
             end
+          end
+
+          private
+
+          def logger
+            Wheaties.logger
           end
 
           def stream

@@ -1,8 +1,6 @@
 module Wheaties
   module ChatBridge
     class StreamEntry
-      include Wheaties::ChatBridge::StreamKeyable
-
       STREAM_LIMIT = Integer(ENV['CHAT_BRIDGE_STREAM_LIMIT'] || 1000)
 
       def initialize(type:, event:, content:)
@@ -55,6 +53,10 @@ module Wheaties
 
       def redis
         Wheaties.redis
+      end
+
+      def stream_key
+        Stream.key
       end
     end
   end

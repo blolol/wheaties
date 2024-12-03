@@ -6,6 +6,7 @@ module Wheaties
           extend Discordrb::EventContainer
 
           message do |event|
+            next if EventFilter.new(event).ignore?
             StreamEntry.new(type: 'discord:message', event: event, content: event.content).publish
           end
         end
