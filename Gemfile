@@ -27,6 +27,7 @@ group :commands do
   gem 'http', '~> 5.2'
   gem 'httparty', '~> 0.21.0'
   gem 'nokogiri', '~> 1.16'
+  gem 'transloadit', '~> 3.1.0'
 end
 
 group :test do
