@@ -183,6 +183,7 @@ DEPENDENCIES
   harby (~> 1.2.0)
   http (~> 5.2)
   httparty (~> 0.21.0)
+  mime-types
   mongoid (~> 8.1, >= 8.1.5)
   nokogiri (~> 1.16)
   pry

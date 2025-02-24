@@ -27,6 +27,7 @@ group :commands do
   gem 'engtagger', '~> 0.4.0'
   gem 'http', '~> 5.2'
   gem 'httparty', '~> 0.21.0'
+  gem 'mime-types', require: 'mime/types'
   gem 'nokogiri', '~> 1.16'
   gem 'terrapin', '~> 1.0.1'
   gem 'transloadit', '~> 3.1.0'
