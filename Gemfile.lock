@@ -50,6 +50,11 @@ GEM
     chronic_duration (0.10.6)
       numerizer (~> 0.1.1)
     climate_control (1.2.0)
+    cloudinary (2.3.0)
+      faraday (>= 2.0.1, < 3.0.0)
+      faraday-follow_redirects (~> 0.3.0)
+      faraday-multipart (~> 1.0, >= 1.0.4)
+      ostruct
     coderay (1.1.3)
     concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
@@ -60,6 +65,16 @@ GEM
     e2mmap (0.1.0)
     engtagger (0.4.0)
       lru_redux
+    faraday (2.13.0)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-follow_redirects (0.3.0)
+      faraday (>= 1, < 3)
+    faraday-multipart (1.1.0)
+      multipart-post (~> 2.0)
+    faraday-net_http (3.4.0)
+      net-http (>= 0.5.0)
     ffi (1.16.3)
     ffi-compiler (1.3.2)
       ffi (>= 1.15.5)
@@ -82,6 +97,7 @@ GEM
     i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     jmespath (1.6.2)
+    json (2.10.2)
     llhttp-ffi (0.5.0)
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
@@ -103,7 +119,10 @@ GEM
       ruby2_keywords (~> 0.0.5)
     multi_json (1.15.0)
     multi_xml (0.6.0)
+    multipart-post (2.4.1)
     mutex_m (0.2.0)
+    net-http (0.6.0)
+      uri
     netrc (0.11.0)
     nokogiri (1.16.5-aarch64-linux)
       racc (~> 1.4)
@@ -118,6 +137,7 @@ GEM
     nokogiri (1.16.5-x86_64-linux)
       racc (~> 1.4)
     numerizer (0.1.1)
+    ostruct (0.6.1)
     polyglot (0.3.5)
     pry (0.14.2)
       coderay (~> 1.1)
@@ -160,6 +180,7 @@ GEM
       polyglot (~> 0.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    uri (1.0.3)
 
 PLATFORMS
   aarch64-linux
@@ -176,6 +197,7 @@ DEPENDENCIES
   bugsnag (~> 6.26, >= 6.26.4)
   chronic_duration (~> 0.10.6)
   cinch!
+  cloudinary (~> 2)
   connection_pool (~> 2.4, >= 2.4.1)
   dotenv
   e2mmap

@@ -24,6 +24,7 @@ gem 'thwait'
 group :commands do
   gem 'aws-sdk-s3', '~> 1.182'
   gem 'chronic_duration', '~> 0.10.6'
+  gem 'cloudinary', '~> 2'
   gem 'engtagger', '~> 0.4.0'
   gem 'http', '~> 5.2'
   gem 'httparty', '~> 0.21.0'
