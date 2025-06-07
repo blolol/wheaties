@@ -33,9 +33,14 @@ class Command
   def self.find_by_regex(input)
     return unless find_by_regex_enabled?
 
-    where(regex: true).for_js('input.match(this.name)', input: input).first.tap do |command|
-      command.find_by_regex_match_data = input.match(command.name) if command
-    end
+    # Find the first regex-enabled command that matches the input
+    command = where(regex: true).find { |command| input.match?(command.name) }
+    return unless command
+
+    # Add regex match data to the command instance before returning it
+    command.find_by_regex_match_data = input.match(command.name)
+
+    command
   end
 
   def self.find_by_regex_enabled?
