@@ -88,19 +88,20 @@ module Wheaties
     end
 
     def on_message(message)
-      message_history.push(message)
-      return if bot_sent?(message)
-
-      if irc_command_invocation?(message)
-        CommandEvent.new(message).run
-      elsif matterbridge_command_invocation?(message)
-        matterbridge_message = MatterbridgeMessage.from(message)
-        CommandEvent.new(matterbridge_message).run
-      elsif command_assignment?(message)
-        AssignmentEvent.new(message).run
-      else
-        MessageEvent.new(message).run
+      unless bot_sent?(message)
+        if irc_command_invocation?(message)
+          CommandEvent.new(message).run
+        elsif matterbridge_command_invocation?(message)
+          matterbridge_message = MatterbridgeMessage.from(message)
+          CommandEvent.new(matterbridge_message).run
+        elsif command_assignment?(message)
+          AssignmentEvent.new(message).run
+        else
+          MessageEvent.new(message).run
+        end
       end
+
+      message_history.push(message)
     rescue => error
       log_error_and_notify_bugsnag(error, message)
     end
