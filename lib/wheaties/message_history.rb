@@ -54,7 +54,7 @@ module Wheaties
       private
 
       def max_size
-        @max_size ||= Integer(ENV.fetch('MESSAGE_HISTORY_SIZE', 25))
+        @max_size ||= Integer(ENV.fetch('MESSAGE_HISTORY_SIZE', 256))
       end
 
       def trim_to_max_size
