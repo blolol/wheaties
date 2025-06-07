@@ -37,21 +37,18 @@ module Wheaties
       AssignmentEvent.assignment_pattern(bot)
     end
 
-    def bot_caused_event?(message)
+    def bot_sent?(message)
       message.user == bot
     end
 
     def matterbridge_command_invocation?(message)
-      message.user.user == ENV['MATTERBRIDGE_USER'] &&
+      respond_to_matterbridge_commands? &&
+        message.user.user == ENV['MATTERBRIDGE_USER'] &&
         sanitize_message(message).match?(MatterbridgeMessage::COMMAND_INVOCATION_PATTERN)
     end
 
     def command_assignment?(message)
       sanitize_message(message).match?(assignment_pattern)
-    end
-
-    def command_invocation?(message)
-      irc_command_invocation?(message) || matterbridge_command_invocation?(message)
     end
 
     def irc_command_invocation?(message)
@@ -70,58 +67,54 @@ module Wheaties
     end
 
     def on_ctcp(message)
-      unless bot_caused_event?(message)
-        CtcpEvent.new(message).run
-      end
+      return if bot_sent?(message)
+      CtcpEvent.new(message).run
     rescue => error
       log_error_and_notify_bugsnag(error, message)
     end
 
     def on_join(message)
-      unless bot_caused_event?(message)
-        JoinEvent.new(message).run
-      end
+      return if bot_sent?(message)
+      JoinEvent.new(message).run
     rescue => error
       log_error_and_notify_bugsnag(error, message)
     end
 
     def on_leave(message, user)
-      unless bot_caused_event?(message)
-        LeaveEvent.new(message).run
-      end
+      return if bot_sent?(message)
+      LeaveEvent.new(message).run
     rescue => error
       log_error_and_notify_bugsnag(error, message)
     end
 
     def on_message(message)
-      unless bot_caused_event?(message)
-        if irc_command_invocation?(message)
-          CommandEvent.new(message).run
-        elsif respond_to_matterbridge_commands? && matterbridge_command_invocation?(message)
-          matterbridge_message = MatterbridgeMessage.from(message)
-          CommandEvent.new(matterbridge_message).run
-        elsif command_assignment?(message)
-          AssignmentEvent.new(message).run
-        else
-          MessageEvent.new(message).run
-        end
+      message_history.push(message)
+      return if bot_sent?(message)
+
+      if irc_command_invocation?(message)
+        CommandEvent.new(message).run
+      elsif matterbridge_command_invocation?(message)
+        matterbridge_message = MatterbridgeMessage.from(message)
+        CommandEvent.new(matterbridge_message).run
+      elsif command_assignment?(message)
+        AssignmentEvent.new(message).run
+      else
+        MessageEvent.new(message).run
       end
     rescue => error
       log_error_and_notify_bugsnag(error, message)
     end
 
     def on_nick(message)
-      unless bot_caused_event?(message)
-        NickEvent.new(message).run
-      end
+      return if bot_sent?(message)
+      NickEvent.new(message).run
     rescue => error
       log_error_and_notify_bugsnag(error, message)
     end
 
     def on_topic(message)
-      unless bot_caused_event?(message)
-        TopicEvent.new(message).run
-      end
+      return if bot_sent?(message)
+      TopicEvent.new(message).run
     rescue => error
       log_error_and_notify_bugsnag(error, message)
     end
