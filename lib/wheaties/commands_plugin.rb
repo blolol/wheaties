@@ -57,6 +57,7 @@ module Wheaties
 
     def log_error_and_notify_bugsnag(error, message)
       exception(error)
+      error.backtrace.each { |line| error(line) } if Wheaties.env.development?
       BugsnagNotifier.new(error, message).notify
     end
 

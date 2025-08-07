@@ -15,6 +15,7 @@ require 'wheaties/commands/command'
 require 'wheaties/commands/plain_text_command'
 require 'wheaties/commands/random_line_command'
 require 'wheaties/commands/ruby_command'
+require 'wheaties/commands/version'
 require 'wheaties/commands/yaml_command'
 
 require 'wheaties/core_ext/enumerable'

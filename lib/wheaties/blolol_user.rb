@@ -7,9 +7,8 @@ module Wheaties
     end
 
     def [](key)
-      if response.ok?
-        response['user'][key]
-      end
+      return unless authname_or_relayed_nick.present? && response.ok?
+      response['user'][key]
     end
 
     def aliases

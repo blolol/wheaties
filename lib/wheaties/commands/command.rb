@@ -3,7 +3,7 @@ class Command
   include Mongoid::Timestamps
 
   # Attributes
-  attr_accessor :find_by_regex_match_data
+  attr_accessor :commit_message, :find_by_regex_match_data
 
   # Fields
   field :body, type: String, default: ''
@@ -23,6 +23,10 @@ class Command
   # Callbacks
   before_create :generate_description
   before_create :generate_url_title
+  after_save :create_new_version
+
+  # Associations
+  embeds_many :versions
 
   def self.find_by_name(name)
     command_cache.get(name) || not_found!(name)
@@ -78,6 +82,17 @@ class Command
     raise(Wheaties::CommandNotFoundError.new(command_name: name))
   end
   private_class_method :not_found!
+
+  def create_new_version
+    # Don't create a new version unless the command body changed
+    return unless previous_changes.key?('body')
+
+    version_attributes = attributes.with_indifferent_access.
+      slice(:body, :events, :name, :regex).
+      merge({ commit_message: commit_message, created_by: updated_by })
+
+    versions.create!(version_attributes)
+  end
 
   def generate_description
     self.desc = body.lines.first.strip
