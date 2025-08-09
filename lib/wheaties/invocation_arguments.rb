@@ -7,6 +7,8 @@ module Wheaties
     # InvocationArguments instance.
     attr_reader :unparsed
 
+    delegate :unstringify, to: :stringified
+
     def initialize(parsed_arguments = [], unparsed_arguments = '')
       @unparsed = unparsed_arguments
       super(parsed_arguments || [])
@@ -57,6 +59,11 @@ module Wheaties
 
       def remaining_from(other_array)
         other_array & (@hashes.fetch_values(*self))
+      end
+
+      # For the given stringified argument, return the original object.
+      def unstringify(stringified)
+        @hashes[stringified]
       end
     end
   end

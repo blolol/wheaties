@@ -22,6 +22,10 @@ module Wheaties
       @invocation = invocation
     end
 
+    def args
+      arguments
+    end
+
     def eval(command)
       update_command_usage_stats(command)
 
@@ -56,10 +60,6 @@ module Wheaties
     end
 
     private
-
-    def args
-      arguments
-    end
 
     def arguments
       invocation.arguments
