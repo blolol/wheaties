@@ -14,7 +14,7 @@ module Wheaties
     end
 
     def ruby_value
-      @lines
+      @lines.size == 1 ? @lines.first : @lines
     end
 
     private
