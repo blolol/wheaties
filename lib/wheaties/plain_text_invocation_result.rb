@@ -54,7 +54,7 @@ module Wheaties
     end
 
     def select_lines
-      lines = @text.lines
+      lines = @text.lines.map(&:strip)
       lines = grep(lines)
       lines = sort(lines)
       lines = limit(lines)
