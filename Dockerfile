@@ -24,4 +24,5 @@ COPY bin ./bin/
 COPY config ./config/
 COPY lib ./lib/
 
+ENV LANG=C.UTF-8
 CMD ["./bin/wheaties"]
