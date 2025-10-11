@@ -1,4 +1,12 @@
 services:
+  ergo:
+    image: ghcr.io/ergochat/ergo:stable
+    init: true
+    ports:
+      - "6667:6667/tcp"
+      - "6697:6697/tcp"
+    volumes:
+      - ergo:/ircd
   mongodb:
     image: mongo:5
   redis:
@@ -10,5 +18,9 @@ services:
       REDIS_URL: redis://redis
     env_file: docker.env
     depends_on:
+      - ergo
       - mongodb
       - redis
+
+volumes:
+  ergo:
