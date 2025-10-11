@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '3.3.1'
+ruby '3.4.7'
 
 gem 'activesupport', '~> 7.1', '>= 7.1.3.2', require: 'active_support/all'
 gem 'aws-sdk-sqs', '~> 1.93'
