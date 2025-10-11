@@ -1,0 +1,55 @@
+module Harby
+	module Grammar
+		grammar String
+			rule string
+				double_quoted / single_quoted / naked
+			end
+
+			rule double_quote
+				'"' / '“' / '”'
+			end
+
+			rule escaped_double_quote
+				'\\' double_quote
+			end
+
+			rule double_quoted
+				double_quote value:(escaped_double_quote / command / !double_quote .)* double_quote {
+					def parsed_value
+						value.elements.map do |element|
+							if element.respond_to?(:parsed_value)
+								element.parsed_value
+							else
+								element.text_value.gsub /\\(["“”])/, '\1'
+							end
+						end.join ''
+					end
+				}
+			end
+
+			rule single_quote
+				"'" / '‘' / '’'
+			end
+
+			rule escaped_single_quote
+				'\\' single_quote
+			end
+
+			rule single_quoted
+				single_quote value:(escaped_single_quote / !single_quote .)* single_quote {
+					def parsed_value
+						value.text_value.gsub /\\(['‘’])/, '\1'
+					end
+				}
+			end
+
+			rule naked
+				('\\ ' / !' ' !']' !')' .)+ {
+					def parsed_value
+						text_value.gsub('\\ ', ' ').gsub '\\/', '/'
+					end
+				}
+			end
+		end
+	end
+end

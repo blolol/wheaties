@@ -4,6 +4,8 @@ require 'optparse'
 require 'optparse/time'
 require 'pathname'
 
+require 'harby'
+
 require 'wheaties/cinch_ext/message_queue'
 require 'wheaties/cinch_ext/target'
 require 'wheaties/cinch_ext/user'

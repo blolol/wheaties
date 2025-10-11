@@ -8,21 +8,13 @@ gem 'cinch', git: 'https://github.com/blolol/cinch', tag: 'v2.3.5'
 gem 'connection_pool'
 gem 'csv'
 gem 'dotenv'
-gem 'harby', '~> 1.2.0'
 gem 'mongoid', '~> 8.1', '>= 8.1.5'
 gem 'ox'
 gem 'pry'
 gem 'rake'
 gem 'redis'
-gem 'treetop', '<= 1.6.12'
-
-# These gems are dependencies of polyglot 0.3.5, which is a dependency
-# of treetop 1.6.x, which is a dependency of harby 1.2. They were
-# removed from Ruby's standard library in Ruby 2.7, and released as gems.
-# If polyglot is updated to specify the gems as dependencies, then these
-# explicit dependencies can be removed from Wheaties' Gemfile.
-gem 'e2mmap'
-gem 'thwait'
+gem 'thwait' # Required by, but not declared as a gem dependency of, polyglot (used by treetop)
+gem 'treetop'
 
 group :commands do
   gem 'aws-sdk-s3', '~> 1'
