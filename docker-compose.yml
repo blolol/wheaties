@@ -18,6 +18,7 @@ services:
   wheaties:
     build: .
     environment:
+      IRC_SERVER: ergo
       MONGODB_URL: mongodb://mongodb:27017/wheaties
       REDIS_URL: redis://redis
     env_file: docker.env
