@@ -81,6 +81,10 @@ module Wheaties
       @invocation
     end
 
+    def log_level
+      invocation.log_level
+    end
+
     def message
       invocation.message
     end

@@ -23,11 +23,15 @@ module Wheaties
     end
 
     def command_invocation
-      CommandInvocation.new(@message, command, parsed_arguments, stack: stack)
+      CommandInvocation.new(@message, command, parsed_arguments, log_level:, stack:)
     end
 
     def command_name
       match_data[:name]
+    end
+
+    def log_level
+      prefix == CommandsPlugin::DEBUG_PREFIX ? :debug : :info
     end
 
     def match_data
@@ -40,6 +44,10 @@ module Wheaties
 
     def parser
       ParserFactory.parser(@message, stack: stack)
+    end
+
+    def prefix
+      match_data[:prefix]
     end
 
     def result

@@ -1,12 +1,14 @@
 module Wheaties
   class CommandInvocation
     # Attributes
-    attr_reader :arguments, :command, :event, :id, :message, :stack
+    attr_reader :arguments, :command, :event, :id, :message, :log_level, :stack
 
-    def initialize(message, command, arguments = InvocationArguments.new, event: :command, stack: [])
+    def initialize(message, command, arguments = InvocationArguments.new, event: :command,
+        log_level: :info, stack: [])
       @message = message
       @command = command
       @event = event
+      @log_level = log_level
       @stack = stack
       @id = stack.size
       @arguments = if arguments.is_a?(InvocationArguments)

@@ -7,11 +7,17 @@ module Wheaties
     end
 
     def debug(*args)
+      return unless debug?
+
       prefix = "[#{stack.last.name}##{stack.last.id}:#{caller_line_number}]"
       debug_message = "#{prefix} #{formatted_args(args)}"
 
       message.user.send(debug_message)
       logger.debug(debug_message)
+    end
+
+    def debug?
+      log_level == :debug
     end
 
     def formatted_args(args)

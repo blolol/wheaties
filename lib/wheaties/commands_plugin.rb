@@ -4,10 +4,12 @@ module Wheaties
 
     # Constants
     COMMAND_PREFIX = ENV.fetch('COMMAND_PREFIX', '.')
+    DEBUG_PREFIX = ENV.fetch('DEBUG_PREFIX', '!')
+    PREFIX_PATTERN = /[#{Regexp.escape(COMMAND_PREFIX)}#{Regexp.escape(DEBUG_PREFIX)}]/
     COMMAND_PATTERN = /
-      #{Regexp.escape(COMMAND_PREFIX)}
+      (?<prefix>#{PREFIX_PATTERN})
       (?<name>
-        (?!#{Regexp.escape(COMMAND_PREFIX)}) # Command name cannot start with the prefix
+        (?!#{PREFIX_PATTERN}) # Command name cannot start with the prefix
         \S+
       )
       (\s*(?<arguments>.*))
