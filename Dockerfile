@@ -1,14 +1,13 @@
 FROM ruby:3.4.7
 
 # Install additional packages:
-#   * ffmpeg is used by Wheaties commands
 #   * Git is required to fetch Ruby gems from Git repositories
 #   * tzdata is used by Wheaties commands
 #   * yt-dlp is used by Wheaties commands
 ENV DEBIAN_FRONTEND=noninteractive
 RUN echo 'deb http://deb.debian.org/debian trixie-backports main' >> /etc/apt/sources.list && \
     apt-get update && \
-    apt-get install -y ffmpeg git tzdata && \
+    apt-get install -y git tzdata && \
     apt-get -t trixie-backports install -y yt-dlp && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
