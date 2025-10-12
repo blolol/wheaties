@@ -13,6 +13,8 @@ services:
       - "27017:27017/tcp"
   redis:
     image: redis:alpine
+    ports:
+      - "6379:6379/tcp"
   wheaties:
     build: .
     environment:
