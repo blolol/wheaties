@@ -39,8 +39,15 @@ module Wheaties
         elsif @data.is_a?(StringIO)
           normalize_string(@data.read)
         elsif @data.respond_to?(:readpartial) || @data.respond_to?(:read)
-          # TODO Detect content type of IO-like streams
+          normalize_stream(@data)
         end
+      end
+
+      def normalize_stream(stream)
+        filename = @data.respond_to?(:path) ? File.basename(@data.path) : nil
+        @content_type = Marcel::MimeType.for(@data, name: filename)
+        @data.rewind if @data.respond_to?(:rewind)
+        @data_stream = @data
       end
 
       def normalize_string(data)

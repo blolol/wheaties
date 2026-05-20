@@ -134,4 +134,49 @@ describe Wheaties::CdnHelpers::DataNormalizer do
       expect(normalizer.data_stream.read).to eq('foo bar')
     end
   end
+
+  context 'with an IO-like stream containing recognizable file content' do
+    let(:data) do
+      tempfile = Tempfile.new(['test', '.png'])
+      tempfile.binmode
+      tempfile.write("\x89PNG\r\n\x1a\n".b)
+      tempfile.rewind
+      tempfile
+    end
+
+    after { data.close! }
+
+    it 'detects the content type via magic bytes' do
+      expect(normalizer.content_type).to eq('image/png')
+    end
+
+    it 'returns the stream itself' do
+      expect(normalizer.data_stream).to be(data)
+    end
+
+    it 'rewinds the stream after content type detection' do
+      normalizer
+      expect(data.pos).to eq(0)
+    end
+  end
+
+  context 'with an IO-like stream containing an unrecognizable byte sequence' do
+    let(:data) do
+      tempfile = Tempfile.new('test')
+      tempfile.binmode
+      tempfile.write("\x00\x01\x02\x03".b)
+      tempfile.rewind
+      tempfile
+    end
+
+    after { data.close! }
+
+    it 'falls back to a generic content type' do
+      expect(normalizer.content_type).to eq('application/octet-stream')
+    end
+
+    it 'returns the stream itself' do
+      expect(normalizer.data_stream).to be(data)
+    end
+  end
 end
