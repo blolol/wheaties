@@ -18,7 +18,7 @@ RUN bundle config --global frozen 1
 WORKDIR /usr/src/app
 
 COPY Gemfile Gemfile.lock ./
-RUN bundle install --without=test
+RUN bundle config set without test && bundle install
 
 COPY bin ./bin/
 COPY config ./config/
