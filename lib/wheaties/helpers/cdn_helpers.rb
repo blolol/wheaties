@@ -30,7 +30,7 @@ module Wheaties
       def put(key, data, content_type: :detect, metadata: {})
         normalizer = DataNormalizer.new(data)
         content_type = normalizer.content_type if content_type == :detect
-        s3.put_object(key:, body: normalizer.data_stream, content_type:, metadata:)
+        s3.put_object(bucket: @bucket, key:, body: normalizer.data_stream, content_type:, metadata:)
       end
 
       def url(key)
