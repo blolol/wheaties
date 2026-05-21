@@ -1,4 +1,4 @@
-FROM ruby:3.4.7
+FROM ruby:3.4.9
 
 # Install additional packages:
 #   * Git is required to fetch Ruby gems from Git repositories

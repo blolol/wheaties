@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '3.4.7'
+ruby '3.4.9'
 
 gem 'activesupport', require: 'active_support/all'
 gem 'aws-sdk-s3', '~> 1'
