@@ -7,15 +7,34 @@ module Wheaties
     end
 
     class CdnClient
+      attr_reader :base_url, :s3
+
       def initialize
+        @base_url = ENV.fetch('WHEATIES_CDN_BASE_URL')
         @bucket = ENV.fetch('WHEATIES_CDN_BUCKET')
         @s3 = Aws::S3::Client.new
       end
 
+      def delete(key)
+        s3.delete_object(bucket: @bucket, key:)
+      end
+
+      def exists?(key)
+        Aws::S3::Object.new(@bucket, key).exists?
+      end
+
+      def get(key)
+        s3.get_object(bucket: @bucket, key:)
+      end
+
       def put(key, data, content_type: :detect, metadata: {})
-        object = Aws::S3::Object.new(@bucket, key)
         normalizer = DataNormalizer.new(data)
         content_type = normalizer.content_type if content_type == :detect
+        s3.put_object(key:, body: normalizer.data_stream, content_type:, metadata:)
+      end
+
+      def url(key)
+        "#{base_url}/#{key}"
       end
     end
 

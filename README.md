@@ -84,6 +84,8 @@ Wheaties can be configured using the following environment variables.
 | `RELAY_MESSAGE_CHECK_INTERVAL_SECONDS` | Optional | Long poll Amazon SQS for this many seconds (default: 10) |
 | `RELAY_QUEUE_URL` | Optional | The Amazon SQS queue URL to poll for messages to relay to IRC |
 | `WHEATIES_BASE_URL` | **Required** | The base URL to Wheaties' web interface |
+| `WHEATIES_CDN_BASE_URL` | **Required** | The base URL to Wheaties' CDN, used by `Wheaties::CdnHelpers` |
+| `WHEATIES_CDN_BUCKET` | **Required** | The S3 bucket name used by `Wheaties::CdnHelpers` |
 | `WHEATIES_ENV` | Optional | The environment to use (`development`, `staging`, `production`) |
 
 ### Message Relay

@@ -1,6 +1,7 @@
 module Wheaties
   class InvocationEnvironment
     include Cinch::Helpers
+    include CdnHelpers
     include CommandHelpers
     include DocumentationHelpers
     include FormattingHelpers
