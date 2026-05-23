@@ -2,35 +2,40 @@ module Wheaties
   module CdnHelpers
     private
 
-    def cdn
-      @cdn ||= CdnClient.new
+    def cdn(bucket: nil, base_url: nil)
+      if bucket.nil? && base_url.nil?
+        @cdn ||= CdnClient.new(bucket: ENV.fetch('WHEATIES_CDN_BUCKET'),
+          base_url: ENV.fetch('WHEATIES_CDN_BASE_URL'))
+      else
+        CdnClient.new(bucket:, base_url:)
+      end
     end
 
     class CdnClient
-      attr_reader :base_url, :s3
+      attr_reader :base_url, :bucket, :s3
 
-      def initialize
-        @base_url = ENV.fetch('WHEATIES_CDN_BASE_URL')
-        @bucket = ENV.fetch('WHEATIES_CDN_BUCKET')
+      def initialize(bucket:, base_url:)
+        @base_url = base_url
+        @bucket = bucket
         @s3 = Aws::S3::Client.new
       end
 
       def delete(key)
-        s3.delete_object(bucket: @bucket, key:)
+        s3.delete_object(bucket:, key:)
       end
 
       def exists?(key)
-        Aws::S3::Object.new(@bucket, key).exists?
+        Aws::S3::Object.new(bucket, key).exists?
       end
 
       def get(key)
-        s3.get_object(bucket: @bucket, key:)
+        s3.get_object(bucket:, key:)
       end
 
       def put(key, data, content_type: :detect, metadata: {})
         normalizer = DataNormalizer.new(data)
         content_type = normalizer.content_type if content_type == :detect
-        s3.put_object(bucket: @bucket, key:, body: normalizer.data_stream, content_type:, metadata:)
+        s3.put_object(bucket:, key:, body: normalizer.data_stream, content_type:, metadata:)
       end
 
       def url(key)
