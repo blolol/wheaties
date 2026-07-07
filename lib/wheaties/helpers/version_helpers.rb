@@ -1,7 +1,7 @@
 module Wheaties
   module VersionHelpers
     def version
-      Wheaties::VERSION
+      "Wheaties #{Wheaties::VERSION}, Ruby #{RUBY_VERSION}"
     end
   end
 end
