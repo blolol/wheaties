@@ -24,7 +24,7 @@ group :commands do
   gem 'engtagger'
   gem 'http'
   gem 'httparty'
-  gem 'janeway-jsonpath'
+  gem 'janeway-jsonpath', require: 'janeway'
   gem 'mime-types', require: 'mime/types'
   gem 'terrapin'
   gem 'transloadit'
