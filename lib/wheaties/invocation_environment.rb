@@ -94,6 +94,14 @@ module Wheaties
       message
     end
 
+    def response_collector
+      @response_collector ||= ResponseCollector.new
+    end
+
+    def respond_to
+      yield response_collector
+    end
+
     def stack
       invocation.stack
     end
