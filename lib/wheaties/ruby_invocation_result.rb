@@ -20,12 +20,15 @@ module Wheaties
     end
 
     def reply_to_chat_based_on_type(message, value)
-      if value.is_a?(String)
-        message.reply(value)
-      elsif value.is_a?(Array)
+      case value
+      when Array
         value.each { |element| reply_to_chat_based_on_type(message, element) }
-      elsif value.is_a?(Numeric)
+      when Numeric
         reply_to_chat_based_on_type(message, value.to_s)
+      when ResponseCollector
+        value.respond!(message, :irc, :plain, :ruby)
+      when String
+        message.reply(value)
       else
         log_invalid_return_value(message, value)
       end

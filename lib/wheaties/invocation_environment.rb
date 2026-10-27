@@ -55,55 +55,29 @@ module Wheaties
     def method_missing(name, *arguments)
       command = Command.find_by_name(name)
       CommandInvocation.new(message, command, arguments, event: event,
-        stack: stack).result.ruby_value
+        formats: [:ruby] + invocation.formats, stack: stack).result.ruby_value
     rescue CommandNotFoundError
       super
     end
 
     private
 
-    def arguments
-      invocation.arguments
-    end
-
-    def bot
-      message.bot
-    end
+    attr_reader :invocation
+    delegate :arguments, :event, :log_level, :message, :stack, to: :invocation
+    delegate :bot, to: :message
 
     def context
       binding
-    end
-
-    def event
-      invocation.event
-    end
-
-    def invocation
-      @invocation
-    end
-
-    def log_level
-      invocation.log_level
-    end
-
-    def message
-      invocation.message
     end
 
     def msg
       message
     end
 
-    def response_collector
-      @response_collector ||= ResponseCollector.new
-    end
-
     def respond_to
+      response_collector = ResponseCollector.new
       yield response_collector
-    end
-
-    def stack
-      invocation.stack
+      response_collector.respond!(message, *invocation.formats)
     end
 
     def update_command_usage_stats(command)

@@ -1,13 +1,14 @@
 module Wheaties
   class CommandInvocation
-    # Attributes
-    attr_reader :arguments, :command, :event, :id, :message, :log_level, :stack
+    attr_reader :arguments, :command, :event, :formats, :id, :message, :log_level, :stack
+    delegate :name, to: :command
 
     def initialize(message, command, arguments = InvocationArguments.new, event: :command,
-        log_level: :info, stack: [])
+        formats:, log_level: :info, stack: [])
       @message = message
       @command = command
       @event = event
+      @formats = formats
       @log_level = log_level
       @stack = stack
       @id = stack.size
@@ -22,10 +23,6 @@ module Wheaties
       result.reply_to_chat(message)
     end
 
-    def name
-      command.name
-    end
-
     def result
       log_invocation
       command.invoke(environment)
@@ -37,9 +34,8 @@ module Wheaties
 
     private
 
-    def bot
-      message.bot
-    end
+    delegate :bot, to: :message
+    delegate :loggers, to: :bot
 
     def environment
       InvocationEnvironment.new(self)
@@ -60,10 +56,6 @@ module Wheaties
       logger.debug('Invoking command nick=%{nick} user=%{user} invocation.id=%{invocation_id} ' \
         'command.name=%{command_name} command.id=%{command_id} arguments=%{arguments} ' \
         'event=%{event} stack=%{stack}' % interpolations)
-    end
-
-    def logger
-      bot.loggers
     end
   end
 end

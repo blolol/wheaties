@@ -23,11 +23,15 @@ module Wheaties
     end
 
     def command_invocation
-      CommandInvocation.new(@message, command, parsed_arguments, log_level:, stack:)
+      CommandInvocation.new(@message, command, parsed_arguments, formats:, log_level:, stack:)
     end
 
     def command_name
       match_data[:name]
+    end
+
+    def formats
+      %i(irc plain)
     end
 
     def log_level

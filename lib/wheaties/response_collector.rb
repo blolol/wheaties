@@ -4,6 +4,7 @@ module Wheaties
 
     def initialize
       @responses = {}
+      @responded = false
     end
 
     def all(&block)
@@ -23,6 +24,22 @@ module Wheaties
 
     def plain(&block)
       @responses[:plain] = block
+    end
+
+    def respond!(message, *formats)
+      return if responded?
+      result = response(*formats)&.call
+      RubyInvocationResult.new(result).reply_to_chat(message)
+      @responded = true
+      self
+    end
+
+    def responded?
+      @responded
+    end
+
+    def response(*formats)
+      @responses.values_at(*formats.uniq).compact.first || @responses[:all]
     end
 
     def ruby(&block)
