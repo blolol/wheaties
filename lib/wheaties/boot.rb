@@ -10,6 +10,7 @@ module Wheaties
     configure_bugsnag
     configure_redis
     configure_mongoid
+    configure_ruby_llm
     load_environment
   end
 
@@ -58,6 +59,17 @@ module Wheaties
     self.root = Pathname.new(File.expand_path(relative_path))
   end
   private_class_method :configure_root
+
+  def self.configure_ruby_llm
+    RubyLLM.configure do |config|
+      config.openrouter_api_key = ENV['OPENROUTER_API_KEY'] if ENV['OPENROUTER_API_KEY']
+    end
+
+    RubyLLM.models.refresh
+
+    config.logger = Wheaties.logger
+  end
+  private_class_method :configure_ruby_llm
 
   def self.load_environment
     environment_config = self.root.join('config/environments', self.env)

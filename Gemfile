@@ -26,6 +26,7 @@ group :commands do
   gem 'httparty'
   gem 'janeway-jsonpath', require: 'janeway'
   gem 'mime-types', require: 'mime/types'
+  gem 'ruby_llm', '~> 2.1.1'
   gem 'terrapin'
   gem 'transloadit'
 end
