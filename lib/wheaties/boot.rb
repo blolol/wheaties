@@ -62,7 +62,6 @@ module Wheaties
 
   def self.configure_ruby_llm
     RubyLLM.configure do |config|
-      config.logger = Wheaties.logger
       config.openrouter_api_key = ENV['OPENROUTER_API_KEY'] if ENV['OPENROUTER_API_KEY']
     end
 
