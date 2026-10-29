@@ -1,0 +1,8 @@
+schema_version: "1.1"
+name: cli-options-pick-command
+expected_outcome: |
+  A pasteable Ruby command that parses CLI-style options with args.parse_options and an OptionParser block,
+  following the idiom used by the existing ai, caption and ytdlp commands: extract_options! for calls from other
+  commands, with_defaults!, a Usage line plus "Help: Options:" documentation in the header, help output when no
+  choices are given, validation of option values, hash-style debug calls, and test cases covering short and long
+  forms, option position, and bad input.

@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: dice-roll-new-command
+expected_outcome: |
+  A pasteable Ruby command body that parses NdM, rolls, replies with each roll and the total, handles bad input, uses debug, and comes with example invocations.

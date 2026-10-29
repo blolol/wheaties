@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: hackernews-event-command
+expected_outcome: |
+  An on_privmsg event command that is silent on non-matches, extracts HN item ids, fetches titles, caches in Redis, handles failures, and uses debug.

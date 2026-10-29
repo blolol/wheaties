@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: lastimg-add-webp
+expected_outcome: |
+  The current lastimg body is fetched from MongoDB and minimally edited so the pattern also matches .webp, with a changelog line, and delivered as a full pasteable body.
