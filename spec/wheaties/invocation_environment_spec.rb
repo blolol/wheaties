@@ -9,7 +9,8 @@ describe Wheaties::InvocationEnvironment do
   let(:stack) { [] }
   let(:message) { double('message', user: double('user', nick: 'nick')) }
   let(:invocation) do
-    double('invocation', arguments: [], event: :command, message: message, stack: stack)
+    double('invocation', arguments: [], event: :command, log_level: :info, message: message,
+      stack: stack)
   end
   let(:environment) { described_class.new(invocation) }
 
@@ -35,8 +36,8 @@ describe Wheaties::InvocationEnvironment do
       # Runs the called command the way CommandInvocation would, sharing the caller's stack
       allow(Wheaties::CommandInvocation).to receive(:new) do |*args|
         command, options = args[1], args.last
-        helper_invocation = double('helper', arguments: [], event: :command, message: message,
-          stack: options[:stack])
+        helper_invocation = double('helper', arguments: [], event: :command, log_level: :info,
+          message: message, stack: options[:stack])
         double('helper invocation',
           result: double(ruby_value: described_class.new(helper_invocation).eval(command)))
       end
@@ -45,6 +46,19 @@ describe Wheaties::InvocationEnvironment do
 
       expect(environment.eval(command)).to be(true)
       expect(stack).to be_empty
+    end
+
+    it 'passes the log level on to commands it calls' do
+      log_levels = []
+      allow(Wheaties::CommandInvocation).to receive(:new) do |*args|
+        log_levels << args.last[:log_level]
+        double('helper invocation', result: double(ruby_value: nil))
+      end
+      allow(invocation).to receive(:log_level).and_return(:debug)
+
+      environment.eval(build_command('outer', 'helper'))
+
+      expect(log_levels).to eq([:debug])
     end
 
     it 'pops the invocation when the command halts' do

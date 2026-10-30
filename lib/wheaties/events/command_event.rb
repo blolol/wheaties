@@ -43,7 +43,7 @@ module Wheaties
     end
 
     def parser
-      ParserFactory.parser(@message, stack: stack)
+      ParserFactory.parser(@message, stack: stack, log_level: log_level)
     end
 
     def prefix

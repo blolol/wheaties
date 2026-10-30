@@ -1,9 +1,10 @@
 module Wheaties
   class SubcommandInvocation
-    def initialize(message, arguments, stack)
+    def initialize(message, arguments, stack, log_level: :info)
       @message = message
       @arguments = arguments
       @stack = stack.dup
+      @log_level = log_level
     end
 
     def invoke
@@ -19,7 +20,8 @@ module Wheaties
     private
 
     def command_invocation
-      CommandInvocation.new(@message, subcommand, subcommand_arguments, stack: @stack)
+      CommandInvocation.new(@message, subcommand, subcommand_arguments, log_level: @log_level,
+        stack: @stack)
     end
 
     def parent_command_name

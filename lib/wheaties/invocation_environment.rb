@@ -61,7 +61,7 @@ module Wheaties
 
     def method_missing(name, *arguments)
       command = Command.find_by_name(name)
-      CommandInvocation.new(message, command, arguments, event: event,
+      CommandInvocation.new(message, command, arguments, event: event, log_level:,
         stack: stack).result.ruby_value
     rescue CommandNotFoundError
       super

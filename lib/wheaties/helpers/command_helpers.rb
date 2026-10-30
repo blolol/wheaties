@@ -32,7 +32,7 @@ module Wheaties
     # rest of the arguments are passed to the subcommand.
     def subcommands!(&block)
       if args.first.to_s.match?(/\A[a-zA-Z0-9_-]+\z/)
-        SubcommandInvocation.new(message, args, stack).invoke(&block)
+        SubcommandInvocation.new(message, args, stack, log_level:).invoke(&block)
       end
     end
 
