@@ -33,9 +33,16 @@ module Wheaties
       stack << invocation
       eval_file_name = command.name
 
-      catch(invocation) do
+      return_value = catch(invocation) do
         Kernel.eval(command.body, context, eval_file_name)
       end
+
+      # Pop this invocation once the command finishes, so that `top?`, `halt` and the debug log
+      # prefix still refer to the calling command after it has called another command. This is
+      # deliberately skipped when the command raises, because `ErrorResult` reads the stack
+      # (including the failed invocation) after `eval` has returned.
+      stack.pop
+      return_value
     rescue UncaughtThrowError => error
       if stack.include?(error.tag)
         # This should have been caught by `catch(invocation)` in the method body,
