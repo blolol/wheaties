@@ -2,6 +2,16 @@
 
 Wheaties is Blolol's resident chat bot. Users program him on the fly using a combination of chat commands and [his web interface](https://github.com/blolol/wheaties.blolol.com). Commands are written in Ruby. Wheaties: botfast of champions!
 
+## Table of Contents
+
+* [Installation](#installation)
+  * [Using Docker](#using-docker)
+  * [From Source](#from-source)
+  * [Configuration](#configuration)
+  * [Message Relay](#message-relay)
+* [Releasing](#releasing)
+* [License](#license)
+
 ## Installation
 
 ### Using Docker
@@ -120,9 +130,42 @@ Your AWS credentials must be allowed to perform these actions on the SQS queue:
 
 By default, Wheaties will long poll SQS for up to 10 seconds. You can customize his poll interval by setting `RELAY_MESSAGE_CHECK_INTERVAL_SECONDS`.
 
+## Releasing
+
+Wheaties uses a GitOps-style release process. Pushing to `main` deploys to staging, and pushing to `production` deploys to production.
+
+### 1. Tag a release
+
+From `main`, with your changes merged and committed, run:
+
+```sh
+bundle exec rake release:tag
+```
+
+The task:
+
+1. Prints the current `Wheaties::VERSION` and prompts for the new version. Press Enter to accept the default, which is the current version with the patch number bumped (e.g. `2.12.4` becomes `2.12.5`).
+2. Updates `Wheaties::VERSION` in `lib/wheaties/version.rb`.
+3. Stages that file. If anything else is already staged, the task lists those files and offers to cancel. If you continue, only the version file goes into the release commit.
+4. Commits the change as `Wheaties X.Y.Z`.
+5. Tags the commit as `vX.Y.Z`.
+6. Offers to push the current branch and the new tag to `origin`.
+
+### 2. Promote to production
+
+Once the tagged commit is on `origin/main`, run:
+
+```sh
+bundle exec rake release:promote
+```
+
+The task checks out `production`, fast-forwards it to `main` (`git merge --ff-only main`), pushes `production` to `origin`, and then switches back to whichever branch you started on. Because the merge is fast-forward only, it fails rather than creating a merge commit if `production` has diverged from `main`.
+
+`release:promote` merges your local `main`, so make sure it's up to date (and that it has been pushed) before you run it.
+
 ## License
 
-Copyright (c) 2024 Ross Paffett
+Copyright (c) 2026 Ross Paffett
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
