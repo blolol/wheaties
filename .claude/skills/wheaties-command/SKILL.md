@@ -14,7 +14,7 @@ The goal is a block of Ruby the user can paste without edits, that fits the conv
 1. **Understand the request.** Is this a new command or an edit? Is it invoked by name (`.foo args`), by regex, or on an IRC event (every message, join, nick change, topic change)? If the behavior is ambiguous (what to reply, what the arguments are), ask a short question. Otherwise pick a sensible default and say what you chose.
 2. **Research the existing commands** (see "Researching with MongoDB"). Do this before writing, because the bot already has many helper commands (`listify`, `pluralize`, `nicksay`, `youtube_video_details`, `blolol_user_info`, ...) and reusing them is the house style. For an edit, fetch the current body first and change that, not a rewrite from memory.
 3. **Write the command** following "Writing the command".
-4. **Deliver it** in the format below.
+4. **Deliver it** in the format below, including saving the body to a tmpfile.
 5. **Offer to test it.** Once the user says it is published, run the example invocations over IRC (see "Testing over IRC").
 
 ## Researching with MongoDB
@@ -117,10 +117,20 @@ Gems available in addition to Rails' ActiveSupport (so `1.hour`, `present?`, `Ti
 
 Reply with, in this order:
 
-1. **One fenced `ruby` block** containing exactly what should be pasted into the website's body field, with no surrounding explanation inside the block, no `require`s and no wrapper class, so it can be copied cleanly.
-2. **Settings** for the website form, only when they matter: command name; whether "regex" should be checked; which events to subscribe to (`on_privmsg`, `on_join`, `on_nick`, `on_topic` are the ones in use, check `lib/wheaties/events/` for others); and a descriptive commit message (versions store one, and it replaces any in-body changelog).
-3. **Test cases**: 3 to 6 example invocations as a short list, each with the expected reply. Cover the happy path, no arguments, bad input, and for event commands a matching and a non-matching message. Include the `!` debug form for the one most worth tracing. For commands with options, use both the short and long form of at least one switch. If you picked a limit or default the user didn't specify (a maximum count, a timeout), say so in one line so they can change it.
-4. A one-line offer to run them over IRC once published.
+1. **One fenced `ruby` block** containing exactly what should be pasted into the website's body field, with no surrounding explanation inside the block, no `require`s and no wrapper class, so it can be copied cleanly. Show it in the reply so the user can review it, and also write the identical text to a tmpfile (below).
+2. **A copy command.** Terminal selection mangles long code blocks (stray indentation, line wraps, a missed last line), and the whole point is to paste the body into a browser form. So write the exact body to a tmpfile with the Write tool, then give the user a one-line command that puts it on the clipboard, in its own fenced `sh` block so it is easy to copy:
+
+   ```sh
+   pbcopy < /abs/path/to/foo.rb
+   ```
+
+   - Name the file after the command (`foo.rb`, or `foo-<n>.rb` for a second helper block) and use its full absolute path, since the user runs the command from an unknown directory. Put it in your scratchpad directory if the session gives you one, otherwise under `${TMPDIR:-/tmp}`. Write the file before replying, and rewrite it whenever you revise the code, so the clipboard command never copies a stale draft.
+   - Pick the clipboard tool for the user's platform (`pbcopy` on macOS, `wl-copy` or `xclip -selection clipboard` on Linux, `clip.exe` under WSL). If you don't know the platform, check with `uname`.
+   - When you hand back a second block (a new credentials helper command, an alias command), give each its own file and its own copy command, labeled with the command name it belongs to.
+   - The file holds only the Ruby body, with no trailing newline, and nothing else. A trailing newline would land in the clipboard and then in the website's body field. The Write tool writes content as given, so end the content on the last line of code.
+3. **Settings** for the website form, only when they matter: command name; whether "regex" should be checked; which events to subscribe to (`on_privmsg`, `on_join`, `on_nick`, `on_topic` are the ones in use, check `lib/wheaties/events/` for others); and a descriptive commit message (versions store one, and it replaces any in-body changelog).
+4. **Test cases**: 3 to 6 example invocations as a short list, each with the expected reply. Cover the happy path, no arguments, bad input, and for event commands a matching and a non-matching message. Include the `!` debug form for the one most worth tracing. For commands with options, use both the short and long form of at least one switch. If you picked a limit or default the user didn't specify (a maximum count, a timeout), say so in one line so they can change it.
+5. A one-line offer to run them over IRC once published.
 
 Keep prose short. The code is the deliverable.
 
