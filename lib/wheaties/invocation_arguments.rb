@@ -57,8 +57,12 @@ module Wheaties
         super(stringified_array)
       end
 
+      # Maps each remaining stringified argument back to its original element. Duplicates are
+      # preserved: each remaining string claims the first not-yet-claimed original that
+      # stringifies to it.
       def remaining_from(other_array)
-        other_array & (@hashes.fetch_values(*self))
+        originals = other_array.group_by(&:to_s)
+        map { |stringified| originals.fetch(stringified).shift }
       end
 
       # For the given stringified argument, return the original object.
