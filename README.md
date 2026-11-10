@@ -132,7 +132,9 @@ By default, Wheaties will long poll SQS for up to 10 seconds. You can customize 
 
 ## Releasing
 
-Wheaties uses a GitOps-style release process. Pushing to `main` deploys to staging, and pushing to `production` deploys to production.
+Wheaties runs on [Northflank](https://northflank.com), in the `wheaties` project. Pushing to `main` builds the bot once and deploys it to staging (`stg-bot`). To release, a person promotes the exact image running on staging to production (`prd-bot`). Production never builds anything itself.
+
+The Northflank resources are defined in [`blolol-infrastructure/northflank/wheaties.json`](https://github.com/blolol/blolol-infrastructure/blob/main/northflank/wheaties.json).
 
 ### 1. Tag a release
 
@@ -153,15 +155,19 @@ The task:
 
 ### 2. Promote to production
 
-Once the tagged commit is on `origin/main`, run:
+Once the tagged commit has deployed to staging and looks good there, run:
 
 ```sh
 bundle exec rake release:promote
 ```
 
-The task checks out `production`, fast-forwards it to `main` (`git merge --ff-only main`), pushes `production` to `origin`, and then switches back to whichever branch you started on. Because the merge is fast-forward only, it fails rather than creating a merge commit if `production` has diverged from `main`.
+You'll need the [Northflank CLI](https://northflank.com/docs/v1/api/use-the-cli), logged in to the `blolol` team. The task:
 
-`release:promote` merges your local `main`, so make sure it's up to date (and that it has been pushed) before you run it.
+1. Reads the commit deployed to `stg-bot` and the one deployed to `prd-bot`, and lists the commits between them.
+2. Asks you to confirm.
+3. Runs the `promote-bot` workflow in Northflank's `production` environment. The workflow takes a snapshot of `prd-mongodb`, waits for it to finish, and then deploys `stg-bot`'s current image to `prd-bot`.
+
+Follow the run in Northflank under **wheaties → production → Workflows**. To roll back, open `prd-bot` in Northflank and roll back to its previous deployment, which redeploys the image production had before. If you also need the old data, restore `prd-mongodb` from the snapshot the run took.
 
 ## License
 
