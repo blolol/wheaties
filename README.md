@@ -108,7 +108,7 @@ Wheaties is capable of relaying messages from an Amazon SQS queue to IRC. Given 
     "type": "message",
     "from": "Wheaties",
     "to": "#example",
-    "message": "Hello world!"
+    "text": "Hello world!"
   }
 }
 ```
