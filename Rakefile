@@ -85,21 +85,43 @@ namespace :release do
     end
   end
 
-  desc 'Fast-forward production to main and push it to origin'
+  desc 'Promote the bot running on staging to production on Northflank'
   task :promote do
-    original_branch = `git rev-parse --abbrev-ref HEAD`.strip
-    switched = false
+    require 'json'
+    require 'open3'
 
-    begin
-      if original_branch != 'production'
-        sh 'git', 'checkout', 'production'
-        switched = true
-      end
-
-      sh 'git', 'merge', '--ff-only', 'main'
-      sh 'git', 'push', 'origin', 'production'
-    ensure
-      sh 'git', 'checkout', '-' if switched
+    deployed_sha = lambda do |service_id|
+      output, status = Open3.capture2('northflank', 'get', 'service', '--projectId', 'wheaties',
+        '--serviceId', service_id, '--output', 'json', '--quiet')
+      abort "Couldn't read #{service_id} from Northflank. Is the Northflank CLI installed and logged in?" unless status.success?
+      service = JSON.parse(output)
+      service = service.first if service.is_a?(Array)
+      service.dig('deployment', 'internal', 'deployedSHA')
     end
+
+    staging_sha = deployed_sha.call('stg-bot')
+    production_sha = deployed_sha.call('prd-bot')
+    abort 'stg-bot has no deployed commit' unless staging_sha
+
+    puts "Staging:    #{staging_sha[0, 7]}"
+    puts "Production: #{production_sha ? production_sha[0, 7] : '(nothing deployed)'}"
+
+    if staging_sha == production_sha
+      abort 'Production already runs the same commit as staging.'
+    end
+
+    if production_sha
+      sh 'git', 'fetch', '--quiet', 'origin'
+      puts "\nCommits to promote:"
+      system 'git', '--no-pager', 'log', '--oneline', "#{production_sha}..#{staging_sha}"
+    end
+
+    print "\nSnapshot prd-mongodb and promote #{staging_sha[0, 7]} to production? [y/N] "
+    answer = $stdin.gets.to_s.strip.downcase
+    abort 'Cancelled' unless answer == 'y' || answer == 'yes'
+
+    sh 'northflank', 'run', 'workflow', '--projectId', 'wheaties', '--workflowId', 'promote-bot',
+      '--input', '{}', '--quiet', out: File::NULL
+    puts 'Started the promote-bot workflow. Follow it in Northflank under wheaties → production → Workflows.'
   end
 end
