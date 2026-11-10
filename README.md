@@ -167,7 +167,23 @@ You'll need the [Northflank CLI](https://northflank.com/docs/v1/api/use-the-cli)
 2. Asks you to confirm.
 3. Runs the `promote-bot` workflow in Northflank's `production` environment. The workflow takes a snapshot of `prd-mongodb`, waits for it to finish, and then deploys `stg-bot`'s current image to `prd-bot`.
 
-Follow the run in Northflank under **wheaties → production → Workflows**. To roll back, open `prd-bot` in Northflank and roll back to its previous deployment, which redeploys the image production had before. If you also need the old data, restore `prd-mongodb` from the snapshot the run took.
+Follow the run in Northflank under **wheaties → production → Workflows**.
+
+### Rolling back
+
+Northflank has no one-click rollback for a promotion. Either:
+
+* **Revert and promote again.** Revert the bad commit on `main`, let it deploy to staging, and run `rake release:promote`.
+* **Pin production to an earlier build**, if you need to roll back right away. Find the build of the commit you want under **build-bot → Builds**, then run:
+
+  ```sh
+  northflank update service deployment --projectId wheaties --serviceId prd-bot \
+    --input '{"internal": {"id": "build-bot", "branch": "main", "buildSHA": "<full 40-character commit SHA>"}}'
+  ```
+
+  The next promotion replaces this as usual.
+
+If you also need the old data, restore `prd-mongodb` from the snapshot the promotion took. Find it under **prd-mongodb → Backups**.
 
 ## License
 
