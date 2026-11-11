@@ -1,6 +1,6 @@
 # Wheaties
 
-Wheaties is Blolol's resident chat bot. Users program him on the fly using a combination of chat commands and [his web interface](https://github.com/blolol/wheaties.blolol.com). Commands are written in Ruby. Wheaties: botfast of champions!
+Wheaties is Blolol's resident chat bot. Users program him on the fly using a combination of chat commands and [his web interface](https://github.com/blolol/wheaties-web). Commands are written in Ruby. Wheaties: botfast of champions!
 
 ## Table of Contents
 
