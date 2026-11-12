@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/blolol/cinch
-  revision: 7d8d4855b6249a7af9f1c3ed64a05f4533adb887
-  tag: v2.3.5
+  revision: 814796f9d9a6184d3f6c056931486691fc0bf266
+  tag: v2.4.1
   specs:
-    cinch (2.3.5)
+    cinch (2.4.1)
 
 GEM
   remote: https://rubygems.org/
