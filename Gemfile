@@ -32,5 +32,5 @@ group :commands do
 end
 
 group :test do
-  gem 'rspec', '~> 3.7.0'
+  gem 'rspec', '~> 3.13'
 end
