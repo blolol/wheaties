@@ -35,6 +35,6 @@ bundle exec rake docker:build     # Build/tag Docker image (also docker:push, do
 
 ## Notes
 
-- Ruby 3.4.9 (see `Gemfile`/`.ruby-version`); rspec is pinned to ~> 3.7.
+- Ruby 3.4.9 (see `Gemfile`/`.ruby-version`); rspec is pinned to ~> 3.13 (3.7 conflicted with ActiveSupport's `Object#with`).
 - `Wheaties.logger` is used for Mongo/Mongoid/Bugsnag logging, but not for ruby_llm (see recent commits).
 - Test coverage is minimal (`spec/harby/parser_spec.rb`, helper and weighted_random specs).
