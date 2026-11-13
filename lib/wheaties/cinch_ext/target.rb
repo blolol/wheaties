@@ -5,8 +5,10 @@ module Cinch
         with_return_nil_method = :"#{method_name}_with_nil_return"
         without_return_nil_method = :"#{method_name}_without_nil_return"
 
-        define_method(with_return_nil_method) do |*args|
-          __send__(without_return_nil_method, *args)
+        # Forward keyword arguments too: Cinch 2.4's `send` takes `as:`, and `safe_send` always
+        # passes it.
+        define_method(with_return_nil_method) do |*args, **kwargs, &block|
+          __send__(without_return_nil_method, *args, **kwargs, &block)
           nil
         end
         alias_method without_return_nil_method, method_name
