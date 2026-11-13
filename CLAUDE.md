@@ -21,6 +21,11 @@ bundle exec rake docker:build     # Build/tag Docker image (also docker:push, do
 
 `bin/mongodb-mcp` is the read-only MongoDB MCP server (`.mcp.json`) for production data: it runs `northflank forward addon --skipHostnames` on the `prd-mongodb` addon and stops it on exit. Set `WHEATIES_NF_ADDON=stg-mongodb` for staging.
 
+- Query it with the `mongodb` MCP tools using `connectionId: "preconfigured"`, database `4082b89de10e` (Northflank's generated name), collection `commands`. Always pass a `projection`, since `body` and `versions` are large.
+- The MCP server starts the forward itself. Don't run `bin/mongodb-mcp` by hand (it's a stdio server, so that gives the session no connection), and don't `connect` with a connection string (it would leak the password into the transcript).
+- On connection errors (`ECONNREFUSED`, server selection timeout), the forward has probably died: read `$TMPDIR/wheaties-mongodb-forward.log` (e.g. Northflank CLI logged out), then ask the user to reconnect `mongodb` from `/mcp`.
+- Before upgrading a gem in the `commands` group, search stored command bodies for its usage (e.g. `{"body": {"$regex": "HTTParty"}}`): most of its callers live in the database, not this repo.
+
 ## Architecture
 
 **Boot.** `bin/wheaties` does `Bundler.require(:default, :commands)` (the `commands` gem group holds gems that user-written Ruby commands may use), builds the `Cinch::Bot` with `CommandsPlugin` and `RelayPlugin`, then `Wheaties.configure` (`lib/wheaties/boot.rb`) sets up logger, Bugsnag, Redis, Mongoid, ruby_llm, and loads `config/environments/<WHEATIES_ENV>.rb`. All files are loaded via the explicit require list in `lib/wheaties.rb` — new files must be added there.
