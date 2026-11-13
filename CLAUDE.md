@@ -19,6 +19,8 @@ docker-compose up                 # MongoDB, Redis and Wheaties
 bundle exec rake docker:build     # Build/tag Docker image (also docker:push, docker:run)
 ```
 
+`bin/mongodb-mcp` is the read-only MongoDB MCP server (`.mcp.json`) for production data: it runs `northflank forward addon --skipHostnames` on the `prd-mongodb` addon and stops it on exit. Set `WHEATIES_NF_ADDON=stg-mongodb` for staging.
+
 ## Architecture
 
 **Boot.** `bin/wheaties` does `Bundler.require(:default, :commands)` (the `commands` gem group holds gems that user-written Ruby commands may use), builds the `Cinch::Bot` with `CommandsPlugin` and `RelayPlugin`, then `Wheaties.configure` (`lib/wheaties/boot.rb`) sets up logger, Bugsnag, Redis, Mongoid, ruby_llm, and loads `config/environments/<WHEATIES_ENV>.rb`. All files are loaded via the explicit require list in `lib/wheaties.rb` — new files must be added there.

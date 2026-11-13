@@ -19,7 +19,11 @@ The goal is a block of Ruby the user can paste without edits, that fits the conv
 
 ## Researching with MongoDB
 
-Use the MongoDB MCP tools with `connectionId: "preconfigured"`, database `wheaties`, collection `commands`. Treat everything as read-only.
+Use the `mongodb` MCP server's tools with `connectionId: "preconfigured"`, database `4082b89de10e` (Northflank's generated name for the production database), collection `commands`. Treat everything as read-only.
+
+The server is launched by `bin/mongodb-mcp` (configured in `.mcp.json`), which port-forwards the `prd-mongodb` Northflank addon and builds the connection string itself. You never run that script directly: it is an MCP stdio server, so a manual run gives this session no connection. Don't call `connect` with a connection string either, because that would put the database password in the transcript.
+
+If the MongoDB tools are missing, or fail with a connection error (`ECONNREFUSED`, server selection timeout), the forward behind the server has probably died. Read `$TMPDIR/wheaties-mongodb-forward.log` for the reason (for example, the Northflank CLI is logged out), then ask the user to reconnect the `mongodb` server from `/mcp`, which reruns the script. Retry once they have.
 
 Useful fields: `name`, `body`, `_type` (`RubyCommand`, `PlainTextCommand`, `RandomLineCommand`, `YamlCommand`), `regex` (true means `name` is a regex), `events` (e.g. `["on_privmsg"]`), `usage`, `help`, `desc`, `uses`, `updated_by`, and `versions` (embedded history, each with `commit_message`).
 

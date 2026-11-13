@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+#
+# Launches the MongoDB MCP server (read-only) against a Wheaties MongoDB addon
+# on Northflank. Claude Code runs this via .mcp.json; it isn't meant to be run
+# by hand, since stdout is the MCP stdio channel.
+#
+# It starts an unprivileged `northflank forward addon --skipHostnames` (the
+# hostname mode needs root), reads the local port it picked, fetches the addon
+# credentials with the Northflank CLI, and runs mongodb-mcp-server with the
+# resulting connection string. The forward is stopped when the server exits.
+#
+# Requires: a logged-in northflank CLI, jq, npx.
+#
+# Environment:
+#   WHEATIES_NF_PROJECT  Northflank project (default: wheaties)
+#   WHEATIES_NF_ADDON    MongoDB addon (default: prd-mongodb; or stg-mongodb)
+
+set -euo pipefail
+
+project="${WHEATIES_NF_PROJECT:-wheaties}"
+addon="${WHEATIES_NF_ADDON:-prd-mongodb}"
+log="${TMPDIR:-/tmp}/wheaties-mongodb-forward.log"
+
+fail() {
+  echo "mongodb-mcp: $*" >&2
+  exit 1
+}
+
+forward_pid=
+server_pid=
+
+cleanup() {
+  [[ -n "$server_pid" ]] && kill "$server_pid" 2>/dev/null
+  [[ -n "$forward_pid" ]] && kill "$forward_pid" 2>/dev/null
+  wait 2>/dev/null
+}
+trap cleanup EXIT
+trap 'exit 143' TERM INT HUP
+
+northflank forward addon --project "$project" --addon "$addon" --skipHostnames \
+  </dev/null >"$log" 2>&1 &
+forward_pid=$!
+
+credentials="$(northflank get addon credentials --project "$project" --addon "$addon" --output json 2>&1)" ||
+  fail "couldn't fetch credentials for $project/$addon: $credentials"
+
+port=
+for _ in $(seq 1 60); do
+  port="$(sed -nE 's/.*exposed locally on 127\.0\.0\.1:([0-9]+).*/\1/p' "$log" | head -1)"
+  [[ -n "$port" ]] && break
+  kill -0 "$forward_pid" 2>/dev/null || fail "northflank forward exited: $(cat "$log")"
+  sleep 0.5
+done
+[[ -n "$port" ]] || fail "timed out waiting for northflank forward (see $log)"
+
+# directConnection: the replica set advertises its member by a Northflank
+# hostname that doesn't resolve locally, so skip replica set discovery.
+MDB_MCP_CONNECTION_STRING="$(jq -r --arg port "$port" '.secrets |
+  "mongodb://\(.USERNAME | @uri):\(.PASSWORD | @uri)@127.0.0.1:\($port)/\(.DATABASE)" +
+  "?authSource=\(.DATABASE)&directConnection=true"' <<<"$credentials")"
+export MDB_MCP_CONNECTION_STRING
+export MDB_MCP_READ_ONLY=true
+
+# Backgrounded so the TERM trap runs promptly; <&0 keeps the MCP stdin attached.
+npx -y 'mongodb-mcp-server@<3' <&0 &
+server_pid=$!
+wait "$server_pid"
