@@ -147,10 +147,15 @@ namespace :release do
 
   desc 'Promote the bot running on staging to production on Northflank'
   task :promote do
-    deployed_sha = lambda do |service_id|
+    require 'time'
+
+    northflank_service = lambda do |service_id|
       service = northflank_json('get', 'service', '--serviceId', service_id)
-      service = service.first if service.is_a?(Array)
-      service.dig('deployment', 'internal', 'deployedSHA')
+      service.is_a?(Array) ? service.first : service
+    end
+    deployed_sha = ->(service_id) { northflank_service.call(service_id).dig('deployment', 'internal', 'deployedSHA') }
+    workflow_run_ids = lambda do
+      northflank_json('list', 'workflow-runs', '--workflowId', 'promote-bot')['runs'].map { |run| run['id'] }
     end
 
     staging_sha = deployed_sha.call('stg-bot')
@@ -174,8 +179,53 @@ namespace :release do
     answer = $stdin.gets.to_s.strip.downcase
     abort 'Cancelled' unless answer == 'y' || answer == 'yes'
 
+    # The run endpoint doesn't document its response, so find the new run by diffing the run list.
+    previous_run_ids = workflow_run_ids.call
     sh 'northflank', 'run', 'workflow', '--projectId', 'wheaties', '--workflowId', 'promote-bot',
       '--input', '{}', '--quiet', out: File::NULL
-    puts 'Started the promote-bot workflow. Follow it in Northflank under wheaties → production → Workflows.'
+
+    short_sha = staging_sha[0, 7]
+    timeout = ENV.fetch('TIMEOUT', 20 * 60).to_i
+    deadline = Time.now + timeout
+    puts "Started the promote-bot workflow. Waiting for #{short_sha} to deploy to prd-bot..."
+    run_id = nil
+    last_state = nil
+
+    loop do
+      run_id ||= workflow_run_ids.call.find { |id| !previous_run_ids.include?(id) }
+      run = run_id && northflank_json('get', 'workflow-run', '--workflowId', 'promote-bot', '--runId', run_id)
+
+      if run&.dig('concluded')
+        abort "promote-bot run #{run_id} finished with #{run['status']}." unless run['status'] == 'success'
+
+        # The workflow concludes once the Release step starts prd-bot's rollout, so wait for the
+        # rollout too. Its transition time rules out the previous deploy's COMPLETED status.
+        service = northflank_service.call('prd-bot')
+        production_sha = service.dig('deployment', 'internal', 'deployedSHA')
+        rollout = service.dig('status', 'deployment')
+        rolled_out_since_run = rollout && Time.iso8601(rollout['lastTransitionTime']) > Time.iso8601(run['startedAt'])
+
+        if production_sha == staging_sha && rolled_out_since_run
+          if rollout['status'] == 'COMPLETED'
+            puts "prd-bot is running #{short_sha}."
+            break
+          end
+          abort "prd-bot's rollout failed while deploying #{short_sha}." if rollout['status'] == 'FAILED'
+        end
+
+        state = "workflow #{run['status']}; prd-bot #{production_sha ? production_sha[0, 7] : '(none)'} #{rollout&.dig('status')}"
+      elsif run
+        steps = run.dig('spec', 'spec', 'steps').to_a.map { |step| "#{step['kind']} #{step.dig('response', 'status') || 'pending'}" }
+        state = "workflow #{run['status']} (#{steps.join(', ')})"
+      else
+        state = 'workflow run not found yet'
+      end
+
+      puts "#{Time.now.strftime('%T')} #{state}" unless state == last_state
+      last_state = state
+
+      abort "Timed out after #{timeout}s waiting for #{short_sha} (#{state})." if Time.now > deadline
+      sleep 10
+    end
   end
 end
