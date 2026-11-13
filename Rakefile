@@ -5,6 +5,18 @@ def wheaties_version_tag
   "blolol/wheaties:#{Wheaties::VERSION}"
 end
 
+def northflank_json(*args)
+  require 'json'
+  require 'open3'
+  output, status = Open3.capture2('northflank', *args, '--projectId', 'wheaties', '--output', 'json', '--quiet')
+  abort "Couldn't run `northflank #{args.join(' ')}`. Is the Northflank CLI installed and logged in?" unless status.success?
+  JSON.parse(output)
+end
+
+def git_ancestor?(ancestor, descendant)
+  system('git', 'merge-base', '--is-ancestor', ancestor, descendant, err: File::NULL)
+end
+
 namespace :docker do
   desc 'Build the Wheaties Docker image'
   task :build do
@@ -85,16 +97,58 @@ namespace :release do
     end
   end
 
+  desc 'Wait until a commit (default HEAD) is built and deployed to staging on Northflank'
+  task :wait, %i(ref) do |task, args|
+    ref = args[:ref] || 'HEAD'
+    sha = `git rev-parse --verify -q #{"#{ref}^{commit}".shellescape}`.strip
+    abort "Unknown commit: #{ref}" if sha.empty?
+    short_sha = sha[0, 7]
+
+    sh 'git', 'fetch', '--quiet', 'origin'
+    unless git_ancestor?(sha, 'origin/main')
+      abort "#{short_sha} isn't on origin/main, so staging won't deploy it. Push it first."
+    end
+
+    timeout = ENV.fetch('TIMEOUT', 20 * 60).to_i
+    deadline = Time.now + timeout
+    puts "Waiting for #{short_sha} to deploy to stg-bot..."
+    last_state = nil
+
+    loop do
+      active = northflank_json('list', 'service', 'deployments', '--serviceId', 'stg-bot')['deployments']
+        .find { |deployment| deployment['active'] }
+      active_sha = active&.dig('commit', 'sha')
+      service = northflank_json('get', 'service', '--serviceId', 'stg-bot')
+      service = service.first if service.is_a?(Array)
+      rollout = service.dig('status', 'deployment', 'status')
+
+      # A later commit that includes this one also counts, in case main moved on while we waited.
+      if active_sha && rollout == 'COMPLETED' && (active_sha == sha || git_ancestor?(sha, active_sha))
+        puts "stg-bot is running #{active_sha[0, 7]}, which includes #{short_sha}."
+        break
+      end
+
+      build = northflank_json('get', 'service', 'builds', '--serviceId', 'build-bot')['builds']
+        .find { |candidate| candidate['sha'] == sha }
+      if build && build['concluded'] && build['status'] != 'SUCCESS'
+        abort "build-bot build #{build['id']} of #{short_sha} finished with #{build['status']}."
+      end
+      abort "stg-bot's rollout failed while deploying #{short_sha}." if build&.dig('status') == 'SUCCESS' && rollout == 'FAILED'
+
+      build_state = build ? "build #{build['id']} #{build['status']}" : 'build not started'
+      state = "#{build_state}; stg-bot #{active_sha ? active_sha[0, 7] : '(none)'} #{rollout}"
+      puts "#{Time.now.strftime('%T')} #{state}" unless state == last_state
+      last_state = state
+
+      abort "Timed out after #{timeout}s waiting for #{short_sha} (#{state})." if Time.now > deadline
+      sleep 10
+    end
+  end
+
   desc 'Promote the bot running on staging to production on Northflank'
   task :promote do
-    require 'json'
-    require 'open3'
-
     deployed_sha = lambda do |service_id|
-      output, status = Open3.capture2('northflank', 'get', 'service', '--projectId', 'wheaties',
-        '--serviceId', service_id, '--output', 'json', '--quiet')
-      abort "Couldn't read #{service_id} from Northflank. Is the Northflank CLI installed and logged in?" unless status.success?
-      service = JSON.parse(output)
+      service = northflank_json('get', 'service', '--serviceId', service_id)
       service = service.first if service.is_a?(Array)
       service.dig('deployment', 'internal', 'deployedSHA')
     end

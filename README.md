@@ -161,6 +161,12 @@ Once the tagged commit has deployed to staging and looks good there, run:
 bundle exec rake release:promote
 ```
 
+To wait for staging first, run `bundle exec rake release:wait`. It waits until `build-bot` has built `HEAD` (or the commit given as `release:wait[ref]`) and `stg-bot` has finished rolling it out. It fails if the commit isn't on `origin/main`, the build or rollout fails, or 20 minutes pass (set `TIMEOUT` in seconds to change this). Chain the tasks to release in one go:
+
+```sh
+bundle exec rake release:tag release:wait release:promote
+```
+
 You'll need the [Northflank CLI](https://northflank.com/docs/v1/api/use-the-cli), logged in to the `blolol` team. The task:
 
 1. Reads the commit deployed to `stg-bot` and the one deployed to `prd-bot`, and lists the commits between them.
