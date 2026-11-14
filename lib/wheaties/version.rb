@@ -1,3 +1,3 @@
 module Wheaties
-  VERSION = '2.12.8'
+  VERSION = '2.12.9'
 end
