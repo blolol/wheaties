@@ -46,6 +46,11 @@ Note that a command name that collides with a built-in (`BUILT_IN_COMMANDS` in `
 - **Use `halt`** to stop early (optionally `halt("reply")`), and `halt!` to stop an entire nested call stack. Never use a top-level `return`: it exits the surrounding `InvocationEnvironment#eval` method, and the command then replies with nothing. Use `halt("message")` for early exits that should reply.
 - **Event commands.** One body serves both modes: `event?` is true when triggered by an IRC event and `command?` when invoked with `.name`. Event commands usually must be quiet on non-matches (return `nil`), because they run on every message.
 - **Arguments.** `args` (or `arguments`) are already parsed by the Harby grammar: numbers, quoted strings, lists and nested subcommand results arrive as Ruby values, so don't re-split a string. For regex commands, `match` holds the `MatchData`.
+- **Argument syntax in chat** (`lib/harby/grammar/*.treetop`), which you need for test invocations:
+  - `[name args]` invokes a subcommand and passes its return value as one argument: `.giga [megahal <url>]`.
+  - `(a b c)` is a list and arrives as the Array `["a", "b", "c"]`. It is not a subcommand call.
+  - `"..."` or `'...'` is one String argument, spaces included. An unquoted word is a String that ends at a space, `]` or `)` (escape a space as `\ `), so quote URLs that contain `)`.
+  - Numbers arrive as Integer or Float, and `/pattern/i` arrives as a Regexp. An argument starting with `/` is parsed as a regex.
 - **Replying directly.** `msg` / `message` is the Cinch message (`msg.reply(text, true)` prefixes the nick), `sender` the user, `channel` the channel, `pm?` tells you if it is a private message, and `bot` is the Cinch bot. Prefer returning a value over calling `msg.reply`, unless you need more than one conditional reply.
 - **Calling other commands.** Any command can be called like a method (`listify(items)`, `pluralize('memo', n)`) through `method_missing`. Its return value is the Ruby value, not chat output. If the command doesn't exist the call raises `NoMethodError`. If other commands might plausibly build on yours, branch on `top?`: return a joined String when invoked directly by a user, and the raw Ruby value (an Array, say) when called from another command. Don't bother for commands that are only ever typed in chat.
 
