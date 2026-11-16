@@ -36,12 +36,14 @@ module Wheaties
     end
 
     def limit(lines)
+      return lines if @options[:all]
       return lines unless @options[:count].present? && @options[:count] > 0
       lines.first(@options[:count])
     end
 
     def parse_options(options)
       @args.parse_options(into: options) do |parser|
+        parser.on('-a', '--all')
         parser.on('-c', '--count [COUNT]', Integer)
         parser.on('-f', '--find [PATTERN]')
         parser.on('-g', '--grep [PATTERN]')

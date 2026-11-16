@@ -3,6 +3,7 @@ module Wheaties
     USAGE = '[options]'
     HELP = <<~EOS
       Options:
+      -a / --all: Return every line (overrides `--count`).
       -c / --count <number>: Return this many lines.
       -f / --find <text|regexp>: Only return lines containing <text> (case-insensitive) or matching the /regexp/.
       -g / --grep <text|regexp>: Alias for `--find`.
