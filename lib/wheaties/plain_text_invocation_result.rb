@@ -47,10 +47,12 @@ module Wheaties
         parser.on('-c', '--count [COUNT]', Integer)
         parser.on('-f', '--find [PATTERN]')
         parser.on('-g', '--grep [PATTERN]')
+        parser.on('-r', '--random')
         parser.on('-s', '--sort [ORDER]', String)
       end
 
       options[:grep] ||= options.delete(:find)
+      options[:sort] = 'random' if options.delete(:random)
 
       options
     end

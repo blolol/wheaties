@@ -97,6 +97,26 @@ describe Wheaties::PlainTextInvocationResult do
     end
   end
 
+  %w(-r --random).each do |switch|
+    context "with #{switch}" do
+      let(:parsed_arguments) { [switch, '-a'] }
+
+      it 'shuffles the lines' do
+        allow_any_instance_of(Array).to receive(:shuffle) { |lines| lines.reverse }
+        expect(result).to eq(%w(three two one))
+      end
+    end
+  end
+
+  context 'with --random and --sort' do
+    let(:parsed_arguments) { %w(--random --sort asc -a) }
+
+    it 'shuffles the lines, ignoring --sort' do
+      allow_any_instance_of(Array).to receive(:shuffle) { |lines| lines.reverse }
+      expect(result).to eq(%w(three two one))
+    end
+  end
+
   context 'with an unknown --sort order' do
     let(:parsed_arguments) { %w(--sort sideways -a) }
 
