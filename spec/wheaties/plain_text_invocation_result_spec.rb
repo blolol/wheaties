@@ -40,4 +40,85 @@ describe Wheaties::PlainTextInvocationResult do
       expect(result).to eq(%w(one two three))
     end
   end
+
+  %w(-f --find -g --grep).each do |switch|
+    context "with #{switch} and a string" do
+      let(:parsed_arguments) { [switch, 'T', '-a'] }
+
+      it 'returns lines containing the string, case-insensitively' do
+        expect(result).to eq(%w(two three))
+      end
+    end
+
+    context "with #{switch} and a regexp" do
+      let(:parsed_arguments) { [switch, /^t.o$/, '-a'] }
+
+      it 'returns lines matching the regexp' do
+        expect(result).to eq('two')
+      end
+    end
+  end
+
+  context 'with --find and no matching lines' do
+    let(:parsed_arguments) { %w(--find nope) }
+
+    it 'returns no lines' do
+      expect(result).to eq([])
+    end
+  end
+
+  { 'ascending' => %w(one three two), 'asc' => %w(one three two),
+    'descending' => %w(two three one), 'desc' => %w(two three one) }.each do |order, expected|
+    context "with --sort #{order}" do
+      let(:parsed_arguments) { ['--sort', order, '-a'] }
+
+      it 'sorts the lines' do
+        expect(result).to eq(expected)
+      end
+    end
+  end
+
+  context 'with --sort in a different case' do
+    let(:parsed_arguments) { %w(-s DESC -a) }
+
+    it 'sorts the lines' do
+      expect(result).to eq(%w(two three one))
+    end
+  end
+
+  %w(random rand).each do |order|
+    context "with --sort #{order}" do
+      let(:parsed_arguments) { ['--sort', order, '-a'] }
+
+      it 'shuffles the lines' do
+        allow_any_instance_of(Array).to receive(:shuffle) { |lines| lines.reverse }
+        expect(result).to eq(%w(three two one))
+      end
+    end
+  end
+
+  context 'with an unknown --sort order' do
+    let(:parsed_arguments) { %w(--sort sideways -a) }
+
+    it 'keeps the original order' do
+      expect(result).to eq(%w(one two three))
+    end
+  end
+
+  context 'with --find, --sort and --count together' do
+    let(:parsed_arguments) { %w(--find t --sort asc --count 1) }
+
+    it 'filters, then sorts, then limits' do
+      expect(result).to eq('three')
+    end
+  end
+
+  context 'with a default sort order' do
+    let(:default_options) { { count: 1, sort: 'random' } }
+    let(:parsed_arguments) { %w(--sort desc) }
+
+    it 'lets the switch override it' do
+      expect(result).to eq('two')
+    end
+  end
 end
