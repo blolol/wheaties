@@ -67,6 +67,66 @@ describe Wheaties::PlainTextInvocationResult do
     end
   end
 
+  context 'with URL filters' do
+    let(:text) do
+      <<~EOS
+        just some text
+        https://example.com/page.html
+        https://example.com/still.PNG
+        look: https://example.com/photo.jpg?width=500 nice
+        https://example.com/dance.gif and https://example.com/loop.webp
+        https://i.imgur.com/abc.gifv#t=1
+        https://example.com/notagif.gif.html
+      EOS
+    end
+
+    context 'with --img' do
+      let(:parsed_arguments) { %w(--img -a) }
+
+      it 'returns only the still or animated image URLs' do
+        expect(result).to eq(%w(
+          https://example.com/still.PNG
+          https://example.com/photo.jpg?width=500
+          https://example.com/dance.gif
+          https://example.com/loop.webp
+          https://i.imgur.com/abc.gifv#t=1
+        ))
+      end
+    end
+
+    context 'with --gif' do
+      let(:parsed_arguments) { %w(--gif -a) }
+
+      it 'returns only the animated image URLs' do
+        expect(result).to eq(%w(
+          https://example.com/dance.gif
+          https://example.com/loop.webp
+          https://i.imgur.com/abc.gifv#t=1
+        ))
+      end
+    end
+
+    context 'with --img and --gif' do
+      let(:parsed_arguments) { %w(--img --gif -a) }
+
+      it 'returns only the animated image URLs' do
+        expect(result).to eq(%w(
+          https://example.com/dance.gif
+          https://example.com/loop.webp
+          https://i.imgur.com/abc.gifv#t=1
+        ))
+      end
+    end
+
+    context 'with --img and --find' do
+      let(:parsed_arguments) { %w(--img --find photo -a) }
+
+      it 'finds within the extracted URLs' do
+        expect(result).to eq('https://example.com/photo.jpg?width=500')
+      end
+    end
+  end
+
   { 'ascending' => %w(one three two), 'asc' => %w(one three two),
     'descending' => %w(two three one), 'desc' => %w(two three one) }.each do |order, expected|
     context "with --sort #{order}" do

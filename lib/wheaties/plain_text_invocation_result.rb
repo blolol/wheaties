@@ -1,5 +1,14 @@
 module Wheaties
   class PlainTextInvocationResult
+    # Matches an http(s) URL whose path ends in one of the given file extensions, optionally
+    # followed by a query string or fragment (e.g. `https://example.com/cat.png?width=500`)
+    def self.url_pattern(extensions)
+      %r{\bhttps?://[^\s?#]+\.(?:#{extensions.join('|')})(?:[?#]\S*)?(?=\s|$)}i
+    end
+
+    GIF_URL = url_pattern(%w(gif gifv webp))
+    IMAGE_URL = url_pattern(%w(apng avif bmp gif gifv jpeg jpg png svg webp))
+
     def initialize(text, args, options = {})
       @text = text
       @args = args
@@ -21,6 +30,15 @@ module Wheaties
 
     def each_line(&block)
       @lines.each(&block)
+    end
+
+    # Replaces the lines with just the image (or GIF) URLs found in them
+    def extract_urls(lines)
+      pattern = if @options[:gif] then GIF_URL
+                elsif @options[:img] then IMAGE_URL
+                end
+      return lines unless pattern
+      lines.flat_map { |line| line.scan(pattern) }
     end
 
     def grep(lines)
@@ -47,6 +65,8 @@ module Wheaties
         parser.on('-c', '--count [COUNT]', Integer)
         parser.on('-f', '--find [PATTERN]')
         parser.on('-g', '--grep [PATTERN]')
+        parser.on('--gif')
+        parser.on('--img')
         parser.on('-r', '--random')
         parser.on('-s', '--sort [ORDER]', String)
       end
@@ -59,6 +79,7 @@ module Wheaties
 
     def select_lines
       lines = @text.lines.map(&:strip)
+      lines = extract_urls(lines)
       lines = grep(lines)
       lines = sort(lines)
       lines = limit(lines)
