@@ -172,6 +172,9 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.8)
+    ruby-vips (2.3.0)
+      ffi (~> 1.12)
+      logger
     ruby2_keywords (0.0.5)
     ruby_llm (2.1.1)
       base64
@@ -232,6 +235,7 @@ DEPENDENCIES
   rake
   redis
   rspec (~> 3.13)
+  ruby-vips
   ruby_llm (~> 2.1.1)
   terrapin
   thwait
