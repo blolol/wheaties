@@ -24,6 +24,7 @@ RUN bundle config set without test && bundle install
 COPY bin ./bin/
 COPY config ./config/
 COPY lib ./lib/
+COPY vendor ./vendor/
 
 ENV LANG=C.UTF-8
 CMD ["./bin/wheaties"]
